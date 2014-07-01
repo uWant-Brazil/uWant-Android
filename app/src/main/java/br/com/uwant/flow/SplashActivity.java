@@ -58,18 +58,22 @@ public class SplashActivity extends Activity implements Runnable {
             switch (counter++) {
                 case 0:
                     // TODO Imagem 1
+                    resource = 1;
                     break;
 
                 case 1:
                     // TODO Imagem 2
+                    resource = 1;
                     break;
 
                 case 2:
                     // TODO Imagem 3
+                    resource = 1;
                     break;
 
                 case 3:
                     // TODO Imagem 4
+                    resource = 1;
                     break;
 
                 default:
