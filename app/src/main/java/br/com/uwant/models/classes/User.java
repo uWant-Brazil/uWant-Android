@@ -1,7 +1,20 @@
 package br.com.uwant.models.classes;
 
-/**
- * Created by felipebenezi on 01/07/14.
- */
 public class User extends Person {
+
+    private static final User INSTANCE = new User();
+
+    private String token;
+
+    public static User getInstance() {
+        return INSTANCE;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 }
