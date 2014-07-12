@@ -113,6 +113,6 @@ public class AuthenticationActivity extends Activity implements View.OnClickList
             mProgressDialog.dismiss();
         }
 
-        Toast.makeText(this, "Ooops...", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
     }
 }

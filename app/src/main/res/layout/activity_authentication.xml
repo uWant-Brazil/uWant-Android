@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:paddingTop="30dp"
+            android:paddingTop="5dp"
             android:paddingRight="10dp"
             android:paddingLeft="10dp"
             android:layout_centerInParent="true"
@@ -30,22 +30,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/auth_editText_login"
-                android:layout_gravity="center_horizontal"
                 android:hint="Login"
-                android:background="@drawable/edit_text"
-                android:textColor="@color/GRAY_TEXT"
-                android:textColorHint="@color/GRAY_FIELD_BORDER"
+                style="@style/UWEditText"
                 android:layout_margin="2.5dp" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text"
                 android:id="@+id/auth_editText_password"
                 android:hint="Senha"
                 android:inputType="textPassword"
-                android:textColor="@color/GRAY_TEXT"
-                android:textColorHint="@color/GRAY_FIELD_BORDER"
+                style="@style/UWEditText"
                 android:layout_margin="2.5dp" />
 
             <CheckBox
