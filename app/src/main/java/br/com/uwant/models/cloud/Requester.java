@@ -6,6 +6,8 @@ public abstract class Requester {
 
     public static class ParameterKey {
         public static final String STATUS = "status";
+        public static final String MESSAGE = "message";
+        public static final String ERROR = "error";
         public static final String LOGIN = "login";
         public static final String PASSWORD = "password";
     }

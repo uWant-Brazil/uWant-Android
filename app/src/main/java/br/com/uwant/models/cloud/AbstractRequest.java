@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import br.com.uwant.models.cloud.errors.DefaultRequestError;
+import br.com.uwant.models.cloud.errors.RequestError;
 
 abstract class AbstractRequest<K> {
 
@@ -85,15 +86,29 @@ abstract class AbstractRequest<K> {
         protected void onPostExecute(K result) {
             super.onPostExecute(result);
             if (result == null) {
-                if (mResponse == null) {
-                    // Este erro é o default quando não temos nenhum retorno do WS.
-                    this.mListener.onError(new DefaultRequestError());
-                } else {
-                    this.mListener.onError(null); // TODO tratamento...
-                }
+                this.mListener.onError(getError());
             } else {
                 this.mListener.onExecute(result);
             }
+        }
+
+        private RequestError getError() {
+            if (mResponse != null) {
+                JsonParser jsonParser = new JsonParser();
+                JsonElement jsonElement = jsonParser.parse(mResponse);
+                if (jsonElement.isJsonObject()) {
+                    JsonObject jsonObject = jsonElement.getAsJsonObject();
+                    if (jsonObject.has(Requester.ParameterKey.STATUS)
+                            && !jsonObject.get(Requester.ParameterKey.STATUS).getAsBoolean()
+                            && jsonObject.has(Requester.ParameterKey.ERROR)
+                            && jsonObject.has(Requester.ParameterKey.MESSAGE)) {
+                        int code = jsonObject.get(Requester.ParameterKey.ERROR).getAsInt();
+                        String message = jsonObject.get(Requester.ParameterKey.MESSAGE).getAsString();
+                        return new RequestError(code, message);
+                    }
+                }
+            }
+            return new DefaultRequestError();
         }
 
     }
