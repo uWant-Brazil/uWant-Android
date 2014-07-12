@@ -51,7 +51,7 @@ public interface IRequest<K extends RequestModel, T> {
      * Tipo da requisição para identificação pelo RequestFactory.
      */
     public enum Type {
-        AUTH, REGISTER;
+        AUTH, REGISTER, RECOVERY_PASSWORD;
     }
 
 }

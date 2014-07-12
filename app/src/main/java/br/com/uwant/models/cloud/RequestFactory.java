@@ -28,6 +28,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new RegisterRequest();
                 break;
 
+            case RECOVERY_PASSWORD:
+                request = new RecoveryPasswordRequest();
+                break;
+
             default:
                 request = null;
                 break;
