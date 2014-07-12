@@ -1,0 +1,21 @@
+package br.com.uwant.models.cloud;
+
+import br.com.uwant.models.AbstractFactory;
+
+class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
+
+    private static final RequestFactory INSTANCE = new RequestFactory();
+
+    public static RequestFactory getInstance() {
+        return INSTANCE;
+    }
+
+    private RequestFactory() {
+    }
+
+    @Override
+    public IRequest get(IRequest.Type id) {
+        return null;
+    }
+
+}
