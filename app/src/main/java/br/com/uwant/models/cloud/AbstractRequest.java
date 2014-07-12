@@ -12,13 +12,14 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import br.com.uwant.models.cloud.errors.DefaultRequestError;
 
 abstract class AbstractRequest<K> {
 
     private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; encoding=utf-8;");
-    private static final String URL_COMMON = "http://192.168.1.5:9000/v1";
+    private static final String URL_COMMON = "http://192.168.1.4:9000/v1";
 
     protected void execute(RequestModel model, IRequest.OnRequestListener listener) {
         final AsyncRequest asyncRequest = new AsyncRequest(listener);
@@ -30,12 +31,16 @@ abstract class AbstractRequest<K> {
 
     private class AsyncRequest extends AsyncTask<String, Void, K> {
 
-        private final OkHttpClient mClient = new OkHttpClient();
+        private static final long DEFAULT_TIMEOUT = 2000;
+
+        private OkHttpClient mClient;
         private IRequest.OnRequestListener<K> mListener;
         private String mResponse;
 
         public AsyncRequest(IRequest.OnRequestListener<K> listener) {
             this.mListener = listener;
+            mClient = new OkHttpClient();
+            mClient.setConnectTimeout(DEFAULT_TIMEOUT, TimeUnit.MILLISECONDS);
         }
 
         @Override
