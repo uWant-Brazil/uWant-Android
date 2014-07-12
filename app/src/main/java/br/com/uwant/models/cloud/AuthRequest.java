@@ -3,9 +3,19 @@ package br.com.uwant.models.cloud;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.models.AuthModel;
 
+/**
+ * Classe de requisição responsável por configurar as informações da chamada ao WS.
+ */
 public class AuthRequest extends AbstractRequest<User> implements IRequest<AuthModel, User> {
 
+    /**
+     * Route da requisição.
+     */
     private static final String ROUTE = "/mobile/authorize";
+
+    /**
+     * Model que será enviado.
+     */
     private AuthModel mModel;
 
     @Override

@@ -1,8 +1,18 @@
 package br.com.uwant.models.cloud.errors;
 
+/**
+ * Classe base para todos os erros de integração com o WS.
+ */
 public class RequestError {
 
+    /**
+     * Código do erro.
+     */
     private int code;
+
+    /**
+     * Mensagem do erro.
+     */
     private String message;
 
     public RequestError(int code, String message) {

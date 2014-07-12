@@ -1,9 +1,15 @@
 package br.com.uwant.models.cloud;
 
-import java.io.InvalidClassException;
-
+/**
+ * Classe utilitária responsável por realizar e configurar toda a chamada ao WS.
+ * Esta classe deve ser executada a partir de classes que irão realizar as chamadas da requisição,
+ * geralmente sendo as Activities.
+ */
 public abstract class Requester {
 
+    /**
+     * Chaves para parametrização dos campos durante as requisições.
+     */
     public static class ParameterKey {
         public static final String STATUS = "status";
         public static final String MESSAGE = "message";
@@ -12,6 +18,12 @@ public abstract class Requester {
         public static final String PASSWORD = "password";
     }
 
+    /**
+     * Método responsável pelo processo de integração.
+     * Apenas a partir dele é possível realizar a requisição por conta do encapsulamento.
+     * @param model - RequestModel com os parâmetros.
+     * @param listener - OnRequestListener para os eventos da requisição.
+     */
     public static void executeAsync(RequestModel model, IRequest.OnRequestListener listener) {
         RequestFactory factory = RequestFactory.getInstance();
         IRequest request = factory.get(model.getRequestType());

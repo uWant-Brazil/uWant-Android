@@ -6,9 +6,19 @@ import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.RequestModel;
 import br.com.uwant.models.cloud.Requester;
 
+/**
+ * Model para envio dos parâmetros da requisição de autenticação.
+ */
 public class AuthModel extends RequestModel {
 
+    /**
+     * Login do usuário que quer ser autenticado.
+     */
     private String login;
+
+    /**
+     * Senha do usuário.
+     */
     private String password;
 
     public String getLogin() {
