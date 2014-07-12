@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.RequestModel;
+import br.com.uwant.models.cloud.Requester;
 
 public class AuthModel extends RequestModel {
 
@@ -28,7 +29,10 @@ public class AuthModel extends RequestModel {
 
     @Override
     protected JsonObject toJson() {
-        return null;
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty(Requester.ParameterKey.LOGIN, this.login);
+        jsonObject.addProperty(Requester.ParameterKey.PASSWORD, this.password);
+        return jsonObject;
     }
 
     @Override
