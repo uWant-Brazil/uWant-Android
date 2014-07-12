@@ -8,7 +8,7 @@ public abstract class Requester {
         public static final String STATUS = "status";
     }
 
-    public static void executeAsync(RequestModel model, IRequest.OnRequestListener listener) throws InvalidClassException {
+    public static void executeAsync(RequestModel model, IRequest.OnRequestListener listener) {
         RequestFactory factory = RequestFactory.getInstance();
         IRequest request = factory.get(model.getRequestType());
 
@@ -16,10 +16,10 @@ public abstract class Requester {
             if (request.getDataClass() == model.getClass()) {
                 request.executeAsync(model, listener);
             } else {
-                throw new InvalidClassException("A classe enviada como data é diferente da necessária para a requisição.");
+                throw new RuntimeException("A classe enviada como data é diferente da necessária para a requisição.");
             }
         } else {
-            throw new InvalidClassException("A requsição está nula. Verifique se você mapeou corretamente em RequestFactory.class!");
+            throw new RuntimeException("A requsição está nula. Verifique se você mapeou corretamente em RequestFactory.class!");
         }
     }
 

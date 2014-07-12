@@ -1,17 +1,16 @@
 package br.com.uwant.models.cloud;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.models.AuthModel;
 
 public class AuthRequest extends AbstractRequest<User> implements IRequest<AuthModel, User> {
 
-    private static final String URL = "";
+    private static final String ROUTE = "/mobile/authorize";
+    private AuthModel mModel;
 
     @Override
     public void executeAsync(AuthModel data, OnRequestListener listener) {
+        this.mModel = data;
         execute(data, listener);
     }
 
@@ -21,15 +20,14 @@ public class AuthRequest extends AbstractRequest<User> implements IRequest<AuthM
     }
 
     @Override
-    protected String getURL() {
-        return URL;
+    protected String getRoute() {
+        return ROUTE;
     }
 
     @Override
     protected User parse(String response) {
-        JsonParser jsonParser = new JsonParser();
-        JsonElement jsonElement = jsonParser.parse(response);
-
-        return null;
+        User user = User.getInstance();
+        user.setLogin(mModel.getLogin());
+        return user;
     }
 }

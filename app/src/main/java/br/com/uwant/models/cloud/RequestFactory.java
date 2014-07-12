@@ -15,7 +15,17 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
 
     @Override
     public IRequest get(IRequest.Type id) {
-        return null;
+        IRequest request;
+        switch (id) {
+            case AUTH:
+                request = new AuthRequest();
+                break;
+            case REGISTER:
+            default:
+                request = null;
+                break;
+        }
+        return request;
     }
 
 }

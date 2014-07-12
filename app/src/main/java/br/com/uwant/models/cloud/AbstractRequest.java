@@ -18,13 +18,14 @@ import br.com.uwant.models.cloud.errors.DefaultRequestError;
 abstract class AbstractRequest<K> {
 
     private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; encoding=utf-8;");
+    private static final String URL_COMMON = "http://192.168.1.5:9000/v1";
 
     protected void execute(RequestModel model, IRequest.OnRequestListener listener) {
         final AsyncRequest asyncRequest = new AsyncRequest(listener);
         asyncRequest.execute(model.getRequestBody());
     }
 
-    protected abstract String getURL();
+    protected abstract String getRoute();
     protected abstract K parse(String response);
 
     private class AsyncRequest extends AsyncTask<String, Void, K> {
@@ -46,7 +47,7 @@ abstract class AbstractRequest<K> {
         @Override
         protected K doInBackground(String... strings) {
             String body = strings[0];
-            String url = getURL();
+            String url = URL_COMMON + getRoute();
 
             RequestBody requestBody = RequestBody.create(MEDIA_TYPE, body);
             final Request request = new Request.Builder()

@@ -1,6 +1,7 @@
 package br.com.uwant.flow;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,11 +21,15 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 
 import br.com.uwant.R;
+import br.com.uwant.models.classes.User;
+import br.com.uwant.models.cloud.IRequest;
+import br.com.uwant.models.cloud.Requester;
+import br.com.uwant.models.cloud.errors.RequestError;
+import br.com.uwant.models.cloud.models.AuthModel;
 
-public class AuthenticationActivity extends Activity implements View.OnClickListener {
+public class AuthenticationActivity extends Activity implements View.OnClickListener, IRequest.OnRequestListener<User> {
 
-    private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; encoding=utf-8;");
-    private static final String AUTH_URL = "http://192.168.1.5:9000/v1/mobile/authorize";
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,52 +48,33 @@ public class AuthenticationActivity extends Activity implements View.OnClickList
         String login = editTextLogin.getText().toString();
         String password = editTextPassword.getText().toString();
 
-        Gson gson = new Gson();
-        JsonObject json = new JsonObject();
-        json.addProperty("login", login);
-        json.addProperty("password", password);
+        AuthModel model = new AuthModel();
+        model.setLogin(login);
+        model.setPassword(password);
 
-        final OkHttpClient client = new OkHttpClient();
-        RequestBody body = RequestBody.create(MEDIA_TYPE, gson.toJson(json));
-        final Request request = new Request.Builder()
-                .url(AUTH_URL)
-                .post(body)
-                .build();
+        Requester.executeAsync(model, this);
+    }
 
-        new Thread() {
+    @Override
+    public void onPreExecute() {
+        mProgressDialog = ProgressDialog.show(this, getString(R.string.app_name), "Aguarde...");
+    }
 
-            @Override
-            public void run() {
-                super.run();
-                String message = "Ops...";
-                try {
-                    Response response = client.newCall(request).execute();
-                    JsonParser jsonParser = new JsonParser();
-                    JsonElement jsonElement = jsonParser.parse(response.body().string());
-                    JsonObject jsonResponse = jsonElement.getAsJsonObject();
+    @Override
+    public void onExecute(User result) {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
 
-                    if (jsonResponse.has("status")) {
-                        boolean status = jsonResponse.get("status").getAsBoolean();
-                        if (status) {
-                            message = "Deu certo!";
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        Toast.makeText(this, "Deu certo!", Toast.LENGTH_LONG).show();
+    }
 
-                final String finalMessage = message;
+    @Override
+    public void onError(RequestError error) {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
 
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Toast.makeText(AuthenticationActivity.this, finalMessage, Toast.LENGTH_SHORT).show();
-                    }
-
-                });
-            }
-
-        }.start();
+        Toast.makeText(this, "Ooops...", Toast.LENGTH_LONG).show();
     }
 }
