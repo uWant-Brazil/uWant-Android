@@ -2,10 +2,12 @@ package br.com.uwant.flow;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -38,15 +40,51 @@ public class AuthenticationActivity extends Activity implements View.OnClickList
 
         final Button buttonEnter = (Button) findViewById(R.id.auth_button_enter);
         buttonEnter.setOnClickListener(this);
+        final Button buttonRegister = (Button) findViewById(R.id.auth_button_register);
+        buttonRegister.setOnClickListener(this);
+        final Button buttonFacebook = (Button) findViewById(R.id.auth_button_facebook);
+        buttonFacebook.setOnClickListener(this);
+        final TextView textForgotPassword = (TextView) findViewById(R.id.auth_textView_forgotPassword);
+        textForgotPassword.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.auth_button_enter:
+                executeLogin();
+                break;
+
+            case R.id.auth_button_register:
+                Intent intentRegister = new Intent(this, RegisterActivity.class);
+                startActivity(intentRegister);
+                break;
+
+            case R.id.auth_button_facebook:
+                executeFacebook();
+                break;
+
+            case R.id.auth_textView_forgotPassword:
+                // TODO Esperando o layout...
+                break;
+        }
+    }
+
+    private void executeFacebook() {
+        // TODO ...
+    }
+
+    private void executeLogin() {
         EditText editTextLogin = (EditText) findViewById(R.id.auth_editText_login);
         EditText editTextPassword = (EditText) findViewById(R.id.auth_editText_password);
 
         String login = editTextLogin.getText().toString();
         String password = editTextPassword.getText().toString();
+
+        if (login.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Digite todos os campos", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         AuthModel model = new AuthModel();
         model.setLogin(login);

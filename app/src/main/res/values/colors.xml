@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="YELLOW">#FFC31E</color>
+    <color name="GRAY_BACKGROUND">#F3F3F3</color>
+    <color name="GRAY_FIELD_BORDER">#898989</color>
+    <color name="GRAY_TEXT">#636363</color>
+    <color name="WHITE">#FFFFFF</color>
+    <color name="BLACK">#000000</color>
+</resources>
