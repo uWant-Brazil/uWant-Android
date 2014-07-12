@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -27,6 +28,8 @@ import br.com.uwant.models.cloud.models.RegisterModel;
 public class RegisterActivity extends ActionBarActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, IRequest.OnRequestListener {
 
     private static final int PICTURE_REQUEST_CODE = 9898;
+
+    private byte[] mPictureBytes;
     private User.Gender mGender;
 
     private EditText mEditTextLogin;
@@ -92,7 +95,20 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void executeRegister() {
+        String login = mEditTextLogin.getText().toString();
+        String password = mEditTextLogin.getText().toString();
+        String name = mEditTextLogin.getText().toString();
+        String mail = mEditTextLogin.getText().toString();
+        String birthday = mEditTextLogin.getText().toString();
+
         RegisterModel model = new RegisterModel();
+        model.setLogin(login);
+        model.setPassword(password);
+        model.setName(name);
+        model.setMail(mail);
+        model.setBirthday(birthday);
+        model.setGender(mGender);
+
         Requester.executeAsync(model, this);
     }
 
