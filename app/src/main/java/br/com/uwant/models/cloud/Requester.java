@@ -16,6 +16,10 @@ public abstract class Requester {
         public static final String ERROR = "error";
         public static final String LOGIN = "login";
         public static final String PASSWORD = "password";
+        public static final String FULL_NAME = "fullName";
+        public static final String GENDER = "gender";
+        public static final String MAIL = "mail";
+        public static final String BIRTHDAY = "birthday";
     }
 
     /**

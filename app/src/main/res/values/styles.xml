@@ -1,8 +1,22 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="AppTheme" parent="android:Theme.Holo.Light">
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="AppThemeActionBar" parent="@style/Theme.AppCompat">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+    </style>
+
+    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/YELLOW</item>
+    </style>
+
+    <style name="UWEditText">
+        <item name="android:textColor">@color/GRAY_TEXT</item>
+        <item name="android:textColorHint">@color/GRAY_FIELD_BORDER</item>
+        <item name="android:background">@drawable/edit_text</item>
     </style>
 
 </resources>

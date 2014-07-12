@@ -23,7 +23,11 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
             case AUTH:
                 request = new AuthRequest();
                 break;
+
             case REGISTER:
+                request = new RegisterRequest();
+                break;
+
             default:
                 request = null;
                 break;
