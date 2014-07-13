@@ -2,11 +2,18 @@ package br.com.uwant.flow;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,13 +30,15 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 
 import br.com.uwant.R;
+import br.com.uwant.flow.fragments.AlertFragmentDialog;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.AuthModel;
+import br.com.uwant.models.cloud.models.RecoveryPasswordModel;
 
-public class AuthenticationActivity extends Activity implements View.OnClickListener, IRequest.OnRequestListener<User> {
+public class AuthenticationActivity extends FragmentActivity implements View.OnClickListener, IRequest.OnRequestListener<User> {
 
     private ProgressDialog mProgressDialog;
 
@@ -65,9 +74,101 @@ public class AuthenticationActivity extends Activity implements View.OnClickList
                 break;
 
             case R.id.auth_textView_forgotPassword:
-                // TODO Esperando o layout...
+                showRecoveryPasswordDialog();
                 break;
         }
+    }
+
+    private void showRecoveryPasswordDialog() {
+        final float scale = getResources().getDisplayMetrics().density;
+        int marginDP = (int) (10 * scale + 0.5f);
+
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(marginDP, marginDP, marginDP, marginDP);
+
+        final EditText editTextMail = new EditText(this);
+
+        final DialogInterface.OnClickListener listenerCancel = new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // Do nothing...
+            }
+
+        };
+
+        final DialogInterface.OnClickListener listenerOk = new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                executeRecoveryPassword(editTextMail);
+            }
+
+        };
+
+        final AlertFragmentDialog afd = AlertFragmentDialog.
+                create("Recuperar senha", editTextMail, listenerOk, listenerCancel);
+
+        editTextMail.setLayoutParams(params);
+        editTextMail.setHint("Digite seu email de cadastro");
+        editTextMail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        editTextMail.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        editTextMail.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    afd.dismiss();
+                    executeRecoveryPassword(editTextMail);
+                    return true;
+                }
+                return false;
+            }
+
+        });
+
+        afd.show(getSupportFragmentManager(), "RecuperarSenhaTag");
+    }
+
+    private void executeRecoveryPassword(EditText editText) {
+        String mail = editText.getText().toString();
+
+        if (mail.isEmpty()) {
+            Toast.makeText(this, "Você precisa digitar o email do seu cadastro.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        RecoveryPasswordModel model = new RecoveryPasswordModel();
+        model.setMail(mail);
+        Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
+
+            @Override
+            public void onPreExecute() {
+                mProgressDialog = ProgressDialog.show(AuthenticationActivity.this, getString(R.string.app_name), "Aguarde...");
+            }
+
+            @Override
+            public void onExecute(Boolean result) {
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
+
+                AlertFragmentDialog afd = AlertFragmentDialog.create("Atenção", "Foi enviado um email para você redefinir sua senha.");
+                afd.show(getSupportFragmentManager(), "AtencaoDialog");
+            }
+
+            @Override
+            public void onError(RequestError error) {
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
+
+                Toast.makeText(AuthenticationActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
+        });
     }
 
     private void executeFacebook() {
