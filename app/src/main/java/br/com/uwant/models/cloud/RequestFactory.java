@@ -32,6 +32,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new RecoveryPasswordRequest();
                 break;
 
+            case SOCIAL_REGISTER:
+                request = new SocialRegisterRequest();
+                break;
+
             default:
                 request = null;
                 break;

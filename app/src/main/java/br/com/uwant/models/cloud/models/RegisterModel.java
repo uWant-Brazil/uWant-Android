@@ -16,6 +16,8 @@ public class RegisterModel extends RequestModel {
     private String birthday;
     private Person.Gender gender;
 
+    private SocialRegisterModel socialModel;
+
     public String getLogin() {
         return login;
     }
@@ -64,6 +66,14 @@ public class RegisterModel extends RequestModel {
         this.gender = gender;
     }
 
+    public SocialRegisterModel getSocialModel() {
+        return socialModel;
+    }
+
+    public void setSocialModel(SocialRegisterModel socialModel) {
+        this.socialModel = socialModel;
+    }
+
     @Override
     protected JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
@@ -73,6 +83,16 @@ public class RegisterModel extends RequestModel {
         jsonObject.addProperty(Requester.ParameterKey.MAIL, this.mail);
         jsonObject.addProperty(Requester.ParameterKey.BIRTHDAY, this.birthday);
         jsonObject.addProperty(Requester.ParameterKey.GENDER, this.gender.ordinal());
+
+        if (this.socialModel != null) {
+            JsonObject jsonSocial = new JsonObject();
+            jsonSocial.addProperty(Requester.ParameterKey.TOKEN, socialModel.getToken());
+            jsonSocial.addProperty(Requester.ParameterKey.LOGIN, socialModel.getLogin());
+            jsonSocial.addProperty(Requester.ParameterKey.SOCIAL_PROVIDER, socialModel.getProvider().ordinal());
+
+            jsonObject.add(Requester.ParameterKey.SOCIAL_PROFILE, jsonSocial);
+        }
+
         return jsonObject;
     }
 

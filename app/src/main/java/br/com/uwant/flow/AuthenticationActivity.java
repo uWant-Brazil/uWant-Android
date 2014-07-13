@@ -1,12 +1,16 @@
 package br.com.uwant.flow;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
+import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,26 +21,27 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.model.GraphUser;
 
-import java.io.IOException;
+import org.apache.http.impl.cookie.DateParseException;
+import org.apache.http.impl.cookie.DateUtils;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
+import br.com.uwant.models.classes.SocialProvider;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.AuthModel;
 import br.com.uwant.models.cloud.models.RecoveryPasswordModel;
+import br.com.uwant.models.cloud.models.SocialRegisterModel;
 
 public class AuthenticationActivity extends FragmentActivity implements View.OnClickListener, IRequest.OnRequestListener<User> {
 
@@ -55,6 +60,15 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
         buttonFacebook.setOnClickListener(this);
         final TextView textForgotPassword = (TextView) findViewById(R.id.auth_textView_forgotPassword);
         textForgotPassword.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Session session = Session.getActiveSession();
+        if (session != null) {
+            session.onActivityResult(this, requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -172,7 +186,86 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
     }
 
     private void executeFacebook() {
-        // TODO ...
+        final Session.StatusCallback callback = new Session.StatusCallback() {
+
+            @Override
+            public void call(Session session, SessionState state, Exception exception) {
+                if (session.isOpened()) {
+                    com.facebook.Request.newMeRequest(session, new com.facebook.Request.GraphUserCallback() {
+
+                        @Override
+                        public void onCompleted(GraphUser graphUser, com.facebook.Response response) {
+                            if (graphUser != null) {
+                                final String id = graphUser.getId();
+                                final String login = graphUser.getUsername();
+                                final String name = graphUser.getName();
+                                final String birthday = graphUser.getBirthday();
+                                final String mail = (String) graphUser.getProperty("email");
+
+                                SocialRegisterModel model = new SocialRegisterModel();
+                                model.setLogin(login == null ? mail : login);
+                                model.setProvider(SocialProvider.FACEBOOK);
+                                model.setToken(id);
+
+                                Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
+
+                                    @Override
+                                    public void onPreExecute() {
+                                        mProgressDialog = ProgressDialog.show(AuthenticationActivity.this, getString(R.string.app_name), "Aguarde...");
+                                    }
+
+                                    @Override
+                                    public void onExecute(Boolean result) {
+                                        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                                            mProgressDialog.dismiss();
+                                        }
+
+                                        User user = new User();
+                                        user.setLogin(login == null ? mail : login);
+                                        user.setName(name);
+                                        user.setMail(mail);
+                                        try {
+                                            user.setBirthday(DateUtils.parseDate(birthday, new String[] { "MM/dd/yyyy" }));
+                                        } catch (DateParseException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        Intent intent = new Intent(AuthenticationActivity.this, RegisterActivity.class);
+                                        intent.putExtra(User.EXTRA, user);
+                                        startActivity(intent);
+                                    }
+
+                                    @Override
+                                    public void onError(RequestError error) {
+                                        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                                            mProgressDialog.dismiss();
+                                        }
+
+                                        Toast.makeText(AuthenticationActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+
+                                });
+                            }
+                        }
+
+                    }).executeAsync();
+                }
+            }
+
+        };
+
+        Session session = Session.getActiveSession();
+        if (session != null) {
+            if (!session.isOpened() && !session.isClosed()) {
+                session.openForRead(new Session.OpenRequest(this)
+                        .setPermissions(Arrays.asList("public_profile", "email"))
+                        .setCallback(callback));
+            } else {
+                Session.openActiveSession(this, true, Arrays.asList("public_profile", "email", "user_birthday"), callback);
+            }
+        } else {
+            Session.openActiveSession(this, true, Arrays.asList("public_profile", "email", "user_birthday"), callback);
+        }
     }
 
     private void executeLogin() {

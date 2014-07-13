@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import org.apache.http.impl.cookie.DateUtils;
+
 import br.com.uwant.R;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
@@ -63,6 +65,20 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
         mRadioGroupGender = (RadioGroup) findViewById(R.id.register_radioGroup_gender);
         mRadioGroupGender.setOnCheckedChangeListener(this);
+
+        Intent it = getIntent();
+        if (it.hasExtra(User.EXTRA)) {
+            User user = (User) it.getSerializableExtra(User.EXTRA);
+            mEditTextLogin.setText(user.getLogin());
+            mEditTextName.setText(user.getName());
+            mEditTextMail.setText(user.getMail());
+            mEditTextBirthday.setText(DateUtils.formatDate(user.getBirthday(), "MM/dd/yyyy"));
+
+            mEditTextLogin.setEnabled(false);
+            mEditTextName.setEnabled(false);
+            mEditTextMail.setEnabled(false);
+            mEditTextBirthday.setEnabled(false);
+        }
     }
 
     @Override

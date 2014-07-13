@@ -1,8 +1,9 @@
 package br.com.uwant.models.classes;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Person {
+public class Person implements Serializable {
 
     public enum Gender {
         FEMALE, MALE;

@@ -20,6 +20,9 @@ public abstract class Requester {
         public static final String GENDER = "gender";
         public static final String MAIL = "mail";
         public static final String BIRTHDAY = "birthday";
+        public static final String SOCIAL_PROFILE = "socialProfile";
+        public static final String SOCIAL_PROVIDER = "socialProvider";
+        public static final String TOKEN = "access_token";
     }
 
     /**
