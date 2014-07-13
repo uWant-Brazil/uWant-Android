@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="CheckBoxuWant" parent="android:Widget.CompoundButton.CheckBox">
+      <item name="android:button">@drawable/uwant_btn_check_holo_light</item>
+  </style>
+
+  <style name="RadioButtonuWant" parent="android:Widget.CompoundButton.RadioButton">
+      <item name="android:button">@drawable/uwant_btn_radio_holo_light</item>
+  </style>
+
+  <style name="ButtonuWant" parent="android:Widget.Button">
+	  <item name="android:background">@drawable/uwant_btn_default_holo_light</item>
+	  <item name="android:minHeight">48dip</item>
+	  <item name="android:minWidth">64dip</item>
+	  <item name="android:textColor">#000000</item>
+  </style>
+
+  <style name="ImageButtonuWant" parent="android:Widget.ImageButton">
+	  <item name="android:background">@drawable/uwant_btn_default_holo_light</item>
+  </style>
+
+  <style name="TabuWant">
+      <item name="android:gravity">center_horizontal</item>
+      <item name="android:paddingLeft">16dip</item>
+      <item name="android:paddingRight">16dip</item>
+      <item name="android:background">@drawable/uwant_tab_indicator_holo</item>
+      <item name="android:layout_width">0dip</item>
+      <item name="android:layout_weight">1</item>
+      <item name="android:minWidth">80dip</item>
+  </style>
+
+  <style name="TabTextuWant">
+	  <item name="android:textColor">#000000</item>
+      <item name="android:textSize">12sp</item>
+      <item name="android:textStyle">bold</item>
+      <!-- v14 <item name="android:textAllCaps">true</item> -->
+      <item name="android:ellipsize">marquee</item>
+      <item name="android:maxLines">2</item>
+      <item name="android:maxWidth">180dip</item>
+  </style>
+
+  <style name="ProgressBaruWant" parent="android:Widget.ProgressBar.Horizontal">
+      <item name="android:progressDrawable">@drawable/uwant_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/uwant_progress_indeterminate_horizontal_holo_light</item>
+      <item name="android:minHeight">16dip</item>
+      <item name="android:maxHeight">16dip</item>
+  </style>
+
+  <style name="SeekBaruWant" parent="android:Widget.SeekBar">
+      <item name="android:progressDrawable">@drawable/uwant_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/uwant_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:minHeight">13dip</item>
+      <item name="android:maxHeight">13dip</item>
+      <item name="android:thumb">@drawable/uwant_scrubber_control_selector_holo_light</item>
+      <item name="android:thumbOffset">16dip</item>
+      <item name="android:paddingLeft">16dip</item>
+      <item name="android:paddingRight">16dip</item>
+  </style>
+
+  <style name="ListViewuWant" parent="android:Widget.ListView">
+      <item name="android:listSelector">@drawable/uwant_list_selector_holo_light</item>
+  </style>
+
+  <style name="ListViewuWant.White" parent="android:Widget.ListView.White">
+      <item name="android:listSelector">@drawable/uwant_list_selector_holo_light</item>
+  </style>
+
+  <style name="SpinnerItemuWant" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+      <item name="android:textColor">#000000</item>
+  </style>
+
+</resources>

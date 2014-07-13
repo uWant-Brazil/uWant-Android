@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="uWant" parent="@style/_uWant"/>
+  <style name="uWant.NoActionBar" parent="@style/_uWant.NoActionBar"/>
+
+    <style name="_uWant.NoActionBar" parent="@android:style/Theme.Holo.Light.NoActionBar">
+
+        <item name="android:textColorHighlight">#99ffbb33</item>
+
+        <item name="android:checkboxStyle">@style/CheckBoxuWant</item>
+
+        <item name="android:radioButtonStyle">@style/RadioButtonuWant</item>
+
+        <item name="android:buttonStyle">@style/ButtonuWant</item>
+
+        <item name="android:imageButtonStyle">@style/ImageButtonuWant</item>
+
+        <item name="android:progressBarStyleHorizontal">@style/ProgressBaruWant</item>
+
+        <item name="android:seekBarStyle">@style/SeekBaruWant</item>
+
+        <item name="android:listViewStyle">@style/ListViewuWant</item>
+
+        <item name="android:listViewWhiteStyle">@style/ListViewuWant.White</item>
+
+        <item name="android:spinnerItemStyle">@style/SpinnerItemuWant</item>
+
+    </style>
+
+  <style name="_uWant" parent="Theme.AppCompat.Light">
+
+    <item name="android:textColorHighlight">#99ffbb33</item>
+
+    <item name="android:checkboxStyle">@style/CheckBoxuWant</item>
+
+    <item name="android:radioButtonStyle">@style/RadioButtonuWant</item>
+
+    <item name="android:buttonStyle">@style/ButtonuWant</item>
+
+    <item name="android:imageButtonStyle">@style/ImageButtonuWant</item>
+
+    <item name="android:progressBarStyleHorizontal">@style/ProgressBaruWant</item>
+
+    <item name="android:seekBarStyle">@style/SeekBaruWant</item>
+
+    <item name="android:listViewStyle">@style/ListViewuWant</item>
+
+    <item name="android:listViewWhiteStyle">@style/ListViewuWant.White</item>
+
+    <item name="android:spinnerItemStyle">@style/SpinnerItemuWant</item>
+
+  </style>
+
+</resources>
