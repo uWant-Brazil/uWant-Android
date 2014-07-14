@@ -307,6 +307,27 @@ public class Request {
     }
 
     /**
+     * Creates a new Request configured to retrieve a user's own profile.
+     *
+     * @param session
+     *            the Session to use, or null; if non-null, the session must be in an opened state
+     * @param callback
+     *            a callback that will be called when the request is completed to handle success or error conditions
+     * @return a Request that is ready to execute
+     */
+    public static Request newMeRequest(Session session, Bundle parameters, final GraphUserCallback callback) {
+        Callback wrapper = new Callback() {
+            @Override
+            public void onCompleted(Response response) {
+                if (callback != null) {
+                    callback.onCompleted(response.getGraphObjectAs(GraphUser.class), response);
+                }
+            }
+        };
+        return new Request(session, ME, parameters, null, wrapper);
+    }
+
+    /**
      * Creates a new Request configured to retrieve a user's friend list.
      *
      * @param session

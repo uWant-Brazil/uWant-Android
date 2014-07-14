@@ -14,6 +14,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,9 +29,14 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
 import org.apache.http.impl.cookie.DateUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 import br.com.uwant.R;
 import br.com.uwant.models.classes.Person;
@@ -89,13 +95,44 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             mEditTextLogin.setText(user.getLogin());
             mEditTextName.setText(user.getName());
             mEditTextMail.setText(user.getMail());
-            mEditTextBirthday.setText(DateUtils.formatDate(user.getBirthday(), "MM/dd/yyyy"));
+            mEditTextBirthday.setText(DateUtils.formatDate(user.getBirthday(), "dd/MM/yyyy"));
 
             mEditTextLogin.setEnabled(false);
             mEditTextName.setEnabled(false);
             mEditTextMail.setEnabled(false);
             mEditTextBirthday.setEnabled(false);
         }
+
+        if (it.hasExtra("facebookId")) {
+            retrieveFacebookPicture(it.getStringExtra("facebookId"));
+        }
+    }
+
+    private void retrieveFacebookPicture(final String id) {
+        String url = "http://graph.facebook.com/" + id +  "/picture";
+        Picasso.with(RegisterActivity.this).load(url).into(new Target() {
+
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                bitmap = cropToFit(bitmap);
+                bitmap = scale(bitmap);
+                bitmap = circle(bitmap);
+
+                mImageViewPicture.setImageBitmap(bitmap);
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+
+            }
+
+        });
     }
 
     @Override

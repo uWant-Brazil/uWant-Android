@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
@@ -21,13 +23,17 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.Request;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
+import com.squareup.okhttp.OkHttpClient;
 
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 
+import java.io.IOException;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -191,12 +197,15 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
             @Override
             public void call(Session session, SessionState state, Exception exception) {
                 if (session.isOpened()) {
-                    com.facebook.Request.newMeRequest(session, new com.facebook.Request.GraphUserCallback() {
+                    Bundle parameters = new Bundle();
+                    parameters.putString("fields", "picture");
+                    com.facebook.Request.newMeRequest(session, parameters, new com.facebook.Request.GraphUserCallback() {
 
                         @Override
                         public void onCompleted(GraphUser graphUser, com.facebook.Response response) {
                             if (graphUser != null) {
                                 final String id = graphUser.getId();
+
                                 final String login = graphUser.getUsername();
                                 final String name = graphUser.getName();
                                 final String birthday = graphUser.getBirthday();
@@ -232,6 +241,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
                                         Intent intent = new Intent(AuthenticationActivity.this, RegisterActivity.class);
                                         intent.putExtra(User.EXTRA, user);
+                                        intent.putExtra("facebookId", id);
                                         startActivity(intent);
                                     }
 
