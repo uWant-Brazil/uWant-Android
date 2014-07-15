@@ -325,7 +325,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
     @Override
     public void onExecute(Object result) {
-        if (mProgressDialog != null && mProgressDialog.isVisible()) {
+        if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
 
@@ -348,7 +348,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
     @Override
     public void onError(RequestError error) {
-        if (mProgressDialog != null && mProgressDialog.isVisible()) {
+        if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
 

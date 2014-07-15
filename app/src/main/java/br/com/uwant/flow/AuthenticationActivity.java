@@ -158,7 +158,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
             @Override
             public void onExecute(Boolean result) {
-                if (mProgressDialog != null && mProgressDialog.isVisible()) {
+                if (mProgressDialog != null) {
                     mProgressDialog.dismiss();
                 }
 
@@ -168,7 +168,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
             @Override
             public void onError(RequestError error) {
-                if (mProgressDialog != null && mProgressDialog.isVisible()) {
+                if (mProgressDialog != null) {
                     mProgressDialog.dismiss();
                 }
 
@@ -212,7 +212,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
                                     @Override
                                     public void onExecute(Boolean result) {
-                                        if (mProgressDialog != null && mProgressDialog.isVisible()) {
+                                        if (mProgressDialog != null) {
                                             mProgressDialog.dismiss();
                                         }
 
@@ -234,7 +234,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
                                     @Override
                                     public void onError(RequestError error) {
-                                        if (mProgressDialog != null && mProgressDialog.isVisible()) {
+                                        if (mProgressDialog != null) {
                                             mProgressDialog.dismiss();
                                         }
 
@@ -291,7 +291,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
     @Override
     public void onExecute(User result) {
-        if (mProgressDialog != null && mProgressDialog.isVisible()) {
+        if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
 
@@ -300,7 +300,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
     @Override
     public void onError(RequestError error) {
-        if (mProgressDialog != null && mProgressDialog.isVisible()) {
+        if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
 

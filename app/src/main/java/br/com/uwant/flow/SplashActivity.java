@@ -35,6 +35,7 @@ public class SplashActivity extends Activity implements Runnable {
                 } else {
                     Intent intent = new Intent(SplashActivity.this, AuthenticationActivity.class);
                     startActivity(intent);
+                    finish();
                 }
             }
 
