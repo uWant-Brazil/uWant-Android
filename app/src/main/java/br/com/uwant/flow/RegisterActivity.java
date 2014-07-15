@@ -2,14 +2,12 @@ package br.com.uwant.flow;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -35,10 +33,9 @@ import com.squareup.picasso.Target;
 import org.apache.http.impl.cookie.DateUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 
 import br.com.uwant.R;
+import br.com.uwant.flow.fragments.ProgressFragmentDialog;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
@@ -63,7 +60,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     private ImageView mImageViewPicture;
     private ImageView mImageViewPictureDetail;
     private RadioGroup mRadioGroupGender;
-    private ProgressDialog mProgressDialog;
+    private ProgressFragmentDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,6 +181,12 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         String mail = mEditTextMail.getText().toString();
         String birthday = mEditTextBirthday.getText().toString();
 
+        if (login.isEmpty() || password.isEmpty() || name.isEmpty()
+                || mail.isEmpty() || birthday.isEmpty()) {
+            Toast.makeText(this, "Preencha todos os campos corretamente.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         RegisterModel model = new RegisterModel();
         model.setLogin(login);
         model.setPassword(password);
@@ -279,7 +282,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         return output;
     }
 
-    public Bitmap circle(Bitmap bitmap) {
+    private Bitmap circle(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
@@ -299,7 +302,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         return output;
     }
 
-    public void openGallery() {
+    private void openGallery() {
         Intent intent = new Intent(
                 Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
@@ -317,12 +320,12 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
     @Override
     public void onPreExecute() {
-        mProgressDialog = ProgressDialog.show(this, getString(R.string.app_name), "Aguarde...");
+        mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
     }
 
     @Override
     public void onExecute(Object result) {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+        if (mProgressDialog != null && mProgressDialog.isVisible()) {
             mProgressDialog.dismiss();
         }
 
@@ -332,7 +335,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
+                finish();
             }
 
         });
@@ -345,7 +348,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
     @Override
     public void onError(RequestError error) {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+        if (mProgressDialog != null && mProgressDialog.isVisible()) {
             mProgressDialog.dismiss();
         }
 

@@ -1,7 +1,5 @@
 package br.com.uwant.models.cloud;
 
-import br.com.uwant.models.classes.User;
-import br.com.uwant.models.cloud.models.AuthModel;
 import br.com.uwant.models.cloud.models.RecoveryPasswordModel;
 
 /**

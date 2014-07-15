@@ -2,7 +2,6 @@ package br.com.uwant.models.cloud.models;
 
 import com.google.gson.JsonObject;
 
-import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.RequestModel;
 import br.com.uwant.models.cloud.Requester;

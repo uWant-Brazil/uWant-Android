@@ -1,8 +1,5 @@
 package br.com.uwant.models.cloud;
 
-import br.com.uwant.models.cloud.AbstractRequest;
-import br.com.uwant.models.cloud.IRequest;
-import br.com.uwant.models.cloud.models.RegisterModel;
 import br.com.uwant.models.cloud.models.SocialRegisterModel;
 
 /**

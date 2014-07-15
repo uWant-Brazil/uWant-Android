@@ -1,18 +1,10 @@
 package br.com.uwant.flow;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
-import android.util.Base64;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,23 +15,18 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.Request;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
-import com.squareup.okhttp.OkHttpClient;
 
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 
-import java.io.IOException;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
+import br.com.uwant.flow.fragments.ProgressFragmentDialog;
 import br.com.uwant.models.classes.SocialProvider;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
@@ -51,7 +38,7 @@ import br.com.uwant.models.cloud.models.SocialRegisterModel;
 
 public class AuthenticationActivity extends FragmentActivity implements View.OnClickListener, IRequest.OnRequestListener<User> {
 
-    private ProgressDialog mProgressDialog;
+    private ProgressFragmentDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,12 +153,12 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
             @Override
             public void onPreExecute() {
-                mProgressDialog = ProgressDialog.show(AuthenticationActivity.this, getString(R.string.app_name), "Aguarde...");
+                mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
             }
 
             @Override
             public void onExecute(Boolean result) {
-                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                if (mProgressDialog != null && mProgressDialog.isVisible()) {
                     mProgressDialog.dismiss();
                 }
 
@@ -181,7 +168,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
             @Override
             public void onError(RequestError error) {
-                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                if (mProgressDialog != null && mProgressDialog.isVisible()) {
                     mProgressDialog.dismiss();
                 }
 
@@ -220,12 +207,12 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
                                     @Override
                                     public void onPreExecute() {
-                                        mProgressDialog = ProgressDialog.show(AuthenticationActivity.this, getString(R.string.app_name), "Aguarde...");
+                                        mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
                                     }
 
                                     @Override
                                     public void onExecute(Boolean result) {
-                                        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                                        if (mProgressDialog != null && mProgressDialog.isVisible()) {
                                             mProgressDialog.dismiss();
                                         }
 
@@ -247,7 +234,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
                                     @Override
                                     public void onError(RequestError error) {
-                                        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                                        if (mProgressDialog != null && mProgressDialog.isVisible()) {
                                             mProgressDialog.dismiss();
                                         }
 
@@ -299,12 +286,12 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
     @Override
     public void onPreExecute() {
-        mProgressDialog = ProgressDialog.show(this, getString(R.string.app_name), "Aguarde...");
+        mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
     }
 
     @Override
     public void onExecute(User result) {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+        if (mProgressDialog != null && mProgressDialog.isVisible()) {
             mProgressDialog.dismiss();
         }
 
@@ -313,7 +300,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
     @Override
     public void onError(RequestError error) {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+        if (mProgressDialog != null && mProgressDialog.isVisible()) {
             mProgressDialog.dismiss();
         }
 
