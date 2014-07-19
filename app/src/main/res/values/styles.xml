@@ -26,4 +26,9 @@
         <item name="android:lines">1</item>
     </style>
 
+    <style name="UWButtonYellow">
+        <item name="android:background">@drawable/button_yellow_selector</item>
+        <item name="android:textColor">@color/WHITE</item>
+    </style>
+
 </resources>

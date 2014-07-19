@@ -60,21 +60,20 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/YELLOW"
+                style="@style/UWButtonYellow"
                 android:text="@string/text_enter"
-                android:textColor="@color/WHITE"
                 android:id="@+id/auth_button_enter"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="2.5dp"
                 android:layout_marginRight="2.5dp"
                 android:layout_marginLeft="2.5dp" />
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/WHITE"
                 android:text="@string/text_register"
-                android:background="@color/YELLOW"
+                style="@style/UWButtonYellow"
                 android:id="@+id/auth_button_register"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="2.5dp" />
@@ -96,8 +95,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/YELLOW"
-        android:textColor="@color/WHITE"
+        style="@style/UWButtonYellow"
         android:text="@string/text_enter_with_facebook"
         android:drawableLeft="@drawable/ic_facebook"
         android:id="@+id/auth_button_facebook"
