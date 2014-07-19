@@ -32,7 +32,17 @@ abstract class AbstractRequest<K> {
     /**
      * Padrão das URLs de requisição.
      */
-    private static final String URL_COMMON = "http://192.168.1.2:9000/v1";
+    private static final String URL_COMMON = "http://192.168.1.8:9000/v1";
+
+    /**
+     * Header responsável por conter o token de autenticação para requisições.
+     */
+    private static final String HEADER_AUTHENTICATION_TOKEN = "Authentication";
+
+    /**
+     * Header contendo o token de autenticação para as requisições.
+     */
+    private String mToken;
 
     /**
      * Método responsável por iniciar a requisição (Ainda não está assíncrono).
@@ -59,6 +69,10 @@ abstract class AbstractRequest<K> {
      * @return K - Classe de resposta
      */
     protected abstract K parse(String response);
+
+    protected void clearToken() {
+        mToken = null;
+    }
 
     /**
      * Classe que realizará as chamadas ao WS de forma assíncrona.
@@ -104,14 +118,24 @@ abstract class AbstractRequest<K> {
             String url = URL_COMMON + getRoute();
 
             RequestBody requestBody = RequestBody.create(MEDIA_TYPE, body);
-            final Request request = new Request.Builder()
+            Request.Builder builder = new Request.Builder()
                     .url(url)
-                    .post(requestBody)
-                    .build();
+                    .post(requestBody);
+
+            if (mToken != null) {
+                builder.addHeader(HEADER_AUTHENTICATION_TOKEN, mToken);
+            }
+
+            final Request request = builder.build();
 
             try {
                 Response response = mClient.newCall(request).execute();
                 mResponse = response.body().string();
+
+                String tokenTmp = response.header(HEADER_AUTHENTICATION_TOKEN);
+                if (tokenTmp != null) {
+                    mToken = response.header(HEADER_AUTHENTICATION_TOKEN);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 mResponse = null;
