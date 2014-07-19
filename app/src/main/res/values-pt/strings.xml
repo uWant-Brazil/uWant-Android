@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">uWant</string>
+    <string name="app_id">320558754735497</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="register">Cadastro</string>
     <string name="text_recovery_password">Recuperar senha</string>
     <string name="text_fill_your_registered_mail">Digite seu email de cadastro</string>
     <string name="text_must_fill_registered_mail">Você precisa digitar o email do seu cadastro.</string>
     <string name="text_attention">Atenção</string>
     <string name="text_was_sended_mail_recovery_password">Foi enviado um email para você redefinir sua senha.</string>
     <string name="text_field_all_fields_correctly">Digite todos os campos corretamente.</string>
+    <string name="text_ok">Ok</string><string name="text_register_congratulations">Parabéns, o seu registro foi efetuado com sucesso.
+Por favor, realize um login para acessar o uWant!</string>
+
+    <array name="options_register_picture">
+        <item>Buscar na galeria</item>
+        <item>Tirar foto</item>
+    </array>
 </resources>

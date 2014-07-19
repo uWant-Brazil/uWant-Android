@@ -42,13 +42,14 @@ import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.RegisterModel;
+import br.com.uwant.utils.PictureUtil;
 
 public class RegisterActivity extends ActionBarActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, IRequest.OnRequestListener {
 
     private static final int PICTURE_REQUEST_CODE = 9898;
     private static final int GALLERY_REQUEST_CODE = 9797;
+    private static final String URL_FACEBOOK_PICTURE = "http://graph.facebook.com/%s/picture";
 
-    private byte[] mPictureBytes;
     private File mPicturePath;
     private User.Gender mGender;
 
@@ -106,27 +107,24 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void retrieveFacebookPicture(final String id) {
-        String url = "http://graph.facebook.com/" + id +  "/picture";
+        String url = String.format(URL_FACEBOOK_PICTURE, id);
         Picasso.with(RegisterActivity.this).load(url).into(new Target() {
 
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                bitmap = cropToFit(bitmap);
-                bitmap = scale(bitmap);
-                bitmap = circle(bitmap);
+                bitmap = PictureUtil.cropToFit(bitmap);
+                bitmap = PictureUtil.scale(bitmap, mImageViewPicture);
+                bitmap = PictureUtil.circle(bitmap);
 
                 mImageViewPicture.setImageBitmap(bitmap);
             }
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
-
             }
 
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-
             }
 
         });
@@ -140,25 +138,33 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                 break;
 
             case R.id.register_imageView_picture:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setItems(new String[] { "Tirar foto", "Buscar na galeria" }, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (i == 0) {
-                            takePicture();
-                        } else {
-                            openGallery();
-                        }
-                    }
-
-                });
-                builder.create().show();
+                showPictureOptions();
                 break;
 
             default:
                 break;
         }
+    }
+
+    private void showPictureOptions() {
+        final String[] options = getResources().getStringArray(R.array.options_register_picture);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (i == 0) {
+                    PictureUtil.openGallery(RegisterActivity.this, GALLERY_REQUEST_CODE);
+                } else {
+                    mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_PICTURES),
+                            "uwant_picture");
+                    PictureUtil.takePicture(RegisterActivity.this, mPicturePath, PICTURE_REQUEST_CODE);
+                }
+            }
+
+        });
+        builder.create().show();
     }
 
     @Override
@@ -183,7 +189,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
         if (login.isEmpty() || password.isEmpty() || name.isEmpty()
                 || mail.isEmpty() || birthday.isEmpty()) {
-            Toast.makeText(this, "Preencha todos os campos corretamente.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.text_field_all_fields_correctly, Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -198,22 +204,13 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         Requester.executeAsync(model, this);
     }
 
-    private void takePicture() {
-        mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES),
-                "uwant_picture");
-
-        Intent intentPicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intentPicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPicturePath));
-        startActivityForResult(intentPicture, PICTURE_REQUEST_CODE);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == PICTURE_REQUEST_CODE) {
-                decodePicture();
+                mImageViewPictureDetail.setVisibility(View.VISIBLE);
+                PictureUtil.decodePicture(mPicturePath, mImageViewPicture);
             } else if (requestCode == GALLERY_REQUEST_CODE) {
                 Uri selectedImage = data.getData();
                 String[] filePathColumn = {
@@ -229,84 +226,10 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                 cursor.close();
 
                 mPicturePath = new File(filePath);
-                decodePicture();
+                mImageViewPictureDetail.setVisibility(View.VISIBLE);
+                PictureUtil.decodePicture(mPicturePath, mImageViewPicture);
             }
         }
-    }
-
-    private void decodePicture() {
-        mImageViewPictureDetail.setVisibility(View.VISIBLE);
-
-        // Obtém o tamanho da ImageView
-        int targetW = mImageViewPicture.getWidth();
-        int targetH = mImageViewPicture.getHeight();
-
-        // Obtém a largura e altura da foto
-        BitmapFactory.Options bmOptions =
-                new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mPicturePath.getAbsolutePath(), bmOptions);
-
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determina o fator de redimensionamento
-        int scaleFactor = Math.min(
-                photoW/targetW, photoH/targetH);
-
-        // Decodifica o arquivo de imagem em
-        // um Bitmap que preencherá a ImageView
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(mPicturePath.getAbsolutePath(), bmOptions);
-        bitmap = cropToFit(bitmap);
-        bitmap = scale(bitmap);
-        bitmap = circle(bitmap);
-
-        mImageViewPicture.setImageBitmap(bitmap);
-    }
-
-    private Bitmap scale(Bitmap bitmap) {
-        return Bitmap.createScaledBitmap(bitmap, mImageViewPicture.getWidth(), mImageViewPicture.getHeight(), false);
-    }
-
-    private Bitmap cropToFit(Bitmap srcBmp) {
-        Bitmap output;
-        if (srcBmp.getWidth() >= srcBmp.getHeight()){
-            output = Bitmap.createBitmap(srcBmp, srcBmp.getWidth()/2 - srcBmp.getHeight()/2, 0, srcBmp.getHeight(), srcBmp.getHeight());
-        } else {
-            output = Bitmap.createBitmap(srcBmp, 0, srcBmp.getHeight()/2 - srcBmp.getWidth()/2, srcBmp.getWidth(), srcBmp.getWidth());
-        }
-        return output;
-    }
-
-    private Bitmap circle(Bitmap bitmap) {
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-
-        final int color = 0xff424242;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        canvas.drawCircle(bitmap.getWidth() / 2F, bitmap.getHeight() / 2F,
-                bitmap.getWidth() / 2.2F, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-
-        return output;
-    }
-
-    private void openGallery() {
-        Intent intent = new Intent(
-                Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        startActivityForResult(intent, GALLERY_REQUEST_CODE);
     }
 
     @Override
@@ -331,7 +254,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
-        builder.setNeutralButton("Okay", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton(R.string.text_ok, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -340,8 +263,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
         });
         builder.setTitle(R.string.app_name);
-        builder.setMessage("Parabéns, o seu registro foi efetuado com sucesso." +
-                "\nPor favor, realize um login para acessar o uWant!");
+        builder.setMessage(R.string.text_register_congratulations);
         Dialog dialog = builder.create();
         dialog.show();
     }
