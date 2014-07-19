@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">uWant</string>
-    <string name="app_id">320558754735497</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
     <string name="register">Catastro</string>
     <string name="text_recovery_password">Recuperar contraseña</string>
     <string name="text_fill_your_registered_mail">Ingrese su correo electrónico</string>
@@ -29,6 +25,7 @@
     <string name="text_male">Macho</string>
     <string name="text_email">Email</string>
     <string name="text_birthday">Cumpleaños</string>
+    <string name="text_facebook_error">Un problema con Facebook ocurrió. Por favor, inténtelo de nuevo más tarde!</string>
 
     <array name="options_register_picture">
         <item>Abierto de galería</item>

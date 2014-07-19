@@ -9,6 +9,8 @@ import br.com.uwant.models.cloud.Requester;
 
 public class SocialRegisterModel extends RequestModel {
 
+    public static final String EXTRA = "extra_social_model";
+
     private String login;
     private String token;
     private SocialProvider provider;

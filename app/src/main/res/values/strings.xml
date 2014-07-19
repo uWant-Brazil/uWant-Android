@@ -2,10 +2,8 @@
 <resources>
 
     <string name="app_name">uWant</string>
-    <string name="app_id">320558754735497</string>
+    <string name="app_id">320558844735488</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
     <string name="register">Registration</string>
     <string name="text_recovery_password">Recovery password</string>
     <string name="text_fill_your_registered_mail">Enter your email</string>
@@ -30,6 +28,7 @@
     <string name="text_male">Male</string>
     <string name="text_email">Email</string>
     <string name="text_birthday">Birthday</string>
+    <string name="text_facebook_error">A problem with Facebook occurred. Please try again later!</string>
 
     <array name="options_register_picture">
         <item>Open from gallery</item>

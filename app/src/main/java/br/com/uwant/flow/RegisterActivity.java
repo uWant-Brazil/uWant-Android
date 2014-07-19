@@ -36,6 +36,7 @@ import com.squareup.picasso.Target;
 import org.apache.http.impl.cookie.DateUtils;
 
 import java.io.File;
+import java.util.Date;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
@@ -46,6 +47,7 @@ import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.RegisterModel;
+import br.com.uwant.models.cloud.models.SocialRegisterModel;
 import br.com.uwant.utils.KeyboardUtil;
 import br.com.uwant.utils.PictureUtil;
 
@@ -108,45 +110,64 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         Intent it = getIntent();
         if (it.hasExtra(User.EXTRA)) {
             User user = (User) it.getSerializableExtra(User.EXTRA);
-            mEditTextLogin.setText(user.getLogin());
-            mEditTextName.setText(user.getName());
-            mEditTextMail.setText(user.getMail());
-            mEditTextBirthday.setText(DateUtils.formatDate(user.getBirthday(), "dd/MM/yyyy"));
+            String login = user.getLogin();
+            String name = user.getName();
+            String mail = user.getMail();
+            Date birthday = user.getBirthday();
+            Person.Gender gender = user.getGender();
 
-            mEditTextLogin.setEnabled(false);
-            mEditTextName.setEnabled(false);
-            mEditTextMail.setEnabled(false);
-            mEditTextBirthday.setEnabled(false);
-        }
+            if (login != null && !login.isEmpty()) {
+                mEditTextLogin.setText(user.getLogin());
+                mEditTextLogin.setEnabled(false);
+            }
 
-        if (it.hasExtra("facebookId")) {
-            retrieveFacebookPicture(it.getStringExtra("facebookId"));
+            if (name != null && !name.isEmpty()) {
+                mEditTextName.setText(user.getName());
+                mEditTextName.setEnabled(false);
+            }
+
+            if (mail != null && !mail.isEmpty()) {
+                mEditTextMail.setText(user.getMail());
+                mEditTextMail.setEnabled(false);
+            }
+
+            if (birthday != null) {
+                mEditTextBirthday.setText(DateUtils.formatDate(user.getBirthday(), "dd/MM/yyyy"));
+                mEditTextBirthday.setEnabled(false);
+            }
+
+            if (gender != null) {
+                if (gender == Person.Gender.MALE) {
+                    mRadioGroupGender.check(R.id.register_radioButton_male);
+                } else {
+                    mRadioGroupGender.check(R.id.register_radioButton_female);
+                }
+            }
         }
     }
 
-    private void retrieveFacebookPicture(final String id) {
-        String url = String.format(URL_FACEBOOK_PICTURE, id);
-        Picasso.with(RegisterActivity.this).load(url).into(new Target() {
-
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                bitmap = PictureUtil.cropToFit(bitmap);
-                bitmap = PictureUtil.scale(bitmap, mImageViewPicture);
-                bitmap = PictureUtil.circle(bitmap);
-
-                mImageViewPicture.setImageBitmap(bitmap);
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-            }
-
-        });
-    }
+//    private void retrieveFacebookPicture(final String url) {
+//        Picasso.with(RegisterActivity.this).load(url).into(new Target() {
+//
+//            @Override
+//            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//                bitmap = PictureUtil.cropToFit(bitmap);
+//                bitmap = PictureUtil.scale(bitmap, mImageViewPicture);
+//                bitmap = PictureUtil.circle(bitmap);
+//
+//                mImageViewPicture.setImageBitmap(bitmap);
+//            }
+//
+//            @Override
+//            public void onBitmapFailed(Drawable errorDrawable) {
+//            }
+//
+//            @Override
+//            public void onPrepareLoad(Drawable placeHolderDrawable) {
+//            }
+//
+//        });
+//    }
 
     @Override
     public void onClick(View view) {
@@ -254,6 +275,8 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             return;
         }
 
+
+
         RegisterModel model = new RegisterModel();
         model.setLogin(login);
         model.setPassword(password);
@@ -261,6 +284,12 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         model.setMail(mail);
         model.setBirthday(birthday);
         model.setGender(mGender);
+
+        Intent it = getIntent();
+        if (it.hasExtra(SocialRegisterModel.EXTRA)) {
+            SocialRegisterModel socialModel = (SocialRegisterModel) it.getSerializableExtra(SocialRegisterModel.EXTRA);
+            model.setSocialModel(socialModel);
+        }
 
         Requester.executeAsync(model, this);
     }

@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.Request;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
@@ -23,11 +24,16 @@ import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
 import br.com.uwant.flow.fragments.ProgressFragmentDialog;
+import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.SocialProvider;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
@@ -46,9 +52,111 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
     private ProgressFragmentDialog mProgressDialog;
 
+    final Session.StatusCallback callback = new Session.StatusCallback() {
+
+        @Override
+        public void call(final Session session, SessionState state, Exception exception) {
+            if (session.isOpened()) {
+                mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
+
+                com.facebook.Request.newMeRequest(session, new com.facebook.Request.GraphUserCallback() {
+
+                    @Override
+                    public void onCompleted(final GraphUser graphUser, com.facebook.Response response) {
+                        if (graphUser != null) {
+                            final String id = graphUser.getId();
+
+                            final String login = graphUser.getUsername();
+                            final String name = graphUser.getName();
+                            final String birthday = graphUser.getBirthday();
+                            final String mail = (String) graphUser.getProperty("email");
+
+                            final SocialRegisterModel model = new SocialRegisterModel();
+                            model.setLogin(login == null ? mail : login);
+                            model.setProvider(SocialProvider.FACEBOOK);
+                            model.setToken(session.getAccessToken());
+
+                            Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
+
+                                @Override
+                                public void onPreExecute() {
+                                    if (mProgressDialog == null) {
+                                        mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
+                                    }
+                                }
+
+                                @Override
+                                public void onExecute(Boolean registered) {
+                                    if (mProgressDialog != null) {
+                                        mProgressDialog.dismiss();
+                                    }
+
+                                    if (registered) {
+                                        sucessLogin();
+                                    } else {
+                                        Person.Gender gender = null;
+                                        Map<String, Object> userMap = graphUser.asMap();
+                                        if (userMap.containsKey("gender")) {
+                                            String genderStr = ((String) userMap.get("gender")).toLowerCase(Locale.getDefault());
+                                            if (!genderStr.isEmpty()) {
+                                                if (genderStr.startsWith("m")) {
+                                                    gender = Person.Gender.MALE;
+                                                } else {
+                                                    gender = Person.Gender.FEMALE;
+                                                }
+                                            }
+                                        }
+
+                                        User user = new User();
+                                        user.setLogin(login == null ? mail : login);
+                                        user.setName(name);
+                                        user.setMail(mail);
+                                        user.setGender(gender);
+
+                                        if (birthday != null) {
+                                            try {
+                                                user.setBirthday(DateUtils.parseDate(birthday, new String[]{"MM/dd/yyyy"}));
+                                            } catch (DateParseException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+
+                                        Intent intent = new Intent(AuthenticationActivity.this, RegisterActivity.class);
+                                        intent.putExtra(User.EXTRA, user);
+                                        intent.putExtra(SocialRegisterModel.EXTRA, model);
+                                        startActivity(intent);
+                                    }
+                                }
+
+                                @Override
+                                public void onError(RequestError error) {
+                                    if (mProgressDialog != null) {
+                                        mProgressDialog.dismiss();
+                                    }
+
+                                    Toast.makeText(AuthenticationActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+
+                            });
+                        }
+                    }
+
+                }).executeAsync();
+            }
+        }
+
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Session session = Session.getActiveSession();
+
+        if (session == null && savedInstanceState != null) {
+            session = Session.restoreSession(this, null, callback, savedInstanceState);
+            Session.setActiveSession(session);
+        }
+
         setContentView(R.layout.activity_authentication);
 
         final Button buttonEnter = (Button) findViewById(R.id.auth_button_enter);
@@ -73,6 +181,15 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
             }
 
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Session session = Session.getActiveSession();
+        if (session != null) {
+            session.saveSession(session, outState);
+        }
     }
 
     @Override
@@ -200,84 +317,16 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
     }
 
     private void executeFacebook() {
-        final Session.StatusCallback callback = new Session.StatusCallback() {
-
-            @Override
-            public void call(Session session, SessionState state, Exception exception) {
-                if (session.isOpened()) {
-                    Bundle parameters = new Bundle();
-                    parameters.putString("fields", "picture");
-                    com.facebook.Request.newMeRequest(session, parameters, new com.facebook.Request.GraphUserCallback() {
-
-                        @Override
-                        public void onCompleted(GraphUser graphUser, com.facebook.Response response) {
-                            if (graphUser != null) {
-                                final String id = graphUser.getId();
-
-                                final String login = graphUser.getUsername();
-                                final String name = graphUser.getName();
-                                final String birthday = graphUser.getBirthday();
-                                final String mail = (String) graphUser.getProperty("email");
-
-                                SocialRegisterModel model = new SocialRegisterModel();
-                                model.setLogin(login == null ? mail : login);
-                                model.setProvider(SocialProvider.FACEBOOK);
-                                model.setToken(id);
-
-                                Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
-
-                                    @Override
-                                    public void onPreExecute() {
-                                        mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
-                                    }
-
-                                    @Override
-                                    public void onExecute(Boolean result) {
-                                        if (mProgressDialog != null) {
-                                            mProgressDialog.dismiss();
-                                        }
-
-                                        User user = new User();
-                                        user.setLogin(login == null ? mail : login);
-                                        user.setName(name);
-                                        user.setMail(mail);
-                                        try {
-                                            user.setBirthday(DateUtils.parseDate(birthday, new String[] { "MM/dd/yyyy" }));
-                                        } catch (DateParseException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                        Intent intent = new Intent(AuthenticationActivity.this, RegisterActivity.class);
-                                        intent.putExtra(User.EXTRA, user);
-                                        intent.putExtra("facebookId", id);
-                                        startActivity(intent);
-                                    }
-
-                                    @Override
-                                    public void onError(RequestError error) {
-                                        if (mProgressDialog != null) {
-                                            mProgressDialog.dismiss();
-                                        }
-
-                                        Toast.makeText(AuthenticationActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
-                                    }
-
-                                });
-                            }
-                        }
-
-                    }).executeAsync();
-                }
-            }
-
-        };
-
         Session session = Session.getActiveSession();
         if (session != null) {
             if (!session.isOpened() && !session.isClosed()) {
+                if (session.getPermissions().containsAll(FACEBOOK_PERMISSIONS)) {
                 session.openForRead(new Session.OpenRequest(this)
                         .setPermissions(FACEBOOK_PERMISSIONS)
                         .setCallback(callback));
+                } else {
+                    session.requestNewReadPermissions(new Session.NewPermissionsRequest(this, FACEBOOK_PERMISSIONS));
+                }
             } else {
                 Session.openActiveSession(this, true, FACEBOOK_PERMISSIONS, callback);
             }
@@ -308,6 +357,11 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
         Requester.executeAsync(model, this);
     }
 
+    private void sucessLogin() {
+        // TODO Ir para a tela de feeds.
+        Toast.makeText(this, "Bem-vindo!", Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public void onPreExecute() {
         mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
@@ -319,7 +373,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
             mProgressDialog.dismiss();
         }
 
-        // TODO Ir para a tela de feeds.
+        sucessLogin();
     }
 
     @Override

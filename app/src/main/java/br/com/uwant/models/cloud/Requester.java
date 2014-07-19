@@ -23,6 +23,7 @@ public abstract class Requester {
         public static final String SOCIAL_PROFILE = "socialProfile";
         public static final String SOCIAL_PROVIDER = "socialProvider";
         public static final String TOKEN = "access_token";
+        public static final String REGISTERED = "registered";
     }
 
     /**

@@ -1,5 +1,9 @@
 package br.com.uwant.models.cloud;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import br.com.uwant.models.cloud.models.SocialRegisterModel;
 
 /**
@@ -29,6 +33,14 @@ public class SocialRegisterRequest extends AbstractRequest<Boolean> implements I
 
     @Override
     protected Boolean parse(String response) {
-        return true;
+        JsonParser jsonParser = new JsonParser();
+        JsonElement jsonElement = jsonParser.parse(response);
+        if (jsonElement.isJsonObject()) {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            if (jsonObject.has(Requester.ParameterKey.REGISTERED)) {
+                return jsonObject.get(Requester.ParameterKey.REGISTERED).getAsBoolean();
+            }
+        }
+        return null;
     }
 }

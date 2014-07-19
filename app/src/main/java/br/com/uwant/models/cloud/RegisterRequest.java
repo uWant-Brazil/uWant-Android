@@ -10,7 +10,7 @@ public class RegisterRequest extends AbstractRequest<Boolean> implements IReques
     /**
      * Route da requisição.
      */
-    private static final String ROUTE = "/mobile/register";
+    private static final String ROUTE = "/mobile/user/register";
 
     @Override
     public void executeAsync(RegisterModel data, OnRequestListener listener) {
