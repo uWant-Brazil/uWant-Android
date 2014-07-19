@@ -12,7 +12,7 @@ import br.com.uwant.R;
 
 public class SplashActivity extends Activity implements Runnable {
 
-    private static final long SLEEP_TIME = 2000;
+    private static final long SLEEP_TIME = 300;
 
     private int counter = 0;
     private Handler mHandler;
@@ -58,23 +58,31 @@ public class SplashActivity extends Activity implements Runnable {
             int resource = 0;
             switch (counter++) {
                 case 0:
-                    // TODO Imagem 1
-                    resource = 1;
+                    resource = R.drawable.uwant_splash_1;
                     break;
 
                 case 1:
-                    // TODO Imagem 2
-                    resource = 1;
+                    resource = R.drawable.uwant_splash_2;
                     break;
 
                 case 2:
-                    // TODO Imagem 3
-                    resource = 1;
+                    resource = R.drawable.uwant_splash_3;
                     break;
 
                 case 3:
-                    // TODO Imagem 4
-                    resource = 1;
+                    resource = R.drawable.uwant_splash_4;
+                    break;
+
+                case 4:
+                    resource = R.drawable.uwant_splash_5;
+                    break;
+
+                case 5:
+                    resource = R.drawable.uwant_splash_6;
+                    break;
+
+                case 6:
+                    resource = R.drawable.uwant_splash_7;
                     break;
 
                 default:
@@ -82,13 +90,13 @@ public class SplashActivity extends Activity implements Runnable {
                     break;
             }
 
-            mHandler.sendEmptyMessage(resource);
-
             try {
                 Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
+            mHandler.sendEmptyMessage(resource);
         }
     }
 }
