@@ -19,12 +19,15 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -35,6 +38,7 @@ import org.apache.http.impl.cookie.DateUtils;
 import java.io.File;
 
 import br.com.uwant.R;
+import br.com.uwant.flow.fragments.AlertFragmentDialog;
 import br.com.uwant.flow.fragments.ProgressFragmentDialog;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
@@ -42,6 +46,7 @@ import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.RegisterModel;
+import br.com.uwant.utils.KeyboardUtil;
 import br.com.uwant.utils.PictureUtil;
 
 public class RegisterActivity extends ActionBarActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, IRequest.OnRequestListener {
@@ -49,6 +54,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     private static final int PICTURE_REQUEST_CODE = 9898;
     private static final int GALLERY_REQUEST_CODE = 9797;
     private static final String URL_FACEBOOK_PICTURE = "http://graph.facebook.com/%s/picture";
+    public static final String TAG_REGISTER_CANCEL_DIALOG = "RegisterCancelTag";
 
     private File mPicturePath;
     private User.Gender mGender;
@@ -79,6 +85,18 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         mEditTextMail = (EditText) findViewById(R.id.register_editText_mail);
         mEditTextPassword = (EditText) findViewById(R.id.register_editText_password);
         mEditTextBirthday = (EditText) findViewById(R.id.register_editText_birthday);
+        mEditTextBirthday.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    executeRegister();
+                    return true;
+                }
+                return false;
+            }
+
+        });
 
         mImageViewPictureDetail = (ImageView) findViewById(R.id.register_imageView_pictureDetail);
         mImageViewPicture = (ImageView) findViewById(R.id.register_imageView_picture);
@@ -171,7 +189,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                askBeforeCancel();
                 break;
 
             default:
@@ -180,7 +198,50 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        askBeforeCancel();
+    }
+
+    private void askBeforeCancel() {
+        String title = getString(R.string.text_attention);
+        String message = getString(R.string.text_ask_before_cancel_registration);
+        String positiveText = getString(R.string.text_yes);
+        String negativeText = getString(R.string.text_no);
+
+        DialogInterface.OnClickListener listenerOk = new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (mPicturePath != null && mPicturePath.exists()) {
+                    mPicturePath.delete();
+                }
+
+                finish();
+            }
+
+        };
+
+        DialogInterface.OnClickListener listenerCancel = new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // Do nothing...
+            }
+
+        };
+
+        AlertFragmentDialog afd = AlertFragmentDialog.create(title, message, positiveText, listenerOk, negativeText, listenerCancel);
+        afd.show(getSupportFragmentManager(), TAG_REGISTER_CANCEL_DIALOG);
+    }
+
     private void executeRegister() {
+        KeyboardUtil.hide(mEditTextBirthday);
+        KeyboardUtil.hide(mEditTextPassword);
+        KeyboardUtil.hide(mEditTextMail);
+        KeyboardUtil.hide(mEditTextName);
+        KeyboardUtil.hide(mEditTextLogin);
+
         String login = mEditTextLogin.getText().toString();
         String password = mEditTextPassword.getText().toString();
         String name = mEditTextName.getText().toString();

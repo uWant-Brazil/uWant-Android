@@ -40,12 +40,14 @@
             style="@style/UWEditText"
             android:hint="Login"
             android:layout_margin="2.5dp"
+            android:imeOptions="actionNext"
             android:id="@+id/register_editText_login" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
+            android:imeOptions="actionNext"
             style="@style/UWEditText"
             android:layout_margin="2.5dp"
             android:hint="Nome + Sobrenome"
@@ -89,6 +91,7 @@
             android:ems="10"
             style="@style/UWEditText"
             android:hint="Email"
+            android:imeOptions="actionNext"
             android:layout_margin="2.5dp"
             android:id="@+id/register_editText_mail"
             android:layout_gravity="center_horizontal" />
@@ -99,6 +102,7 @@
             android:inputType="textPassword"
             android:ems="10"
             android:hint="Senha"
+            android:imeOptions="actionNext"
             style="@style/UWEditText"
             android:layout_margin="2.5dp"
             android:id="@+id/register_editText_password"
@@ -112,6 +116,7 @@
             style="@style/UWEditText"
             android:hint="Data de nascimento"
             android:layout_margin="2.5dp"
+            android:imeOptions="actionDone"
             android:id="@+id/register_editText_birthday"
             android:layout_gravity="center_horizontal" />
 

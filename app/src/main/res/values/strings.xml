@@ -15,6 +15,10 @@
     <string name="text_field_all_fields_correctly">Enter all fields correctly.</string>
     <string name="text_ok">Ok</string>
     <string name="text_register_congratulations">Congratulations, your registration was successful.<br/>Please perform a login to access the uWant!</string>
+    <string name="text_cancel">Cancelar</string>
+    <string name="text_ask_before_cancel_registration">Você deseja realmente cancelar o processo de cadastro no uWant?</string>
+    <string name="text_yes">Sim</string>
+    <string name="text_no">Não</string>
 
     <array name="options_register_picture">
         <item>Open from gallery</item>
