@@ -22,6 +22,8 @@
         <item name="android:textColor">@color/GRAY_TEXT</item>
         <item name="android:textColorHint">@color/GRAY_FIELD_BORDER</item>
         <item name="android:background">@drawable/edit_text</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:lines">1</item>
     </style>
 
 </resources>

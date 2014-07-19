@@ -31,7 +31,9 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/auth_editText_login"
                 android:hint="Login"
+                android:inputType="textEmailAddress"
                 style="@style/UWEditText"
+                android:imeOptions="actionNext"
                 android:layout_margin="2.5dp" />
 
             <EditText
@@ -41,9 +43,11 @@
                 android:hint="Senha"
                 android:inputType="textPassword"
                 style="@style/UWEditText"
+                android:imeOptions="actionDone"
                 android:layout_margin="2.5dp" />
 
             <CheckBox
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Salvar senha"
@@ -61,7 +65,9 @@
                 android:textColor="@color/WHITE"
                 android:id="@+id/auth_button_enter"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp" />
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="2.5dp"
+                android:layout_marginLeft="2.5dp" />
 
             <Button
                 android:layout_width="match_parent"
@@ -79,8 +85,9 @@
                 android:text="Esqueceu sua senha?"
                 android:textColor="@color/GRAY_TEXT"
                 android:id="@+id/auth_textView_forgotPassword"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginTop="5dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
                 android:layout_gravity="center_horizontal" />
 
         </LinearLayout>

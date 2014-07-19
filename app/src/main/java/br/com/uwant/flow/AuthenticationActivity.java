@@ -36,6 +36,7 @@ import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.AuthModel;
 import br.com.uwant.models.cloud.models.RecoveryPasswordModel;
 import br.com.uwant.models.cloud.models.SocialRegisterModel;
+import br.com.uwant.utils.KeyboardUtil;
 
 public class AuthenticationActivity extends FragmentActivity implements View.OnClickListener, IRequest.OnRequestListener<User> {
 
@@ -58,6 +59,20 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
         buttonFacebook.setOnClickListener(this);
         final TextView textForgotPassword = (TextView) findViewById(R.id.auth_textView_forgotPassword);
         textForgotPassword.setOnClickListener(this);
+
+        final EditText editTextPassword = (EditText) findViewById(R.id.auth_editText_password);
+        editTextPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    executeLogin();
+                    return true;
+                }
+                return false;
+            }
+
+        });
     }
 
     @Override
@@ -106,7 +121,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                // Do nothing...
+                KeyboardUtil.hide(editTextMail);
             }
 
         };
@@ -132,8 +147,8 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_DONE) {
-                    afd.dismiss();
                     executeRecoveryPassword(editTextMail);
+                    afd.dismiss();
                     return true;
                 }
                 return false;
@@ -145,6 +160,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
     }
 
     private void executeRecoveryPassword(EditText editText) {
+        KeyboardUtil.hide(editText);
         String mail = editText.getText().toString();
 
         if (mail.isEmpty()) {
@@ -273,6 +289,9 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
     private void executeLogin() {
         EditText editTextLogin = (EditText) findViewById(R.id.auth_editText_login);
         EditText editTextPassword = (EditText) findViewById(R.id.auth_editText_password);
+
+        KeyboardUtil.hide(editTextPassword);
+        KeyboardUtil.hide(editTextLogin);
 
         String login = editTextLogin.getText().toString();
         String password = editTextPassword.getText().toString();
