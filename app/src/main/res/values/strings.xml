@@ -15,10 +15,21 @@
     <string name="text_field_all_fields_correctly">Enter all fields correctly.</string>
     <string name="text_ok">Ok</string>
     <string name="text_register_congratulations">Congratulations, your registration was successful.<br/>Please perform a login to access the uWant!</string>
-    <string name="text_cancel">Cancelar</string>
-    <string name="text_ask_before_cancel_registration">Você deseja realmente cancelar o processo de cadastro no uWant?</string>
-    <string name="text_yes">Sim</string>
-    <string name="text_no">Não</string>
+    <string name="text_cancel">Cencel</string>
+    <string name="text_ask_before_cancel_registration">Do you really want to cancel the registration process in uWant?</string>
+    <string name="text_yes">Yes</string>
+    <string name="text_no">No</string>
+    <string name="text_login">Login</string>
+    <string name="text_password">Password</string>
+    <string name="text_enter">Sign-in</string>
+    <string name="text_register">Register</string>
+    <string name="text_forgot_your_password">Forgot your password?</string>
+    <string name="text_enter_with_facebook">Sign-in with Facebook</string>
+    <string name="text_name_plus_last_name">Name + Last Name</string>
+    <string name="text_female">Female</string>
+    <string name="text_male">Male</string>
+    <string name="text_email">Email</string>
+    <string name="text_birthday">Birthday</string>
 
     <array name="options_register_picture">
         <item>Open from gallery</item>

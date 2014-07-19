@@ -8,16 +8,27 @@
     <string name="register">Catastro</string>
     <string name="text_recovery_password">Recuperar contraseña</string>
     <string name="text_fill_your_registered_mail">Ingrese su correo electrónico</string>
-    <string name="text_must_fill_registered_mail">Es necesario introducir el correo electrónico de su registro.</string>
+    <string name="text_must_fill_registered_mail">Es necesario introducir el email de su registro.</string>
     <string name="text_attention">Aviso</string>
-    <string name="text_was_sended_mail_recovery_password">Un correo electrónico fue enviado a usted para restablecer tu contraseña.</string>
+    <string name="text_was_sended_mail_recovery_password">Un email fue enviado a usted para restablecer tu contraseña.</string>
     <string name="text_field_all_fields_correctly">Ingrese todos los campos correctamente.</string>
     <string name="text_ok">Ok</string>
     <string name="text_register_congratulations">Felicitaciones, su registro se realizó correctamente.<br/>Por favor, realice un inicio de sesión para acceder al uWant!</string>
     <string name="text_cancel">Cancelar</string>
-    <string name="text_ask_before_cancel_registration">Você deseja realmente cancelar o processo de cadastro no uWant?</string>
-    <string name="text_yes">Sim</string>
-    <string name="text_no">Não</string>
+    <string name="text_ask_before_cancel_registration">¿Realmente desea cancelar el proceso de registro en uwant?</string>
+    <string name="text_yes">Sí</string>
+    <string name="text_no">No</string>
+    <string name="text_login">Login</string>
+    <string name="text_password">Contraseña</string>
+    <string name="text_enter">Iniciar sesión</string>
+    <string name="text_register">Registrar</string>
+    <string name="text_forgot_your_password">¿Olvidaste tu contraseña?</string>
+    <string name="text_enter_with_facebook">Sesión con Facebook</string>
+    <string name="text_name_plus_last_name">Nombre + Apellido</string>
+    <string name="text_female">Femenino</string>
+    <string name="text_male">Macho</string>
+    <string name="text_email">Email</string>
+    <string name="text_birthday">Cumpleaños</string>
 
     <array name="options_register_picture">
         <item>Abierto de galería</item>

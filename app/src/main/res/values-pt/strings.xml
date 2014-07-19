@@ -18,6 +18,17 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_ask_before_cancel_registration">Você deseja realmente cancelar o processo de cadastro no uWant?</string>
     <string name="text_yes">Sim</string>
     <string name="text_no">Não</string>
+    <string name="text_login">Login</string>
+    <string name="text_password">Senha</string>
+    <string name="text_enter">Entrar</string>
+    <string name="text_register">Cadastrar</string>
+    <string name="text_forgot_your_password">Esqueceu sua senha?</string>
+    <string name="text_enter_with_facebook">Entre com Facebook</string>
+    <string name="text_name_plus_last_name">Nome + Sobrenome</string>
+    <string name="text_female">Feminino</string>
+    <string name="text_male">Masculino</string>
+    <string name="text_email">Email</string>
+    <string name="text_birthday">Data de nascimento</string>
 
     <array name="options_register_picture">
         <item>Buscar na galeria</item>
