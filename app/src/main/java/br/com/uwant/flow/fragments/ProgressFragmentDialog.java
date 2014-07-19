@@ -9,10 +9,16 @@ import android.support.v4.app.FragmentManager;
 
 import br.com.uwant.R;
 
+/**
+ * Fragment padrão para Dialog com ProgressBar para processo assíncrono.
+ */
 public class ProgressFragmentDialog extends DialogFragment {
 
+    /**
+     * Tag de identificação do Fragment.
+     */
     private static final String TAG = "ProgressTag";
-    private String message = "Aguarde...";
+    private String mMessage = "Aguarde...";
 
     public static ProgressFragmentDialog create(String message) {
         ProgressFragmentDialog fd = new ProgressFragmentDialog();
@@ -35,10 +41,10 @@ public class ProgressFragmentDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return ProgressDialog.show(getActivity(), getString(R.string.app_name), this.message);
+        return ProgressDialog.show(getActivity(), getString(R.string.app_name), this.mMessage);
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    private void setMessage(String message) {
+        this.mMessage = message;
     }
 }

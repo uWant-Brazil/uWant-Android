@@ -14,11 +14,24 @@ import android.widget.TextView;
 
 import br.com.uwant.R;
 
+/**
+ * Fragment responsável pela exibição do AlertDialog com o theme padrão do App.
+ */
 public class AlertFragmentDialog extends DialogFragment {
 
+    /**
+     * Resource padrão para os AlertDialog's do App.
+     */
     private static final int DEFAULT_VIEW_ID = R.layout.dialog_default;
 
+    /**
+     * Título do AlertDialog.
+     */
     private String mTitle;
+
+    /**
+     * Mensagem do AlertDialog.
+     */
     private String mMessage;
 
     private View mContentView;
@@ -108,20 +121,20 @@ public class AlertFragmentDialog extends DialogFragment {
         return builder.create();
     }
 
-    private void setTitle(String mTitle) {
-        this.mTitle = mTitle;
+    private void setTitle(String title) {
+        this.mTitle = title;
     }
 
-    private void setMessage(String mMessage) {
-        this.mMessage = mMessage;
+    private void setMessage(String message) {
+        this.mMessage = message;
     }
 
-    private void setListenerOk(DialogInterface.OnClickListener mListenerOk) {
-        this.mListenerOk = mListenerOk;
+    private void setListenerOk(DialogInterface.OnClickListener listener) {
+        this.mListenerOk = listener;
     }
 
-    private void setListenerCancel(DialogInterface.OnClickListener mListenerCancel) {
-        this.mListenerCancel = mListenerCancel;
+    private void setListenerCancel(DialogInterface.OnClickListener listener) {
+        this.mListenerCancel = listener;
     }
 
     private void setCustomView(View customView) {
