@@ -23,6 +23,7 @@ import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 
 import java.util.Arrays;
+import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
@@ -37,6 +38,10 @@ import br.com.uwant.models.cloud.models.RecoveryPasswordModel;
 import br.com.uwant.models.cloud.models.SocialRegisterModel;
 
 public class AuthenticationActivity extends FragmentActivity implements View.OnClickListener, IRequest.OnRequestListener<User> {
+
+    public static final String TAG_RECOVERY_PASSWORD = "RecuperarSenhaTag";
+    public static final String TAG_ATTENTION_DIALOG = "AtencaoDialog";
+    public static final List<String> FACEBOOK_PERMISSIONS = Arrays.asList("public_profile", "email", "user_birthday");
 
     private ProgressFragmentDialog mProgressDialog;
 
@@ -116,10 +121,10 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
         };
 
         final AlertFragmentDialog afd = AlertFragmentDialog.
-                create("Recuperar senha", editTextMail, listenerOk, listenerCancel);
+                create(getString(R.string.text_recovery_password), editTextMail, listenerOk, listenerCancel);
 
         editTextMail.setLayoutParams(params);
-        editTextMail.setHint("Digite seu email de cadastro");
+        editTextMail.setHint(R.string.text_fill_your_registered_mail);
         editTextMail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         editTextMail.setImeOptions(EditorInfo.IME_ACTION_DONE);
         editTextMail.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -136,14 +141,14 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
         });
 
-        afd.show(getSupportFragmentManager(), "RecuperarSenhaTag");
+        afd.show(getSupportFragmentManager(), TAG_RECOVERY_PASSWORD);
     }
 
     private void executeRecoveryPassword(EditText editText) {
         String mail = editText.getText().toString();
 
         if (mail.isEmpty()) {
-            Toast.makeText(this, "Você precisa digitar o email do seu cadastro.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.text_must_fill_registered_mail, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -162,8 +167,8 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
                     mProgressDialog.dismiss();
                 }
 
-                AlertFragmentDialog afd = AlertFragmentDialog.create("Atenção", "Foi enviado um email para você redefinir sua senha.");
-                afd.show(getSupportFragmentManager(), "AtencaoDialog");
+                AlertFragmentDialog afd = AlertFragmentDialog.create(getString(R.string.text_attention), getString(R.string.text_was_sended_mail_recovery_password));
+                afd.show(getSupportFragmentManager(), TAG_ATTENTION_DIALOG);
             }
 
             @Override
@@ -255,13 +260,13 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
         if (session != null) {
             if (!session.isOpened() && !session.isClosed()) {
                 session.openForRead(new Session.OpenRequest(this)
-                        .setPermissions(Arrays.asList("public_profile", "email"))
+                        .setPermissions(FACEBOOK_PERMISSIONS)
                         .setCallback(callback));
             } else {
-                Session.openActiveSession(this, true, Arrays.asList("public_profile", "email", "user_birthday"), callback);
+                Session.openActiveSession(this, true, FACEBOOK_PERMISSIONS, callback);
             }
         } else {
-            Session.openActiveSession(this, true, Arrays.asList("public_profile", "email", "user_birthday"), callback);
+            Session.openActiveSession(this, true, FACEBOOK_PERMISSIONS, callback);
         }
     }
 
@@ -273,7 +278,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
         String password = editTextPassword.getText().toString();
 
         if (login.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Digite todos os campos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.text_field_all_fields_correctly, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -295,7 +300,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
             mProgressDialog.dismiss();
         }
 
-        Toast.makeText(this, "Deu certo!", Toast.LENGTH_LONG).show();
+        // TODO Ir para a tela de feeds.
     }
 
     @Override
@@ -304,6 +309,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
             mProgressDialog.dismiss();
         }
 
+        // TODO Realizar tratamento de todos os erros.
         Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
     }
 }
