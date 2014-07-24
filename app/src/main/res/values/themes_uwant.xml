@@ -30,7 +30,7 @@
 
     </style>
 
-  <style name="_uWant" parent="Theme.AppCompat.Light">
+  <style name="_uWant" parent="Theme.AppCompat.Light.DarkActionBar">
 
     <item name="android:textColorHighlight">#99ffbb33</item>
 
@@ -51,6 +51,12 @@
     <item name="android:listViewWhiteStyle">@style/ListViewuWant.White</item>
 
     <item name="android:spinnerItemStyle">@style/SpinnerItemuWant</item>
+
+    <item name="android:fastScrollThumbDrawable">@drawable/uwant_fastscroll_thumb_holo</item>
+    <item name="android:fastScrollOverlayPosition">atThumb</item>
+    <item name="android:fastScrollTextColor">@color/YELLOW</item>
+    <item name="android:fastScrollTrackDrawable">@drawable/uwant_fastscroll_thumb_pressed_holo</item>
+    <item name="android:fastScrollPreviewBackgroundRight">@drawable/uwant_list_focused_holo</item>
 
   </style>
 

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Request;
+import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
@@ -23,12 +24,11 @@ import com.facebook.model.GraphUser;
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
@@ -48,7 +48,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
     public static final String TAG_RECOVERY_PASSWORD = "RecuperarSenhaTag";
     public static final String TAG_ATTENTION_DIALOG = "AtencaoDialog";
-    public static final List<String> FACEBOOK_PERMISSIONS = Arrays.asList("public_profile", "email", "user_birthday");
+    public static final List<String> FACEBOOK_PERMISSIONS = Arrays.asList("public_profile", "email", "user_birthday", "user_friends");
 
     private ProgressFragmentDialog mProgressDialog;
 
@@ -87,13 +87,37 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
                                 @Override
                                 public void onExecute(Boolean registered) {
-                                    if (mProgressDialog != null) {
-                                        mProgressDialog.dismiss();
-                                    }
-
                                     if (registered) {
-                                        sucessLogin();
+                                        final List<Person> persons = new ArrayList<Person>(200);
+
+                                        Bundle params = new Bundle();
+                                        params.putString("fields", "id,first_name,last_name,email,picture");
+                                        Request request = Request.newMyFriendsRequest(session, new Request.GraphUserListCallback() {
+
+                                            @Override
+                                            public void onCompleted(List<GraphUser> users, Response response) {
+                                                if (response.getError() == null) {
+                                                    for (GraphUser friend : users) {
+                                                        Person person = new Person(friend);
+                                                        persons.add(person);
+                                                    }
+                                                }
+
+                                                if (mProgressDialog != null) {
+                                                    mProgressDialog.dismiss();
+                                                }
+
+                                                successLogin(persons);
+                                            }
+
+                                        });
+                                        request.setParameters(params);
+                                        request.executeAsync();
                                     } else {
+                                        if (mProgressDialog != null) {
+                                            mProgressDialog.dismiss();
+                                        }
+
                                         Person.Gender gender = null;
                                         Map<String, Object> userMap = graphUser.asMap();
                                         if (userMap.containsKey("gender")) {
@@ -121,7 +145,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
                                             }
                                         }
 
-                                        Intent intent = new Intent(AuthenticationActivity.this, RegisterActivity.class);
+                                        final Intent intent = new Intent(AuthenticationActivity.this, RegisterActivity.class);
                                         intent.putExtra(User.EXTRA, user);
                                         intent.putExtra(SocialRegisterModel.EXTRA, model);
                                         startActivity(intent);
@@ -146,6 +170,15 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
         }
 
     };
+
+    private void successLogin(List<Person> persons) {
+        Toast.makeText(this, "Bem-vindo!", Toast.LENGTH_SHORT).show();
+
+        Intent it = new Intent(this, ContactsActivity.class);
+        it.putExtra(Person.EXTRA, (java.io.Serializable) persons);
+        startActivity(it);
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -321,9 +354,9 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
         if (session != null) {
             if (!session.isOpened() && !session.isClosed()) {
                 if (session.getPermissions().containsAll(FACEBOOK_PERMISSIONS)) {
-                session.openForRead(new Session.OpenRequest(this)
-                        .setPermissions(FACEBOOK_PERMISSIONS)
-                        .setCallback(callback));
+                    session.openForRead(new Session.OpenRequest(this)
+                            .setPermissions(FACEBOOK_PERMISSIONS)
+                            .setCallback(callback));
                 } else {
                     session.requestNewReadPermissions(new Session.NewPermissionsRequest(this, FACEBOOK_PERMISSIONS));
                 }
@@ -357,9 +390,12 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
         Requester.executeAsync(model, this);
     }
 
-    private void sucessLogin() {
-        // TODO Ir para a tela de feeds.
+    private void successLogin() {
         Toast.makeText(this, "Bem-vindo!", Toast.LENGTH_SHORT).show();
+
+        Intent it = new Intent(this, ContactsActivity.class);
+        startActivity(it);
+        finish();
     }
 
     @Override
@@ -373,7 +409,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
             mProgressDialog.dismiss();
         }
 
-        sucessLogin();
+        successLogin();
     }
 
     @Override

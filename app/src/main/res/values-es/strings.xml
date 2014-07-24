@@ -24,11 +24,9 @@
     <string name="text_female">Femenino</string>
     <string name="text_male">Macho</string>
     <string name="text_email">Email</string>
-    <string name="text_birthday">Cumpleaños</string>
+    <string name="text_birthday">Fecha de Nascimiento</string>
     <string name="text_facebook_error">Un problema con Facebook ocurrió. Por favor, inténtelo de nuevo más tarde!</string>
+    <string name="contacts">Contactos</string>
+    <string name="text_skip">Avance</string>
 
-    <array name="options_register_picture">
-        <item>Abierto de galería</item>
-        <item>Tome una fotografía</item>
-    </array>
 </resources>

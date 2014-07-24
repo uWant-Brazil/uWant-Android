@@ -29,10 +29,7 @@
     <string name="text_email">Email</string>
     <string name="text_birthday">Birthday</string>
     <string name="text_facebook_error">A problem with Facebook occurred. Please try again later!</string>
-
-    <array name="options_register_picture">
-        <item>Open from gallery</item>
-        <item>Take a picture</item>
-    </array>
+    <string name="contacts">Contacts</string>
+    <string name="text_skip">Skip</string>
 
 </resources>

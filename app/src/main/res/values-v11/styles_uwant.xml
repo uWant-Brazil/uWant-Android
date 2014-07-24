@@ -5,6 +5,7 @@
 
   <style name="ButtonuWant" parent="android:Widget.Holo.Light.Button">
 	  <item name="android:background">@drawable/uwant_btn_default_holo_light</item>
+      <item name="android:textColor">@color/WHITE</item>
   </style>
 
   <style name="ImageButtonuWant" parent="android:Widget.Holo.Light.ImageButton">

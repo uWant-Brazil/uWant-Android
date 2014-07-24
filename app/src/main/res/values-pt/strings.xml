@@ -26,9 +26,7 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_email">Email</string>
     <string name="text_birthday">Data de nascimento</string>
     <string name="text_facebook_error">Ocorreu um problema com o Facebook. Tenta novamente mais tarde!</string>
+    <string name="contacts">Contatos</string>
+    <string name="text_skip">Pular</string>
 
-    <array name="options_register_picture">
-        <item>Buscar na galeria</item>
-        <item>Tirar foto</item>
-    </array>
 </resources>

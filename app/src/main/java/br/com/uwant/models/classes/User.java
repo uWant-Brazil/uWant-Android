@@ -8,7 +8,7 @@ public class User extends Person implements Serializable {
     public static final String EXTRA = "extra_user";
 
     private String token;
-    private String mail;
+
 
     public static User getInstance() {
         return INSTANCE;
@@ -22,11 +22,4 @@ public class User extends Person implements Serializable {
         this.token = token;
     }
 
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
 }

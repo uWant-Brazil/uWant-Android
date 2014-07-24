@@ -7,4 +7,5 @@
     <color name="WHITE">#FFFFFF</color>
     <color name="BLACK">#000000</color>
     <color name="YELLOW_PRESSED">#B88907</color>
+    <color name="YELLOW_WITH_TRANSPARENCY">#50FFC31E</color>
 </resources>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/GRAY_BACKGROUND"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:text="Antes de entrar, convide todos os seus amigos para participar do círculo de amigos."
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/contacts_textView" />
+
+    <android.support.v4.view.ViewPager
+        android:layout_below="@+id/contacts_textView"
+        android:id="@+id/contacts_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:background="@color/YELLOW_WITH_TRANSPARENCY"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="Concluir"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            style="@style/ButtonuWant"
+            android:id="@+id/contacts_button_done" />
+    </LinearLayout>
+
+</RelativeLayout>

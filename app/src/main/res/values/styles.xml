@@ -7,6 +7,7 @@
 
     <style name="AppThemeActionBar" parent="@style/uWant">
         <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/MyTheme.ActionBar.TabTextStyle</item>
     </style>
 
     <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
@@ -18,17 +19,16 @@
         <item name="android:textColor">@color/WHITE</item>
     </style>
 
+    <style name="MyTheme.ActionBar.TabTextStyle" parent="android:style/Widget.Holo.Light.ActionBar.TabText">
+        <item name="android:textColor">@color/WHITE</item>
+    </style>
+
     <style name="UWEditText">
         <item name="android:textColor">@color/GRAY_TEXT</item>
         <item name="android:textColorHint">@color/GRAY_FIELD_BORDER</item>
         <item name="android:background">@drawable/edit_text</item>
         <item name="android:maxLines">1</item>
         <item name="android:lines">1</item>
-    </style>
-
-    <style name="UWButtonYellow">
-        <item name="android:background">@drawable/button_yellow_selector</item>
-        <item name="android:textColor">@color/WHITE</item>
     </style>
 
 </resources>

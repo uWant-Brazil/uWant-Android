@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="options_register_picture">
+        <item>Open from gallery</item>
+        <item>Take a picture</item>
+    </array>
+
+    <string-array name="options_contacts_with_facebook">
+        <item>Agenda</item>
+        <item>Facebook</item>
+    </string-array>
+
+    <string-array name="options_contacts">
+        <item>Agenda</item>
+    </string-array>
+
+</resources>
