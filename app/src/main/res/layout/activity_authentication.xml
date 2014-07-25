@@ -64,10 +64,7 @@
                 android:text="@string/text_enter"
                 android:id="@+id/auth_button_enter"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="2.5dp"
-                android:layout_marginRight="2.5dp"
-                android:layout_marginLeft="2.5dp" />
+                android:layout_marginTop="20dp" />
 
             <Button
                 android:layout_width="match_parent"
@@ -75,8 +72,7 @@
                 android:text="@string/text_register"
                 style="@style/ButtonuWant"
                 android:id="@+id/auth_button_register"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="2.5dp" />
+                android:layout_gravity="center_horizontal" />
 
             <TextView
                 android:layout_width="wrap_content"

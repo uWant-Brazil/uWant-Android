@@ -28,5 +28,7 @@
     <string name="text_facebook_error">Un problema con Facebook ocurrió. Por favor, inténtelo de nuevo más tarde!</string>
     <string name="contacts">Contactos</string>
     <string name="text_skip">Avance</string>
+    <string name="text_contacts_invitation">Por favor, seleccione las personas que desea invitar o saltarse este paso.</string>
+    <string name="text_welcome">Bienvenido!</string>
 
 </resources>

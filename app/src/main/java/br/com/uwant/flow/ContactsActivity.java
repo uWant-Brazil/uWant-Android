@@ -140,7 +140,7 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
                     }
                 }
 
-                Toast.makeText(this, "Por favor, selecione as pessoas que você deseja convidar ou pule de passo.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.text_contacts_invitation, Toast.LENGTH_SHORT).show();
                 break;
 
             default:

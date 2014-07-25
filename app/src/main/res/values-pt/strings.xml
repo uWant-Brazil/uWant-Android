@@ -28,5 +28,7 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_facebook_error">Ocorreu um problema com o Facebook. Tenta novamente mais tarde!</string>
     <string name="contacts">Contatos</string>
     <string name="text_skip">Pular</string>
+    <string name="text_contacts_invitation">Por favor, selecione as pessoas que você deseja convidar ou pule este passo.</string>
+    <string name="text_welcome">Bem-vindo!</string>
 
 </resources>

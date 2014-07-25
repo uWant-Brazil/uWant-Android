@@ -46,9 +46,9 @@ import br.com.uwant.utils.KeyboardUtil;
 
 public class AuthenticationActivity extends FragmentActivity implements View.OnClickListener, IRequest.OnRequestListener<User> {
 
-    public static final String TAG_RECOVERY_PASSWORD = "RecuperarSenhaTag";
-    public static final String TAG_ATTENTION_DIALOG = "AtencaoDialog";
-    public static final List<String> FACEBOOK_PERMISSIONS = Arrays.asList("public_profile", "email", "user_birthday", "user_friends");
+    private static final String TAG_RECOVERY_PASSWORD = "RecuperarSenhaTag";
+    private static final String TAG_ATTENTION_DIALOG = "AtencaoDialog";
+    private static final List<String> FACEBOOK_PERMISSIONS = Arrays.asList("public_profile", "email", "user_birthday", "user_friends");
 
     private ProgressFragmentDialog mProgressDialog;
 
@@ -172,7 +172,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
     };
 
     private void successLogin(List<Person> persons) {
-        Toast.makeText(this, "Bem-vindo!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.text_welcome, Toast.LENGTH_SHORT).show();
 
         Intent it = new Intent(this, ContactsActivity.class);
         it.putExtra(Person.EXTRA, (java.io.Serializable) persons);

@@ -31,5 +31,7 @@
     <string name="text_facebook_error">A problem with Facebook occurred. Please try again later!</string>
     <string name="contacts">Contacts</string>
     <string name="text_skip">Skip</string>
+    <string name="text_contacts_invitation">Please select the people you want to invite or skip this step..</string>
+    <string name="text_welcome">Welcome!</string>
 
 </resources>

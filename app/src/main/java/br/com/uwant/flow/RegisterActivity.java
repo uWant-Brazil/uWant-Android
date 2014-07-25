@@ -55,8 +55,8 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
     private static final int PICTURE_REQUEST_CODE = 9898;
     private static final int GALLERY_REQUEST_CODE = 9797;
-    private static final String URL_FACEBOOK_PICTURE = "http://graph.facebook.com/%s/picture";
-    public static final String TAG_REGISTER_CANCEL_DIALOG = "RegisterCancelTag";
+//    private static final String URL_FACEBOOK_PICTURE = "http://graph.facebook.com/%s/picture";
+    private static final String TAG_REGISTER_CANCEL_DIALOG = "RegisterCancelTag";
 
     private File mPicturePath;
     private User.Gender mGender;
