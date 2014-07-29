@@ -11,7 +11,7 @@ public abstract class RequestModel implements Serializable {
      * Gson para transformar o JsonObject em String.
      * Será utilizado para formar o Body da requisição.
      */
-    private static final Gson GSON = new Gson();
+    protected static final Gson GSON = new Gson();
 
     /**
      * Método responsável por obter o JsonObject a partir do RequestModel.

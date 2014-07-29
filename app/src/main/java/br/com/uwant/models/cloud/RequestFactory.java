@@ -36,6 +36,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new SocialRegisterRequest();
                 break;
 
+            case CONTACTS:
+                request = new ContactsRequest();
+                break;
+
             default:
                 request = null;
                 break;

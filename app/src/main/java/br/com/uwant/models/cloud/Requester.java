@@ -8,6 +8,11 @@ package br.com.uwant.models.cloud;
 public abstract class Requester {
 
     /**
+     * Header contendo o token de autenticação para as requisições.
+     */
+    protected static String TOKEN = null;
+
+    /**
      * Chaves para parametrização dos campos durante as requisições.
      */
     public static class ParameterKey {
@@ -24,6 +29,7 @@ public abstract class Requester {
         public static final String SOCIAL_PROVIDER = "socialProvider";
         public static final String TOKEN = "access_token";
         public static final String REGISTERED = "registered";
+        public static final String CONTACTS = "contacts";
     }
 
     /**
@@ -45,6 +51,16 @@ public abstract class Requester {
         } else {
             throw new RuntimeException("A requsição está nula. Verifique se você mapeou corretamente em RequestFactory.class!");
         }
+    }
+
+    /**
+     * Método responsável pelo processo de integração.
+     * Apenas a partir dele é possível realizar a requisição por conta do encapsulamento, além disso,
+     * nenhum lister necessita ser passado para saber os passos da requisição.
+     * @param model - RequestModel com os parâmetros.
+     */
+    public static void executeAsync(RequestModel model) {
+        executeAsync(model, null);
     }
 
 }

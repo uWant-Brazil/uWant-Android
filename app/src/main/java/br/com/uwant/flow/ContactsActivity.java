@@ -24,6 +24,10 @@ import br.com.uwant.flow.fragments.AgendaFragment;
 import br.com.uwant.flow.fragments.ContactsFragment;
 import br.com.uwant.flow.fragments.FacebookFragment;
 import br.com.uwant.models.classes.Person;
+import br.com.uwant.models.cloud.IRequest;
+import br.com.uwant.models.cloud.Requester;
+import br.com.uwant.models.cloud.errors.RequestError;
+import br.com.uwant.models.cloud.models.ContactsModel;
 
 public class ContactsActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -128,23 +132,40 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.contacts_button_done:
-                for (int i = 0;i < TABS.length;i++) {
-                    Fragment f = mAdapter.getItem(i);
-                    if (f instanceof ContactsFragment) {
-                        ContactsFragment cf = (ContactsFragment) f;
-                        if (cf.hasPersons()) {
-                            // TODO Enviar as pessoas para serem adicionadas ou convidadas ao WS.
-                            skipToFeeds();
-                            return;
-                        }
-                    }
-                }
-
-                Toast.makeText(this, R.string.text_contacts_invitation, Toast.LENGTH_SHORT).show();
+                sendContacts();
                 break;
 
             default:
                 break;
+        }
+    }
+
+    private void sendContacts() {
+        boolean canSkip = false;
+        List<String> contacts = new ArrayList<String>();
+        for (int i = 0;i < TABS.length;i++) {
+            Fragment f = mAdapter.getItem(i);
+            if (f instanceof ContactsFragment) {
+                ContactsFragment cf = (ContactsFragment) f;
+                if (cf.hasPersons()) {
+                    canSkip = true;
+                    List<String> emails = cf.getCheckedContacts();
+                    contacts.addAll(emails);
+                }
+            }
+        }
+
+        if (canSkip) {
+            if (contacts != null && contacts.size() > 0) {
+                ContactsModel model = new ContactsModel();
+                model.setEmails(contacts);
+
+                Requester.executeAsync(model);
+            }
+
+            skipToFeeds();
+        } else {
+            Toast.makeText(this, R.string.text_contacts_invitation, Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -4,6 +4,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.SparseArray;
+import android.util.SparseBooleanArray;
+import android.util.SparseIntArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -147,4 +150,20 @@ public abstract class ContactsFragment extends Fragment implements AdapterView.O
     public boolean hasPersons() {
         return this.mPersons != null && this.mPersons.size() > 0 && !mIsLoading;
     }
+
+    public List<String> getCheckedContacts() {
+        List<String> contacts = new ArrayList<String>(this.mPersons.size() / 2);
+
+        SparseBooleanArray sba = this.mGridView.getCheckedItemPositions();
+        for (int i = 0;i < this.mPersons.size();i++) {
+            if (sba.get(i, false)) {
+                Person person = this.mPersons.get(i);
+                String email = person.getMail();
+                contacts.add(email);
+            }
+        }
+
+        return contacts;
+    }
+
 }

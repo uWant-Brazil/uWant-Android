@@ -40,11 +40,6 @@ abstract class AbstractRequest<K> {
     private static final String HEADER_AUTHENTICATION_TOKEN = "Authentication";
 
     /**
-     * Header contendo o token de autenticação para as requisições.
-     */
-    private String mToken;
-
-    /**
      * Método responsável por iniciar a requisição (Ainda não está assíncrono).
      * @param model - RequestModel com os parâmetros de envio.
      * @param listener - Classe que irá ser avisada ao finalizar a requisição.
@@ -69,10 +64,6 @@ abstract class AbstractRequest<K> {
      * @return K - Classe de resposta
      */
     protected abstract K parse(String response);
-
-    protected void clearToken() {
-        mToken = null;
-    }
 
     /**
      * Classe que realizará as chamadas ao WS de forma assíncrona.
@@ -109,7 +100,9 @@ abstract class AbstractRequest<K> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            this.mListener.onPreExecute();
+            if (this.mListener != null) {
+                this.mListener.onPreExecute();
+            }
         }
 
         @Override
@@ -122,8 +115,8 @@ abstract class AbstractRequest<K> {
                     .url(url)
                     .post(requestBody);
 
-            if (mToken != null) {
-                builder.addHeader(HEADER_AUTHENTICATION_TOKEN, mToken);
+            if (Requester.TOKEN != null) {
+                builder.addHeader(HEADER_AUTHENTICATION_TOKEN, Requester.TOKEN);
             }
 
             final Request request = builder.build();
@@ -134,7 +127,7 @@ abstract class AbstractRequest<K> {
 
                 String tokenTmp = response.header(HEADER_AUTHENTICATION_TOKEN);
                 if (tokenTmp != null) {
-                    mToken = response.header(HEADER_AUTHENTICATION_TOKEN);
+                    Requester.TOKEN = response.header(HEADER_AUTHENTICATION_TOKEN);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -147,10 +140,12 @@ abstract class AbstractRequest<K> {
         @Override
         protected void onPostExecute(K result) {
             super.onPostExecute(result);
-            if (result == null) {
-                this.mListener.onError(getError());
-            } else {
-                this.mListener.onExecute(result);
+            if (mListener != null) {
+                if (result == null) {
+                    this.mListener.onError(getError());
+                } else {
+                    this.mListener.onExecute(result);
+                }
             }
         }
 
