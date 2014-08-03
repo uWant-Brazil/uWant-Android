@@ -34,5 +34,7 @@
     <string name="text_search">Filtrar</string>
     <string name="text_wish_list_empty_title">Criar nova categoria</string>
     <string name="text_wish_list_empty_default_title">Desejos de aniversário</string>
+    <string name="text_perfil_friends_circle_add_contacts">As solicitações foram enviadas com sucesso!</string>
+    <string name="text_contacts_from_perfil_invitation">Please select the people you want to invite or go back.</string>
 
 </resources>

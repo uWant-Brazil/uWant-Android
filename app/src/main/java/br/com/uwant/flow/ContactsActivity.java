@@ -24,6 +24,7 @@ import br.com.uwant.flow.fragments.AgendaFragment;
 import br.com.uwant.flow.fragments.ContactsFragment;
 import br.com.uwant.flow.fragments.FacebookFragment;
 import br.com.uwant.models.classes.Person;
+import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
@@ -36,6 +37,7 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
     private ContactsPagerAdapter mAdapter;
     private ViewPager mViewPager;
     protected static List<Person> mFacebookPersons;
+    private boolean mIsFromPerfil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,8 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
         } else {
             TABS = getResources().getStringArray(R.array.options_contacts);
         }
+
+        mIsFromPerfil = it.getBooleanExtra(User.EXTRA_ADD_CONTACTS, false);
 
         setContentView(R.layout.activity_contacts);
 
@@ -105,8 +109,11 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.contacts_menu, menu);
-        return true;
+        if (!mIsFromPerfil) {
+            getMenuInflater().inflate(R.menu.contacts_menu, menu);
+            return true;
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -123,9 +130,13 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void skipToFeeds() {
-//        Intent intent = new Intent(this, MainActivity.class);
-        Intent intent = new Intent(this, PerfilActivity.class);
-        startActivity(intent);
+        if (mIsFromPerfil) {
+            setResult(RESULT_OK);
+        } else {
+//          Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, PerfilActivity.class);
+            startActivity(intent);
+        }
         finish();
     }
 
@@ -166,7 +177,14 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
 
             skipToFeeds();
         } else {
-            Toast.makeText(this, R.string.text_contacts_invitation, Toast.LENGTH_SHORT).show();
+            int textId;
+            if (mIsFromPerfil) {
+                textId = R.string.text_contacts_from_perfil_invitation;
+            } else {
+                textId = R.string.text_contacts_invitation;
+            }
+
+            Toast.makeText(this, textId, Toast.LENGTH_SHORT).show();
         }
     }
 

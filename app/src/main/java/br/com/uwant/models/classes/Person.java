@@ -29,6 +29,11 @@ public class Person implements Serializable {
     public Person() {
     }
 
+    public Person(String login, String name) {
+        this.login = login;
+        this.name = name;
+    }
+
     public Person(GraphUser friend) {
         final String name = friend.getName();
         final String mail = (String) friend.getProperty("email");

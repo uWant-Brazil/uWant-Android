@@ -64,6 +64,10 @@
       <item name="android:listSelector">@drawable/uwant_list_selector_holo_light</item>
   </style>
 
+    <style name="GridViewuWant" parent="android:Widget.GridView">
+        <item name="android:listSelector">@drawable/uwant_list_selector_holo_light</item>
+    </style>
+
   <style name="ListViewuWant.White" parent="android:Widget.ListView.White">
       <item name="android:listSelector">@drawable/uwant_list_selector_holo_light</item>
   </style>

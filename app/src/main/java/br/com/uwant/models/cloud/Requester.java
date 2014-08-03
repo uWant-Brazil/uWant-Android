@@ -37,6 +37,7 @@ public abstract class Requester {
         public static final String NAME = "name";
         public static final String PICTURE = "picture";
         public static final String URL = "url";
+        public static final String FRIENDS = "friends";
     }
 
     /**
@@ -68,16 +69,6 @@ public abstract class Requester {
      */
     public static void executeAsync(RequestModel model) {
         executeAsync(model, null);
-    }
-
-    /**
-     * Método responsável pelo processo de integração.
-     * Apenas a partir dele é possível realizar a requisição por conta do encapsulamento, além disso,
-     * nenhum model necessita ser passado para envio como body da requisição.
-     * @param listener - OnRequestListener para os eventos da requisição.
-     */
-    public static void executeAsync(IRequest.OnRequestListener listener) {
-        executeAsync(null, listener);
     }
 
 }

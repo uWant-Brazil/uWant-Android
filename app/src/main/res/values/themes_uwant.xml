@@ -47,6 +47,7 @@
     <item name="android:seekBarStyle">@style/SeekBaruWant</item>
 
     <item name="android:listViewStyle">@style/ListViewuWant</item>
+    <item name="android:gridViewStyle">@style/GridViewuWant</item>
 
     <item name="android:listViewWhiteStyle">@style/ListViewuWant.White</item>
 

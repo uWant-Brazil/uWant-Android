@@ -44,6 +44,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new WishListRequest();
                 break;
 
+            case FRIENDS_CIRCLE:
+                request = new FriendsCircleRequest();
+                break;
+
             default:
                 request = null;
                 break;
