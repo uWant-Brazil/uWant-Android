@@ -38,6 +38,8 @@ public abstract class Requester {
         public static final String PICTURE = "picture";
         public static final String URL = "url";
         public static final String FRIENDS = "friends";
+        public static final String MOBILE_IDENTIFIER = "mobileIdentifier";
+        public static final String OS = "os";
     }
 
     /**

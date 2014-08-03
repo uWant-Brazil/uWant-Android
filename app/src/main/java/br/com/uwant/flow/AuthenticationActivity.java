@@ -42,6 +42,7 @@ import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.AuthModel;
 import br.com.uwant.models.cloud.models.RecoveryPasswordModel;
 import br.com.uwant.models.cloud.models.SocialRegisterModel;
+import br.com.uwant.utils.GoogleCloudMessageUtil;
 import br.com.uwant.utils.KeyboardUtil;
 
 public class AuthenticationActivity extends FragmentActivity implements View.OnClickListener, IRequest.OnRequestListener<User> {
@@ -392,6 +393,8 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
     private void successLogin() {
         Toast.makeText(this, "Bem-vindo!", Toast.LENGTH_SHORT).show();
+
+        GoogleCloudMessageUtil.registerAsync(this);
 
         Intent it = new Intent(this, ContactsActivity.class);
         startActivity(it);

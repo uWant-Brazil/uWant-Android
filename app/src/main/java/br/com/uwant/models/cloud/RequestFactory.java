@@ -48,6 +48,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new FriendsCircleRequest();
                 break;
 
+            case GCM_REGISTRATION:
+                request = new GCMRegistrationRequest();
+                break;
+
             default:
                 request = null;
                 break;

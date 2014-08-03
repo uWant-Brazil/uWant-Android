@@ -57,7 +57,8 @@ public interface IRequest<K extends RequestModel, T> {
         SOCIAL_REGISTER,
         CONTACTS,
         WISH_LIST,
-        FRIENDS_CIRCLE;
+        FRIENDS_CIRCLE,
+        GCM_REGISTRATION;
     }
 
 }
