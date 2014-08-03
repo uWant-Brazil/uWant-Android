@@ -68,7 +68,7 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
     @Override
     public void onResume() {
         super.onResume();
-        Requester.executeAsync(new FriendsCircleModel(),this);
+        Requester.executeAsync(new FriendsCircleModel(), this);
     }
 
     @Override
@@ -113,11 +113,14 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (TextUtils.isEmpty(newText)) {
-            mListView.clearTextFilter();
-        } else {
-            mListView.setFilterText(newText.toString());
+        if (mListView != null) {
+            if (TextUtils.isEmpty(newText)) {
+                mListView.clearTextFilter();
+            } else {
+                mListView.setFilterText(newText.toString());
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 }

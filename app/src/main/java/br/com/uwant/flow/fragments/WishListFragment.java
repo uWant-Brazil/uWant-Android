@@ -108,11 +108,14 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (TextUtils.isEmpty(newText)) {
-            mGridView.clearTextFilter();
-        } else {
-            mGridView.setFilterText(newText.toString());
+        if (mGridView != null) {
+            if (TextUtils.isEmpty(newText)) {
+                mGridView.clearTextFilter();
+            } else {
+                mGridView.setFilterText(newText.toString());
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 }
