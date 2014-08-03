@@ -55,7 +55,8 @@ public interface IRequest<K extends RequestModel, T> {
         REGISTER,
         RECOVERY_PASSWORD,
         SOCIAL_REGISTER,
-        CONTACTS;
+        CONTACTS,
+        WISH_LIST;
     }
 
 }

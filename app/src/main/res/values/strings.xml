@@ -33,5 +33,9 @@
     <string name="text_skip">Skip</string>
     <string name="text_contacts_invitation">Please select the people you want to invite or skip this step..</string>
     <string name="text_welcome">Welcome!</string>
+    <string name="perfil">Perfil</string>
+    <string name="text_search">Filtrar</string>
+    <string name="text_wish_list_empty_title">Criar nova categoria</string>
+    <string name="text_wish_list_empty_default_title">Desejos de aniversário</string>
 
 </resources>

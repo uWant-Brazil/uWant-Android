@@ -1,5 +1,10 @@
 package br.com.uwant.models.cloud;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.models.AuthModel;
 
@@ -38,6 +43,35 @@ public class AuthRequest extends AbstractRequest<User> implements IRequest<AuthM
     protected User parse(String response) {
         User user = User.getInstance();
         user.setLogin(mModel.getLogin());
+
+        JsonParser jsonParser = new JsonParser();
+        JsonElement jsonElement = jsonParser.parse(response);
+        if (jsonElement.isJsonObject()) {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            if (jsonObject.has(Requester.ParameterKey.USER)) {
+                JsonObject jsonUser = jsonObject.getAsJsonObject(Requester.ParameterKey.USER);
+                if (jsonUser.has(Requester.ParameterKey.NAME)) {
+                    String name = jsonUser.get(Requester.ParameterKey.NAME).getAsString();
+                    user.setName(name);
+                }
+
+                if (jsonUser.has(Requester.ParameterKey.PICTURE)) {
+                    JsonElement jsonElementPicture = jsonUser.get(Requester.ParameterKey.PICTURE);
+                    if (!jsonElementPicture.isJsonNull()) {
+                        JsonObject jsonPicture = jsonElementPicture.getAsJsonObject();
+                        if (jsonPicture.has(Requester.ParameterKey.URL)) {
+                            String url = jsonPicture.get(Requester.ParameterKey.URL).getAsString();
+
+                            Multimedia picture = new Multimedia();
+                            picture.setUrl(url);
+
+                            user.setPicture(picture);
+                        }
+                    }
+                }
+            }
+        }
+
         return user;
     }
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="150dp"
+    android:layout_height="170dp">
+
+    <ImageView
+        android:layout_margin="1dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/wishlist_adapter_background"
+        android:id="@+id/wishList_adapter_imageView_products" />
+
+    <LinearLayout
+        android:background="@color/GRAY_WITH_TRANSPARENCY_BACKGROUND"
+        android:layout_gravity="left|top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Wish List Name"
+            android:textSize="12sp"
+            android:textColor="@color/WHITE"
+            android:id="@+id/wishList_adapter_textView_title" />
+
+    </LinearLayout>
+
+</FrameLayout>

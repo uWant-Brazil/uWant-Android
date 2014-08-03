@@ -14,6 +14,7 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.errors.DefaultRequestError;
 import br.com.uwant.models.cloud.errors.RequestError;
 
@@ -32,7 +33,7 @@ abstract class AbstractRequest<K> {
     /**
      * Padrão das URLs de requisição.
      */
-    private static final String URL_COMMON = "http://192.168.0.50:9000/v1";
+    private static final String URL_COMMON = "http://192.168.1.12:9000/v1";
 
     /**
      * Header responsável por conter o token de autenticação para requisições.
@@ -46,7 +47,7 @@ abstract class AbstractRequest<K> {
      */
     protected void execute(RequestModel model, IRequest.OnRequestListener listener) {
         final AsyncRequest asyncRequest = new AsyncRequest(listener);
-        asyncRequest.execute(model.getRequestBody());
+        asyncRequest.execute(model != null ? model.getRequestBody() : null);
     }
 
     /**
@@ -110,24 +111,28 @@ abstract class AbstractRequest<K> {
             String body = strings[0];
             String url = URL_COMMON + getRoute();
 
-            RequestBody requestBody = RequestBody.create(MEDIA_TYPE, body);
-            Request.Builder builder = new Request.Builder()
-                    .url(url)
-                    .post(requestBody);
+            RequestBody requestBody = null;
+            if (body != null) {
+                requestBody = RequestBody.create(MEDIA_TYPE, body);
+            }
 
-            if (Requester.TOKEN != null) {
-                builder.addHeader(HEADER_AUTHENTICATION_TOKEN, Requester.TOKEN);
+            Request.Builder builder = new Request.Builder().url(url).post(requestBody);
+
+            User user = User.getInstance();
+            String token = user.getToken();
+            if (token != null && !token.isEmpty()) {
+                builder.addHeader(HEADER_AUTHENTICATION_TOKEN, token);
             }
 
             final Request request = builder.build();
-
             try {
                 Response response = mClient.newCall(request).execute();
                 mResponse = response.body().string();
 
                 String tokenTmp = response.header(HEADER_AUTHENTICATION_TOKEN);
                 if (tokenTmp != null) {
-                    Requester.TOKEN = response.header(HEADER_AUTHENTICATION_TOKEN);
+                    token = response.header(HEADER_AUTHENTICATION_TOKEN);
+                    user.setToken(token);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

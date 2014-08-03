@@ -123,7 +123,8 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void skipToFeeds() {
-        Intent intent = new Intent(this, MainActivity.class);
+//        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, PerfilActivity.class);
         startActivity(intent);
         finish();
     }

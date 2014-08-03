@@ -40,6 +40,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new ContactsRequest();
                 break;
 
+            case WISH_LIST:
+                request = new WishListRequest();
+                break;
+
             default:
                 request = null;
                 break;

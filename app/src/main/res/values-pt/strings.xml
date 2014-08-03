@@ -30,5 +30,9 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_skip">Pular</string>
     <string name="text_contacts_invitation">Por favor, selecione as pessoas que você deseja convidar ou pule este passo.</string>
     <string name="text_welcome">Bem-vindo!</string>
+    <string name="perfil">Perfil</string>
+    <string name="text_search">Filtrar</string>
+    <string name="text_wish_list_empty_title">Criar nova categoria</string>
+    <string name="text_wish_list_empty_default_title">Desejos de aniversário</string>
 
 </resources>
