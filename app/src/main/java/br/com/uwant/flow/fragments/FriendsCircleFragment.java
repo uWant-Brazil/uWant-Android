@@ -5,7 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,12 +31,16 @@ import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.FriendsCircleModel;
 
-public class FriendsCircleFragment extends Fragment implements IRequest.OnRequestListener<List<Person>>, AdapterView.OnItemClickListener {
+public class FriendsCircleFragment extends Fragment implements IRequest.OnRequestListener<List<Person>>,
+        AdapterView.OnItemClickListener, SearchView.OnQueryTextListener {
 
     private static final int RQ_ADD_CONTACTS = 1230;
 
     private List<Person> mFriends;
     private FriendsCircleAdapter mAdapter;
+
+    private SearchView mSearchView;
+    private ListView mListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,11 +57,12 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final ListView gridView = (ListView) view.findViewById(R.id.friendsCircle_gridView);
-        gridView.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.view_friends_circle_invite, gridView, false));
-        gridView.setEmptyView(view.findViewById(R.id.contacts_gridView_loading));
-        gridView.setAdapter(mAdapter); // TODO Adapter correto...
-        gridView.setOnItemClickListener(this);
+        mListView = (ListView) view.findViewById(R.id.friendsCircle_gridView);
+        mListView.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.view_friends_circle_invite, mListView, false));
+        mListView.setEmptyView(view.findViewById(R.id.contacts_gridView_loading));
+        mListView.setAdapter(mAdapter); // TODO Adapter correto...
+        mListView.setOnItemClickListener(this);
+        mListView.setTextFilterEnabled(true);
     }
 
     @Override
@@ -94,5 +104,20 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
         } else {
             // TODO Abrir o perfil do usuário clicado... Qual a diferença?
         }
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        if (TextUtils.isEmpty(newText)) {
+            mListView.clearTextFilter();
+        } else {
+            mListView.setFilterText(newText.toString());
+        }
+        return true;
     }
 }

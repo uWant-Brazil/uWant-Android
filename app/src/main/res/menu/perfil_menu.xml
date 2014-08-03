@@ -4,10 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
+    <item android:id="@+id/menu_perfil_search"
         app:showAsAction="always"
-        android:id="@+id/menu_perfil_search"
-        android:icon="@drawable/abc_ic_search"
-        android:title="@string/text_search" />
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:title="@string/text_search"
+        android:icon="@android:drawable/ic_menu_search" />
 
 </menu>

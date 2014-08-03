@@ -8,9 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +35,8 @@ public class PerfilActivity extends ActionBarActivity {
     private static String[] TABS;
 
     private PerfilPagerAdapter mAdapter;
+    private SearchView.OnQueryTextListener mCurrentFragment;
+    private SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,9 @@ public class PerfilActivity extends ActionBarActivity {
 
             @Override
             public void onPageSelected(int i) {
+                mCurrentFragment = (SearchView.OnQueryTextListener) mAdapter.getItem(i);
                 actionBar.setSelectedNavigationItem(i);
+                supportInvalidateOptionsMenu();
             }
 
             @Override
@@ -72,7 +78,9 @@ public class PerfilActivity extends ActionBarActivity {
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
 
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+                mCurrentFragment = (SearchView.OnQueryTextListener) mAdapter.getItem(tab.getPosition());
                 viewPager.setCurrentItem(tab.getPosition());
+                supportInvalidateOptionsMenu();
             }
 
             public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
@@ -130,21 +138,41 @@ public class PerfilActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.perfil_menu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.menu_perfil_search);
+        searchItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM
+                | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        setupSearchView();
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        setupSearchView();
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_perfil_search:
-                // TODO ... Search View?
-                break;
-        }
+                return true;
 
-        return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
-    private static class PerfilPagerAdapter extends FragmentStatePagerAdapter {
+    private void setupSearchView() {
+        mSearchView.setIconifiedByDefault(false);
+        mSearchView.setSubmitButtonEnabled(false);
+        mSearchView.setOnQueryTextListener(mCurrentFragment);
+        mSearchView.setQueryHint(getString(R.string.text_hint_perfil_search));
+    }
+
+    private class PerfilPagerAdapter extends FragmentStatePagerAdapter {
 
         private SparseArray<Fragment> mFragments;
 
@@ -161,6 +189,7 @@ public class PerfilActivity extends ActionBarActivity {
         @Override
         public Fragment getItem(int i) {
             Fragment fragment = this.mFragments.get(i);
+
             if (fragment == null) {
                 switch (i) {
                     case 0:
@@ -176,6 +205,7 @@ public class PerfilActivity extends ActionBarActivity {
                 }
                 this.mFragments.put(i, fragment);
             }
+
             return fragment;
         }
 

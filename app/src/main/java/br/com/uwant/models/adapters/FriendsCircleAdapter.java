@@ -8,25 +8,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
+import br.com.uwant.models.classes.WishList;
 
 /**
  * Created by felipebenezi on 03/08/14.
  */
-public class FriendsCircleAdapter extends BaseAdapter
-{
+public class FriendsCircleAdapter extends BaseAdapter implements Filterable {
+
     private final Context mContext;
     private final List<Person> mFriends;
+    private List<Person> mFilteredFriends;
+    private Filter mFilter;
 
     public FriendsCircleAdapter(Context context, List<Person> friends) {
         this.mContext = context;
@@ -35,12 +41,18 @@ public class FriendsCircleAdapter extends BaseAdapter
 
     @Override
     public int getCount() {
-        return mFriends != null ? mFriends.size() : 0;
+        return mFilteredFriends == null ?
+                (mFriends != null ? mFriends.size() : 0)
+                :
+                (mFilteredFriends.size());
     }
 
     @Override
     public Person getItem(int i) {
-        return mFriends != null ? mFriends.get(i) : null;
+        return mFilteredFriends == null ?
+                (mFriends != null ? mFriends.get(i) : null)
+                :
+                (mFilteredFriends.get(i));
     }
 
     @Override
@@ -66,6 +78,56 @@ public class FriendsCircleAdapter extends BaseAdapter
         holder.hTextViewName.setText(name);
 
         return view;
+    }
+
+    @Override
+    public Filter getFilter() {
+        if (mFilter == null) {
+            createFilter();
+        }
+        return mFilter;
+    }
+
+    private void createFilter() {
+        mFilter = new Filter() {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                List<Person> values = (List<Person>) results.values;
+                if (values != null) {
+                    mFilteredFriends = values; // has the filtered values
+                } else {
+                    mFilteredFriends = null;
+                }
+
+                notifyDataSetChanged();  // notifies the data with new filtered values. Only filtered values will be shown on the list
+            }
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+                List<Person> filteredWishList = new ArrayList<Person>();
+
+                if (constraint == null || constraint.length() == 0) {
+                    results.count = 0;
+                    results.values = null;
+                } else {
+                    constraint = constraint.toString().toLowerCase();
+
+                    for (int i = 0; i < mFriends.size(); i++) {
+                        Person data = mFriends.get(i);
+                        if (data.getName().toLowerCase().contains(constraint.toString())) {
+                            filteredWishList.add(data);
+                        }
+                    }
+
+                    results.count = filteredWishList.size();
+                    results.values = filteredWishList;
+                }
+                return results;
+            }
+        };
     }
 
     private static class ViewHolder {
