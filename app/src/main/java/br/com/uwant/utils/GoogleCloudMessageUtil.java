@@ -21,7 +21,7 @@ public abstract class GoogleCloudMessageUtil {
 
     private static final String GCM_PREFERENCES = "gcm_preferences";
     private static final String GCM_KEY = "gcm_reg_id";
-    private static final String PROJECT_NUMBER = "";
+    private static final String PROJECT_NUMBER = "222456173803";
 
     public static void registerAsync(final Context context) {
         final AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {

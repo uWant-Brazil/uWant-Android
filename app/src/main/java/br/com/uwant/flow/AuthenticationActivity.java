@@ -175,8 +175,12 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
     private void successLogin(List<Person> persons) {
         Toast.makeText(this, R.string.text_welcome, Toast.LENGTH_SHORT).show();
 
+        GoogleCloudMessageUtil.registerAsync(this);
+
         Intent it = new Intent(this, ContactsActivity.class);
-        it.putExtra(Person.EXTRA, (java.io.Serializable) persons);
+        if (persons != null) {
+            it.putExtra(Person.EXTRA, (java.io.Serializable) persons);
+        }
         startActivity(it);
         finish();
     }
@@ -392,13 +396,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
     }
 
     private void successLogin() {
-        Toast.makeText(this, "Bem-vindo!", Toast.LENGTH_SHORT).show();
-
-        GoogleCloudMessageUtil.registerAsync(this);
-
-        Intent it = new Intent(this, ContactsActivity.class);
-        startActivity(it);
-        finish();
+        successLogin(null);
     }
 
     @Override
