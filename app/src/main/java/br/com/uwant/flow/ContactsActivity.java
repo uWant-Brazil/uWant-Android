@@ -21,6 +21,7 @@ import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AgendaFragment;
+import br.com.uwant.flow.fragments.AlertFragmentDialog;
 import br.com.uwant.flow.fragments.ContactsFragment;
 import br.com.uwant.flow.fragments.FacebookFragment;
 import br.com.uwant.models.classes.Person;
@@ -39,13 +40,13 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
     protected static List<Person> mFacebookPersons;
     private boolean mIsFromPerfil;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
 
         Intent it = getIntent();
         if (it.hasExtra(Person.EXTRA)) {
@@ -69,7 +70,6 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
 
             @Override
             public void onPageScrolled(int i, float v, int i2) {
-
             }
 
             @Override

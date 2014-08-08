@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <PreferenceCategory
+        android:title="Modos"
+        android:key="modo_totem">
+
+        <CheckBoxPreference
+            android:key="totem"
+            android:summary="Marque para habilitar o modo totem"
+            android:title="Exibição Totem"
+            android:defaultValue="false" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

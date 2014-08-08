@@ -37,5 +37,7 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_perfil_friends_circle_add_contacts">As solicitações foram enviadas com sucesso!</string>
     <string name="text_contacts_from_perfil_invitation">Por favor, selecione as pessoas que você deseja convidar ou volte para tela anterior.</string>
     <string name="text_hint_perfil_search">O que deseja ver?</string>
+    <string name="text_open">Abrir</string>
+    <string name="text_close">Fechar</string>
 
 </resources>

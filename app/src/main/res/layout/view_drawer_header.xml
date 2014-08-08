@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp">
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/drawer_editText_search"
+        style="@style/UWEditText"
+        android:hint="Pesquisar"
+        android:drawableRight="@drawable/abc_ic_search_api_holo_light"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/frameLayout">
+
+            <ImageView
+                android:layout_width="76dp"
+                android:layout_height="76dp"
+                android:id="@+id/drawer_imageView_picture"
+                android:src="@drawable/ic_semfoto"
+                android:layout_gravity="center_horizontal" />
+
+            <ImageView
+                android:layout_width="76dp"
+                android:layout_height="76dp"
+                android:src="@drawable/ic_comfoto"
+                android:visibility="invisible"
+                android:id="@+id/drawer_imageView_pictureDetail"
+                android:layout_gravity="center_horizontal" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Name"
+            android:id="@+id/drawer_textView_userName"
+            android:layout_marginLeft="15dp"
+            android:textColor="@color/GRAY_TEXT"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/BLACK" />
+
+</LinearLayout>

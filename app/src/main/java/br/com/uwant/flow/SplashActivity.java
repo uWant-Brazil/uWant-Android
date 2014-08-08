@@ -33,7 +33,7 @@ public class SplashActivity extends Activity implements Runnable {
                 if (resource != 0) {
                     imageView.setImageResource(resource);
                 } else {
-                    Intent intent = new Intent(SplashActivity.this, AuthenticationActivity.class);
+                    Intent intent = new Intent(SplashActivity.this, RegisterActivity.class);
                     startActivity(intent);
                     finish();
                 }
