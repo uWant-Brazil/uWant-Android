@@ -60,11 +60,11 @@ public abstract class Requester {
         IRequest request = factory.get(model.getRequestType());
 
         if (request != null) {
-            if (model == null || request.getDataClass() == model.getClass()) {
+            //if (model == null || request.getDataClass() == model.getClass()) {
                 request.executeAsync(model, listener);
-            } else {
-                throw new RuntimeException("A classe enviada como data é diferente da necessária para a requisição.");
-            }
+            //} else {
+              //  throw new RuntimeException("A classe enviada como data é diferente da necessária para a requisição.");
+            //}
         } else {
             throw new RuntimeException("A requisição está nula. Verifique se você mapeou corretamente em RequestFactory.class!");
         }
