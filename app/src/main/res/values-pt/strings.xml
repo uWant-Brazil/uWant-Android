@@ -39,5 +39,7 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_hint_perfil_search">O que deseja ver?</string>
     <string name="text_open">Abrir</string>
     <string name="text_close">Fechar</string>
+    <string name="text_oh_no">Puts!</string>
+    <string name="about">Sobre</string>
 
 </resources>

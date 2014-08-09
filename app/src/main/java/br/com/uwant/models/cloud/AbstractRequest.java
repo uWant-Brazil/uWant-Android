@@ -23,7 +23,7 @@ import br.com.uwant.models.cloud.errors.RequestError;
  * as chamadas dos métodos responsáveis por tratar a resposta.
  * @param <K> - Classe que deverá ser montada no retorno da requisição.
  */
-abstract class AbstractRequest<K> {
+public abstract class AbstractRequest<K> {
 
     /**
      * Content-Type para a requisição.
@@ -33,7 +33,7 @@ abstract class AbstractRequest<K> {
     /**
      * Padrão das URLs de requisição.
      */
-    private static final String URL_COMMON = "http://192.168.1.35:9000/v1";
+    public static final String URL_COMMON = "http://192.168.1.35:9000/v1";
 
     /**
      * Header responsável por conter o token de autenticação para requisições.

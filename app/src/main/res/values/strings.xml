@@ -39,8 +39,10 @@
     <string name="text_wish_list_empty_default_title">Desejos de aniversário</string>
     <string name="text_perfil_friends_circle_add_contacts">As solicitações foram enviadas com sucesso!</string>
     <string name="text_contacts_from_perfil_invitation">Please select the people you want to invite or go back.</string>
-    <string name="text_hint_perfil_search">O que deseja ver?</string>
-    <string name="text_open">Abrir</string>
-    <string name="text_close">Fechar</string>
+    <string name="text_hint_perfil_search">What would you like to see?</string>
+    <string name="text_open">Open</string>
+    <string name="text_close">Close</string>
+    <string name="text_oh_no">Oh no!</string>
+    <string name="about">About</string>
 
 </resources>
