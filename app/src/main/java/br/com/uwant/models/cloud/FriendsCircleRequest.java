@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
@@ -96,6 +97,27 @@ public class FriendsCircleRequest extends AbstractRequest<List<Person>> implemen
             }
 
         });
+
+        return persons;
+    }
+
+    @Override
+    protected List<Person> debugParse() {
+        int friendsSize = (int)(Math.random() * 15);
+        List<Person> persons = new ArrayList<Person>(friendsSize + 5);
+        for (int i = 0;i < friendsSize;i++) {
+            String login = "person_" + i;
+            String name = "Person#" + i;
+            Person person = new Person(login, name);
+
+            if (i % 3 == 0) {
+                Multimedia picture = new Multimedia();
+                picture.setUrl("http://dailysignal.com/wp-content/uploads/armstrong.jpg");
+                person.setPicture(picture);
+            }
+
+            persons.add(person);
+        }
 
         return persons;
     }

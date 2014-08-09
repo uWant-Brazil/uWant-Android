@@ -68,4 +68,16 @@ public class WishListRequest extends AbstractRequest<List<WishList>> implements 
 
         return wishLists;
     }
+
+    @Override
+    protected List<WishList> debugParse() {
+        int wishListSize = (int)(Math.random() * 15);
+        List<WishList> wishLists = new ArrayList<WishList>(wishListSize + 5);
+        for (int i = 0;i < wishListSize;i++) {
+            WishList wishList = new WishList(i, "WishList#" + i, (i % 3 == 0 ? "WishList#" + i + " Description" : null));
+            wishLists.add(wishList);
+        }
+
+        return wishLists;
+    }
 }

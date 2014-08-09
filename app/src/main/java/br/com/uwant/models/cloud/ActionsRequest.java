@@ -7,8 +7,10 @@ import com.google.gson.JsonParser;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Multimedia;
@@ -127,6 +129,42 @@ public class ActionsRequest extends AbstractRequest<List<Action>> implements IRe
             }
         }
 
+        return actions;
+    }
+
+    @Override
+    protected List<Action> debugParse() {
+        int actionsSize = (int)(Math.random() * 15);
+        List<Action> actions = new ArrayList<Action>(actionsSize + 5);
+        for (int i = 0;i < actionsSize;i++) {
+            Action.Type[] types = Action.Type.values();
+            Action.Type type = types[i % types.length];
+
+            String uuid = UUID.randomUUID().toString();
+            String message = "Message # " + uuid;
+            String extra = "Extra # " + uuid;
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DAY_OF_MONTH, (-1) * i);
+            Date when = calendar.getTime();
+
+            Action action = new Action();
+            action.setType(type);
+            action.setMessage(message);
+            action.setWhen(when);
+            action.setExtra(extra);
+
+            Person person = null;
+            person.setLogin("person_" + i);
+            person.setName("Person#" + i);
+            if (i % 3 == 0) {
+                Multimedia picture = new Multimedia();
+                picture.setUrl("http://dailysignal.com/wp-content/uploads/armstrong.jpg");
+                person.setPicture(picture);
+            }
+            action.setFrom(person);
+
+            actions.add(action);
+        }
         return actions;
     }
 }
