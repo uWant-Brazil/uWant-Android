@@ -23,30 +23,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import java.util.List;
+
 import br.com.uwant.flow.MainActivity;
+import br.com.uwant.models.classes.Action;
 
 public class FeedsAdapter extends BaseAdapter {
 
-    public FeedsAdapter(Context context) {
+    private final Context mContext;
+    private final List<Action> mActions;
+
+    public FeedsAdapter(Context context, List<Action> actions) {
+        this.mContext = context;
+        this.mActions = actions;
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return mActions != null ? mActions.size() : 0;
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
+    public Action getItem(int position) {
+        return mActions != null ? mActions.get(position) : null;
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return null;
+        return convertView;
     }
 }

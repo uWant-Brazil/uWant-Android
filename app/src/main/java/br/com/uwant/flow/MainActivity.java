@@ -30,6 +30,7 @@ import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
+import br.com.uwant.flow.fragments.FeedsFragment;
 import br.com.uwant.flow.fragments.ProgressFragmentDialog;
 import br.com.uwant.models.adapters.DrawerAdapter;
 import br.com.uwant.models.adapters.FeedsAdapter;
@@ -47,9 +48,10 @@ import br.com.uwant.utils.PictureUtil;
 
 public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener {
 
+    private FeedsFragment mFeedsFragment;
+
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private GridView mGridView;
     private DrawerAdapter mDrawerAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private EditText mEditTextSearch;
@@ -62,11 +64,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FeedsAdapter mFeedsAdapter = new FeedsAdapter(this);
-
-        mGridView = (GridView) findViewById(R.id.main_gridView);
-        mGridView.setNumColumns(GridView.AUTO_FIT);
-        mGridView.setAdapter(mFeedsAdapter);
+        mFeedsFragment = new FeedsFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_frameLayout_content, mFeedsFragment, FeedsFragment.TAG);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
