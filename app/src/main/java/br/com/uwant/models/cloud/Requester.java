@@ -47,6 +47,7 @@ public abstract class Requester {
         public static final String USER_FROM = "userFrom";
         public static final String EXTRA = "extra";
         public static final String WHEN = "when";
+        public static final String USERS = "users";
     }
 
     /**

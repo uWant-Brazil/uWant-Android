@@ -19,19 +19,28 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.uwant.R;
 import br.com.uwant.models.adapters.DrawerAdapter;
 import br.com.uwant.models.adapters.FeedsAdapter;
+import br.com.uwant.models.adapters.FriendsCircleAdapter;
 import br.com.uwant.models.classes.Multimedia;
+import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
+import br.com.uwant.models.cloud.IRequest;
+import br.com.uwant.models.cloud.Requester;
+import br.com.uwant.models.cloud.errors.RequestError;
+import br.com.uwant.models.cloud.models.UserSearchModel;
 import br.com.uwant.utils.PictureUtil;
 
 public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener {
-
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -57,7 +66,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        View view = getLayoutInflater().inflate(R.layout.view_drawer_header, mDrawerList, false);
+        final View view = getLayoutInflater().inflate(R.layout.view_drawer_header, mDrawerList, false);
         mEditTextSearch = (EditText) view.findViewById(R.id.drawer_editText_search);
         mImageViewPicture = (ImageView) view.findViewById(R.id.drawer_imageView_picture);
         mImageViewPictureDetail = (ImageView) view.findViewById(R.id.drawer_imageView_pictureDetail);
@@ -96,36 +105,70 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             });
         }
 
-        // set a custom shadow that overlays the main content when the drawer opens
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        // set up the drawer's list view with items and click listener
-
         mDrawerAdapter = new DrawerAdapter(this);
         mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(this);
 
-        // enable ActionBar app icon to behave as action to toggle nav drawer
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.uwantnavigationdrawer_ic_navigation_drawer, R.string.text_open, R.string.text_close);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         mEditTextSearch.addTextChangedListener(new TextWatcher() {
 
+            private boolean mIsCanceled;
+            private List<Person> mSearchFriends = new ArrayList<Person>();
+            private FriendsCircleAdapter mSearchAdapter = new FriendsCircleAdapter(MainActivity.this, mSearchFriends);
+
+            private IRequest.OnRequestListener<List<Person>> searchListener = new IRequest.OnRequestListener<List<Person>>() {
+
+                @Override
+                public void onPreExecute() {
+                    mDrawerList.setAdapter(mSearchAdapter);
+                }
+
+                @Override
+                public void onExecute(List<Person> result) {
+                    if (!mIsCanceled && result.size() > 0) {
+                        mSearchFriends.addAll(result);
+                        mSearchAdapter.notifyDataSetChanged();
+                    }
+                    mIsCanceled = true;
+                }
+
+                @Override
+                public void onError(RequestError error) {
+                    mIsCanceled = true;
+                    mDrawerList.setAdapter(mDrawerAdapter);
+                    Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+
+            };
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 0) {
+                    mIsCanceled = true;
+                    mDrawerList.setAdapter(mDrawerAdapter);
+                } else {
+                    mIsCanceled = false;
+                    mSearchFriends.clear();
+                    mSearchAdapter.notifyDataSetChanged();
 
+                    UserSearchModel model = new UserSearchModel();
+                    model.setQuery(s.toString());
+                    Requester.executeAsync(model, this.searchListener);
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
 
         });
