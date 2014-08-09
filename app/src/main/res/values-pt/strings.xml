@@ -41,5 +41,6 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_close">Fechar</string>
     <string name="text_oh_no">Puts!</string>
     <string name="about">Sobre</string>
+    <string name="text_exit_message">Você deseja realmente sair do uWant?</string>
 
 </resources>

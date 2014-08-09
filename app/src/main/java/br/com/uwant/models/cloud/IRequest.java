@@ -60,7 +60,8 @@ public interface IRequest<K extends RequestModel, T> {
         FRIENDS_CIRCLE,
         GCM_REGISTRATION,
         ACTIONS,
-        USER_SEARCH;
+        USER_SEARCH,
+        LOGOFF;
     }
 
 }

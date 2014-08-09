@@ -79,21 +79,26 @@ public class DrawerAdapter extends BaseAdapter {
     private int getIcon(int position) {
         int icon;
         switch (position) {
-//            case 0:
-//                // Loja
-//                break;
-//            case 1:
-//                // Ofertas
-//                break;
-//            case 2:
-//                // Configuracoes
-//                break;
-//            case 3:
-//                // SObre
-//                break;
-//            case 4:
-//                // Sair
-//                break;;
+            case 0:
+                // Loja
+                icon = R.drawable.ic_panel_lojas;
+                break;
+            case 1:
+                // Ofertas
+                icon = R.drawable.ic_panel_ofertas;
+                break;
+            case 2:
+                // Configuracoes
+                icon = R.drawable.ic_panel_conf;
+                break;
+            case 3:
+                // Sobre
+                icon = R.drawable.ic_panel_sobre;
+                break;
+            case 4:
+                // Sair
+                icon = R.drawable.ic_panel_sair;
+                break;
             default:
                 icon = R.drawable.ic_launcher;
                 break;

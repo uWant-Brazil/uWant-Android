@@ -12,7 +12,7 @@
         android:id="@+id/drawer_editText_search"
         style="@style/UWEditText"
         android:hint="Pesquisar"
-        android:drawableRight="@drawable/abc_ic_search_api_holo_light"
+        android:drawableRight="@drawable/ic_panel_lupa"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp" />
 

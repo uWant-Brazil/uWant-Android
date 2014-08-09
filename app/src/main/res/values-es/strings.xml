@@ -41,5 +41,6 @@
     <string name="text_close">Cerrar</string>
     <string name="text_oh_no">El no!</string>
     <string name="about">Acerca de</string>
+    <string name="text_exit_message">Você deseja realmente sair do uWant?</string>
 
 </resources>

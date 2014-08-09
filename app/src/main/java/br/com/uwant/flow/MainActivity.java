@@ -1,5 +1,6 @@
 package br.com.uwant.flow;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -28,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.uwant.R;
+import br.com.uwant.flow.fragments.AlertFragmentDialog;
+import br.com.uwant.flow.fragments.ProgressFragmentDialog;
 import br.com.uwant.models.adapters.DrawerAdapter;
 import br.com.uwant.models.adapters.FeedsAdapter;
 import br.com.uwant.models.adapters.FriendsCircleAdapter;
@@ -37,7 +40,9 @@ import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
+import br.com.uwant.models.cloud.models.LogoffModel;
 import br.com.uwant.models.cloud.models.UserSearchModel;
+import br.com.uwant.utils.DebugUtil;
 import br.com.uwant.utils.PictureUtil;
 
 public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener {
@@ -198,6 +203,10 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                 it = new Intent(this, AboutActivity.class);
                 break;
 
+            case 4:
+                askForLogoff();
+                // Deixar sem break para que a intent seja nula!
+
             default:
                 it = null;
                 break;
@@ -206,6 +215,59 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         if (it != null) {
             startActivity(it);
         }
+    }
+
+    private void askForLogoff() {
+        String title = getString(R.string.text_attention);
+        String message = getString(R.string.text_exit_message);
+        String positiveText = getString(R.string.text_yes);
+        String negativeText = getString(R.string.text_no);
+        DialogInterface.OnClickListener positiveListener = new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                performLogoff();
+            }
+
+        };
+        AlertFragmentDialog afd = AlertFragmentDialog.create(title, message, positiveText, positiveListener, negativeText, null);
+        afd.show(getSupportFragmentManager(), "Exit_Dialog");
+    }
+
+    private void performLogoff() {
+        LogoffModel model = new LogoffModel();
+        Requester.executeAsync(model, new IRequest.OnRequestListener() {
+
+            public ProgressFragmentDialog progressFragmentDialog;
+
+            @Override
+            public void onPreExecute() {
+                progressFragmentDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
+            }
+
+            @Override
+            public void onExecute(Object result) {
+                if (progressFragmentDialog != null) {
+                    progressFragmentDialog.dismiss();
+                }
+
+                Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onError(RequestError error) {
+                if (progressFragmentDialog != null) {
+                    progressFragmentDialog.dismiss();
+                }
+
+                Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+        });
     }
 
     @Override
