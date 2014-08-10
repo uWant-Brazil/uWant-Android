@@ -42,5 +42,12 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_oh_no">Puts!</string>
     <string name="about">Sobre</string>
     <string name="text_exit_message">Você deseja realmente sair do uWant?</string>
+    <string name="text_feeds_just_now">Agora a pouco</string>
+    <string name="text_feeds_years"> anos</string>
+    <string name="text_feeds_months"> meses</string>
+    <string name="text_feeds_days"> dias</string>
+    <string name="text_feeds_hours"> horas</string>
+    <string name="text_feeds_minutes"> minutos</string>
+    <string name="text_feeds_ha">há </string>
 
 </resources>

@@ -25,6 +25,9 @@ public class Action {
     private Person from;
     private Date when;
     private List<Comment> comments;
+    private int UWantsCount;
+    private int commentsCount;
+    private int SharesCount;
 
     public String getMessage() {
         return message;
@@ -74,4 +77,27 @@ public class Action {
         this.comments = comments;
     }
 
+    public int getUWantsCount() {
+        return UWantsCount;
+    }
+
+    public void setUWantsCount(int UWantsCount) {
+        this.UWantsCount = UWantsCount;
+    }
+
+    public int getCommentsCount() {
+        return commentsCount;
+    }
+
+    public void setCommentsCount(int commentsCount) {
+        this.commentsCount = commentsCount;
+    }
+
+    public int getSharesCount() {
+        return SharesCount;
+    }
+
+    public void setSharesCount(int sharesCount) {
+        SharesCount = sharesCount;
+    }
 }
