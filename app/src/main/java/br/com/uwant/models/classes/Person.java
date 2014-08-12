@@ -2,9 +2,12 @@ package br.com.uwant.models.classes;
 
 import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
+import com.google.gson.JsonObject;
 
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -35,15 +38,22 @@ public class Person implements Serializable {
     }
 
     public Person(GraphUser friend) {
-        final String name = friend.getName();
+        final String name = ((String) friend.getProperty("first_name")) + " " + ((String) friend.getProperty("last_name"));
         final String mail = (String) friend.getProperty("email");
-        GraphObject go = (GraphObject) friend.getProperty("picture");
+        JSONObject go = (JSONObject) friend.getProperty("picture");
+
         if (go != null) {
-            String url = (String) go.getProperty("url");
-            if (url != null && !url.isEmpty()) {
-                Multimedia picture = new Multimedia();
-                picture.setUrl(url);
-                this.picture = picture;
+            JSONObject picture = null;
+            try {
+                picture = go.getJSONObject("data");
+                if (picture != null && picture.has("url")) {
+                    Multimedia pictureM = new Multimedia();
+                    String url = picture.getString("url");
+                    pictureM.setUrl(url);
+                    this.picture = pictureM;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
 

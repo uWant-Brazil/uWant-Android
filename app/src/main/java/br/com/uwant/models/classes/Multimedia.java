@@ -2,7 +2,9 @@ package br.com.uwant.models.classes;
 
 import android.net.Uri;
 
-public class Multimedia {
+import java.io.Serializable;
+
+public class Multimedia implements Serializable {
 
     private String url;
     private Uri uri;

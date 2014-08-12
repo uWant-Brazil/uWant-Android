@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.ImageView;
 
+import com.facebook.LoginActivity;
+
 import br.com.uwant.R;
 
 
@@ -33,7 +35,7 @@ public class SplashActivity extends Activity implements Runnable {
                 if (resource != 0) {
                     imageView.setImageResource(resource);
                 } else {
-                    Intent intent = new Intent(SplashActivity.this, RegisterActivity.class);
+                    Intent intent = new Intent(SplashActivity.this, AuthenticationActivity.class);
                     startActivity(intent);
                     finish();
                 }
