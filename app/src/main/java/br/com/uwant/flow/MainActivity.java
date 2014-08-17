@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,7 +32,6 @@ import br.com.uwant.flow.fragments.AlertFragmentDialog;
 import br.com.uwant.flow.fragments.FeedsFragment;
 import br.com.uwant.flow.fragments.ProgressFragmentDialog;
 import br.com.uwant.models.adapters.DrawerAdapter;
-import br.com.uwant.models.adapters.FeedsAdapter;
 import br.com.uwant.models.adapters.FriendsCircleAdapter;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
@@ -43,7 +41,6 @@ import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.LogoffModel;
 import br.com.uwant.models.cloud.models.UserSearchModel;
-import br.com.uwant.utils.DebugUtil;
 import br.com.uwant.utils.PictureUtil;
 
 public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener {
@@ -194,15 +191,15 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent it;
         switch (position) {
-            case 2:
+            case 3:
                 it = new Intent(this, ConfigurationsActivity.class);
                 break;
 
-            case 3:
+            case 4:
                 it = new Intent(this, AboutActivity.class);
                 break;
 
-            case 4:
+            case 5:
                 askForLogoff();
                 // Deixar sem break para que a intent seja nula!
 

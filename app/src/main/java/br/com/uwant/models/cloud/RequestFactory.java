@@ -52,6 +52,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new GCMRegistrationRequest();
                 break;
 
+            case EXCLUDE_ACCOUNT:
+                request = new ExcludeAccountRequest();
+                break;
+
             default:
                 request = null;
                 break;

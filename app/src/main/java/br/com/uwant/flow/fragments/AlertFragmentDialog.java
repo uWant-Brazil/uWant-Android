@@ -148,13 +148,11 @@ public class AlertFragmentDialog extends DialogFragment {
 
         builder.setPositiveButton(mPositiveText, mListenerOk);
         if (mListenerOk != null) {
-            if (mListenerCancel != null) {
-                if (mNegativeText == null) {
-                    mNegativeText = getString(R.string.text_cancel);
-                }
-
-                builder.setNegativeButton(mNegativeText, mListenerCancel);
+            if (mNegativeText == null) {
+                mNegativeText = getString(R.string.text_cancel);
             }
+
+            builder.setNegativeButton(mNegativeText, mListenerCancel);
         }
 
         return builder.create();

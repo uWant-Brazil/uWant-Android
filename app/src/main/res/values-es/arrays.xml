@@ -25,5 +25,17 @@
         <item>Sobre</item>
         <item>Sair</item>
     </string-array>
+    <string-array name="options_configurations_account">
+        <item>H1</item>
+        <item>H2</item>
+        <item>H3</item>
+        <item>H4</item>
+    </string-array>
+    <string-array name="options_values_configurations_account">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 
 </resources>

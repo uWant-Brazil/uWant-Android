@@ -4,15 +4,9 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <PreferenceCategory
-        android:title="Modos"
-        android:key="modo_totem">
-
-        <CheckBoxPreference
-            android:key="totem"
-            android:summary="Marque para habilitar o modo totem"
-            android:title="Exibição Totem"
-            android:defaultValue="false" />
-    </PreferenceCategory>
+    <Preference
+        android:key="buttonExclude"
+        android:summary="@string/text_configurations_account_summary"
+        android:title="@string/text_configurations_account_title" />
 
 </PreferenceScreen>

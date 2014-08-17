@@ -18,12 +18,25 @@ public class ProgressFragmentDialog extends DialogFragment {
      * Tag de identificação do Fragment.
      */
     private static final String TAG = "ProgressTag";
-    private String mMessage = "Aguarde...";
+    private String mMessage;
+    private int mMessageId = R.string.text_wait;
+
+    public static ProgressFragmentDialog create(int message) {
+        ProgressFragmentDialog fd = new ProgressFragmentDialog();
+        fd.setMessage(message);
+        return fd;
+    }
 
     public static ProgressFragmentDialog create(String message) {
         ProgressFragmentDialog fd = new ProgressFragmentDialog();
         fd.setMessage(message);
         return fd;
+    }
+
+    public static ProgressFragmentDialog show(int message, FragmentManager manager) {
+        ProgressFragmentDialog pfd = create(message);
+        pfd.show(manager, TAG);
+        return pfd;
     }
 
     public static ProgressFragmentDialog show(String message, FragmentManager manager) {
@@ -41,10 +54,16 @@ public class ProgressFragmentDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return ProgressDialog.show(getActivity(), getString(R.string.app_name), this.mMessage);
+        String message = mMessage == null ? getString(mMessageId) : mMessage;
+        return ProgressDialog.show(getActivity(), getString(R.string.app_name), message);
     }
 
     private void setMessage(String message) {
         this.mMessage = message;
     }
+
+    private void setMessage(int messageId) {
+        this.mMessageId = messageId;
+    }
+
 }

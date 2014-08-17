@@ -44,13 +44,18 @@
     <string name="text_close">Close</string>
     <string name="text_oh_no">Oh no!</string>
     <string name="about">About</string>
-    <string name="text_exit_message">Você deseja realmente sair do uWant?</string>
-    <string name="text_feeds_just_now">Agora a pouco</string>
-    <string name="text_feeds_years"> anos</string>
-    <string name="text_feeds_months"> meses</string>
-    <string name="text_feeds_days"> dias</string>
-    <string name="text_feeds_hours"> horas</string>
-    <string name="text_feeds_minutes"> minutos</string>
-    <string name="text_feeds_ha">há </string>
+    <string name="text_exit_message">Do you really want to logoff?</string>
+    <string name="text_feeds_just_now">Just now</string>
+    <string name="text_feeds_years">years</string>
+    <string name="text_feeds_months">months</string>
+    <string name="text_feeds_days">days</string>
+    <string name="text_feeds_hours">hours</string>
+    <string name="text_feeds_minutes">minutes</string>
+    <string name="text_feeds_ha_setence">%s %s ago</string>
+    <string name="text_configurations_account_title">Desativar conta</string>
+    <string name="text_configurations_account_summary">Você pode desativar sua conta do uWant a qualquer momento.</string>
+    <string name="text_wait">Aguarde...</string>
+    <string name="configurations">Configurações</string>
+    <string name="text_exclude_account">Sua conta acaba de ser desativada do uWant.</string>
 
 </resources>

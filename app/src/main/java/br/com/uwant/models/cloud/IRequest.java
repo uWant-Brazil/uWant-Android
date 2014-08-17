@@ -61,7 +61,8 @@ public interface IRequest<K extends RequestModel, T> {
         GCM_REGISTRATION,
         ACTIONS,
         USER_SEARCH,
-        LOGOFF;
+        LOGOFF,
+        EXCLUDE_ACCOUNT;
     }
 
 }

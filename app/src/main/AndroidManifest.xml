@@ -88,6 +88,14 @@
             android:configChanges="orientation"
             android:label="@string/about">
         </activity>
+        <activity
+            android:icon="@drawable/ic_action_uwant"
+            android:theme="@style/AppThemeActionBar"
+            android:name=".flow.ConfigurationsActivity"
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="orientation"
+            android:label="@string/configurations">
+        </activity>
 
         <receiver
             android:name=".GCMBroadcastReceiver"
