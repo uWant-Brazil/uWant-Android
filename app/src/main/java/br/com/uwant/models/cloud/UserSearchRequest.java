@@ -24,7 +24,7 @@ public class UserSearchRequest extends AbstractRequest<List<Person>> implements 
     /**
      * Route da requisição.
      */
-    private static final String ROUTE = "/mobile/wishlist/list";
+    private static final String ROUTE = "/mobile/user/search";
 
     @Override
     public void executeAsync(UserSearchModel data, OnRequestListener listener) {

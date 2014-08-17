@@ -48,6 +48,7 @@ public abstract class Requester {
         public static final String EXTRA = "extra";
         public static final String WHEN = "when";
         public static final String USERS = "users";
+        public static final String QUERY = "query";
     }
 
     /**

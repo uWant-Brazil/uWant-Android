@@ -56,6 +56,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new ExcludeAccountRequest();
                 break;
 
+            case USER_SEARCH:
+                request = new UserSearchRequest();
+                break;
+
             default:
                 request = null;
                 break;
