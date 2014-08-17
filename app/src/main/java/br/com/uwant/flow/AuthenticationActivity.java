@@ -177,8 +177,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
         GoogleCloudMessageUtil.registerAsync(this);
 
-        //Intent it = new Intent(this, ContactsActivity.class);
-        Intent it = new Intent(this, MainActivity.class);
+        Intent it = new Intent(this, ContactsActivity.class);
         if (persons != null) {
             it.putExtra(Person.EXTRA, (java.io.Serializable) persons);
         }

@@ -36,16 +36,14 @@ public class AgendaFragment extends ContactsFragment {
         ContentResolver cr = getActivity().getContentResolver();
         Cursor cursor = cr.query(ContactsContract.RawContacts.CONTENT_URI, null, null, null, null);
 
-
-
         if (cursor != null) {
             cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
+            while (!cursor.isAfterLast() && !isCancelled()) {
                 String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 Cursor cursorCommons = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, String.format("%s = ?", ContactsContract.CommonDataKinds.Email.CONTACT_ID), new String[]{ id }, null);
                 if (cursorCommons != null) {
                     cursorCommons.moveToFirst();
-                    while (!cursorCommons.isAfterLast()) {
+                    while (!cursorCommons.isAfterLast() && !isCancelled()) {
                         String displayName = cursorCommons.getString(cursorCommons.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                         String email = cursorCommons.getString(cursorCommons.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                         if (email != null && !email.isEmpty()) {

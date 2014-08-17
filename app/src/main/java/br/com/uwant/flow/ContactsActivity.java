@@ -45,7 +45,6 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         Intent it = getIntent();
@@ -57,6 +56,9 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
         }
 
         mIsFromPerfil = it.getBooleanExtra(User.EXTRA_ADD_CONTACTS, false);
+        if (mIsFromPerfil) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         setContentView(R.layout.activity_contacts);
 
@@ -119,6 +121,10 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+
             case R.id.menu_contacts_skip:
                 skipToFeeds();
                 break;
@@ -133,8 +139,7 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
         if (mIsFromPerfil) {
             setResult(RESULT_OK);
         } else {
-//          Intent intent = new Intent(this, MainActivity.class);
-            Intent intent = new Intent(this, PerfilActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
         finish();

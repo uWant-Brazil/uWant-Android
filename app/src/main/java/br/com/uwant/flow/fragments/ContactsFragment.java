@@ -144,6 +144,10 @@ public abstract class ContactsFragment extends Fragment implements AdapterView.O
         }
     }
 
+    public boolean isCancelled() {
+        return mTask.isCancelled();
+    }
+
     protected abstract void loadPersons();
     protected abstract BaseAdapter getAdapter();
 
