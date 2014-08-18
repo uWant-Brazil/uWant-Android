@@ -49,6 +49,13 @@ public abstract class Requester {
         public static final String WHEN = "when";
         public static final String USERS = "users";
         public static final String QUERY = "query";
+        public static final String ACTION_ID = "actionId";
+        public static final String COMMENTS_COUNT = "commentsCount";
+        public static final String COUNT = "count";
+        public static final String WANT = "want";
+        public static final String SHARE = "share";
+        public static final String UWANT = "uWant";
+        public static final String USHARE = "uShare";
     }
 
     /**

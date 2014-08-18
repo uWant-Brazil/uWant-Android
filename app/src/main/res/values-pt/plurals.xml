@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="text_feeds_years">
+        <item quantity="one">há %d ano</item>
+        <item quantity="many">há %d anos</item>
+        <item quantity="other">há %d anos</item>
+    </plurals>
+    <plurals name="text_feeds_months">
+        <item quantity="one">há %d mês</item>
+        <item quantity="many">há %d meses</item>
+        <item quantity="other">há %d meses</item>
+    </plurals>
+    <plurals name="text_feeds_days">
+        <item quantity="one">há %d dia</item>
+        <item quantity="many">há %d dias</item>
+        <item quantity="other">há %d dias</item>
+    </plurals>
+    <plurals name="text_feeds_hours">
+        <item quantity="one">há %d hora</item>
+        <item quantity="many">há %d horas</item>
+        <item quantity="other">há %d horas</item>
+    </plurals>
+    <plurals name="text_feeds_minutes">
+        <item quantity="one">há %d minuto</item>
+        <item quantity="many">há %d minutos</item>
+        <item quantity="other">há %d minutos</item>
+    </plurals>
+</resources>

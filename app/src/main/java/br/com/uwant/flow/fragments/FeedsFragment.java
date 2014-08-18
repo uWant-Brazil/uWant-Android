@@ -23,6 +23,8 @@ import br.com.uwant.models.cloud.models.FeedsModel;
 public class FeedsFragment extends Fragment implements IRequest.OnRequestListener<List<Action>> {
 
     public static final String TAG = "feedsFragment";
+    private static final int DEFAULT_START_INDEX = 0;
+    private static final int DEFAULT_END_INDEX = 20;
     private static final FeedsModel MODEL = new FeedsModel();
 
     private List<Action> mActions;
@@ -46,7 +48,7 @@ public class FeedsFragment extends Fragment implements IRequest.OnRequestListene
         mFeedsAdapter = new FeedsAdapter(getActivity(), mActions);
 
         mGridView = (GridView) view.findViewById(R.id.main_gridView);
-        mGridView.setNumColumns(GridView.AUTO_FIT);
+        mGridView.setNumColumns(1);
         mGridView.setAdapter(mFeedsAdapter);
     }
 
@@ -54,6 +56,11 @@ public class FeedsFragment extends Fragment implements IRequest.OnRequestListene
     public void onResume() {
         super.onResume();
         mActions.clear();
+        mFeedsAdapter.notifyDataSetChanged();
+
+        MODEL.setStartIndex(DEFAULT_START_INDEX);
+        MODEL.setEndIndex(DEFAULT_END_INDEX);
+
         Requester.executeAsync(MODEL, this);
     }
 

@@ -32,7 +32,8 @@ public abstract class RequestModel implements Serializable {
      * @return body
      */
     protected String getRequestBody() {
-        return GSON.toJson(toJson());
+        JsonObject json = toJson();
+        return json != null ? GSON.toJson(json) : null;
     }
 
 }

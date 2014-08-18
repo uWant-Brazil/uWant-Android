@@ -60,6 +60,18 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new UserSearchRequest();
                 break;
 
+            case ACTIONS:
+                request = new ActionsRequest();
+                break;
+
+            case FEEDS:
+                request = new FeedsRequest();
+                break;
+
+            case ACTION_WANT:
+                request = new ActionWantRequest();
+                break;
+
             default:
                 request = null;
                 break;

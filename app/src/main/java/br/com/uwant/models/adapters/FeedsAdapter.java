@@ -22,14 +22,15 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,23 +41,26 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.uwant.R;
-import br.com.uwant.flow.MainActivity;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
-import br.com.uwant.models.classes.User;
+import br.com.uwant.models.cloud.RequestModel;
+import br.com.uwant.models.cloud.Requester;
+import br.com.uwant.models.cloud.models.WantModel;
 import br.com.uwant.utils.PictureUtil;
 
-public class FeedsAdapter extends BaseAdapter {
+public class FeedsAdapter extends BaseAdapter implements View.OnClickListener {
 
     private static final int DEFAULT_TIME_AGO = R.string.text_feeds_just_now;
-    private static final int ANOS = R.string.text_feeds_years;
-    private static final int MESES = R.string.text_feeds_months;
-    private static final int DIAS = R.string.text_feeds_days;
-    private static final int HORAS = R.string.text_feeds_hours;
-    private static final int MINUTOS = R.string.text_feeds_minutes;
-    private static final int HÁ = R.string.text_feeds_ha;
+    private static final int YEARS = R.plurals.text_feeds_years;
+    private static final int MONTHS = R.plurals.text_feeds_months;
+    private static final int DAYS = R.plurals.text_feeds_days;
+    private static final int HOURS = R.plurals.text_feeds_hours;
+    private static final int MINUTES = R.plurals.text_feeds_minutes;
+
     private static float DEFAULT_RADIUS;
+    private static Drawable UWANT_DRAWABLE;
+    private static Drawable UWANT_DRAWABLE_ACTIVE;
 
     private final Context mContext;
     private final List<Action> mActions;
@@ -65,7 +69,10 @@ public class FeedsAdapter extends BaseAdapter {
         this.mContext = context;
         this.mActions = actions;
 
-        DEFAULT_RADIUS = context.getResources().getDimension(R.dimen.cardview_default_radius);
+        Resources res = context.getResources();
+        DEFAULT_RADIUS = res.getDimension(R.dimen.cardview_default_radius);
+        UWANT_DRAWABLE = res.getDrawable(R.drawable.ic_feed_wantar);
+        UWANT_DRAWABLE_ACTIVE = res.getDrawable(R.drawable.ic_feed_wantar_on);
     }
 
     @Override
@@ -85,29 +92,33 @@ public class FeedsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
         if (convertView == null) {
+            holder = new ViewHolder();
             CardView cardView = new CardView(this.mContext);
             cardView.setRadius(DEFAULT_RADIUS);
 
             View contentView = LayoutInflater.from(this.mContext).inflate(R.layout.adapter_feeds, cardView, false);
             cardView.addView(contentView);
-
             convertView = cardView;
-        }
 
-        final ImageView hImageViewPicture = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_picture);
-        final ImageView hImageViewPictureDetail = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_pictureDetail);
-//        final ImageView hImageViewProduct = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_product);
-        final TextView hTextViewSystemMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_systemMessage);
-        final TextView hTextViewUserMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_userMessage);
-        final TextView hTextViewWhen = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_when);
-        final Button hButtonUWants = (Button) convertView.findViewById(R.id.adapter_feeds_button_uwants);
-        final Button hButtonComments = (Button) convertView.findViewById(R.id.adapter_feeds_button_comments);
-        final Button hButtonShares = (Button) convertView.findViewById(R.id.adapter_feeds_button_shares);
+            holder.hImageViewPicture = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_picture);
+            holder.hImageViewPictureDetail = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_pictureDetail);
+            holder.hImageViewProduct = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_product);
+            holder.hTextViewSystemMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_systemMessage);
+            holder.hTextViewUserMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_userMessage);
+            holder.hTextViewWhen = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_when);
+            holder.hButtonUWants = (Button) convertView.findViewById(R.id.adapter_feeds_button_uwants);
+            holder.hButtonComments = (Button) convertView.findViewById(R.id.adapter_feeds_button_comments);
+            holder.hButtonShares = (Button) convertView.findViewById(R.id.adapter_feeds_button_shares);
+
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
         Action action = getItem(position);
         Person from = action.getFrom();
-        Multimedia multimedia = from.getPicture();
 
         String systemMessage = action.getMessage();
         String userMessage = action.getExtra();
@@ -116,15 +127,31 @@ public class FeedsAdapter extends BaseAdapter {
         int uWantCount = action.getUWantsCount();
         int commentsCount = action.getCommentsCount();
         int sharesCount = action.getSharesCount();
+        boolean uWant = action.isuWant();
 
-        // TODO Exibir a imagem do produto. Verificar como está o envio do servidor!
-        hTextViewSystemMessage.setText(systemMessage);
-        hTextViewUserMessage.setText(userMessage);
-        hTextViewWhen.setText(timeAgo);
-        hButtonUWants.setText(String.valueOf(uWantCount));
-        hButtonComments.setText(String.valueOf(commentsCount));
-        hButtonShares.setText(String.valueOf(sharesCount));
-        populatePicture(hImageViewPicture, hImageViewPictureDetail, multimedia);
+        populatePicture(holder.hImageViewPicture, holder.hImageViewPictureDetail, from.getPicture());
+
+        holder.hTextViewSystemMessage.setText(systemMessage);
+        holder.hTextViewUserMessage.setText(userMessage);
+        holder.hTextViewWhen.setText(timeAgo);
+        holder.hButtonUWants.setText(String.valueOf(uWantCount));
+        holder.hButtonComments.setText(String.valueOf(commentsCount));
+        holder.hButtonShares.setText(String.valueOf(sharesCount));
+
+        holder.hButtonUWants.setTag(position);
+        holder.hButtonComments.setTag(position);
+        holder.hButtonShares.setTag(position);
+
+        holder.hButtonUWants.setOnClickListener(this);
+
+        Drawable drawableLeftUWant;
+        if (uWant) {
+            drawableLeftUWant = UWANT_DRAWABLE_ACTIVE;
+        } else {
+            drawableLeftUWant = UWANT_DRAWABLE;
+        }
+
+        holder.hButtonUWants.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUWant, null, null, null);
 
         return convertView;
     }
@@ -171,40 +198,81 @@ public class FeedsAdapter extends BaseAdapter {
 
     private String getTimeAgo(Date when) {
         Resources resources = this.mContext.getResources();
-        StringBuilder builder = new StringBuilder();
 
+        String timeAgo;
         if (when != null) {
-            builder.append(HÁ);
-
             Date now = new Date();
             long diff = now.getTime() - when.getTime();
-            long diffMinutes = diff / (60 * 1000) % 60;
+            int diffMinutes = (int) diff / (60 * 1000);
             if (diffMinutes > 59) {
-                long diffHours = diffMinutes / 60;
+                int diffHours = diffMinutes / 60;
                 if (diffHours > 23) {
-                    long diffDays = diffHours / 24;
+                    int diffDays = diffHours / 24;
                     if (diffDays > 29) {
-                        long diffMonths = diffDays / 30;
+                        int diffMonths = diffDays / 30;
                         if (diffMonths > 11) {
-                            long diffYears = diffMonths / 12;
-                            builder.append(diffYears + resources.getString(ANOS)); // FINALMENTE...
+                            int diffYears = diffMonths / 12;
+                            timeAgo = resources.getQuantityString(YEARS, diffYears, diffYears); // FINALMENTE...
                         } else {
-                            builder.append(diffMonths + resources.getString(MESES));
+                            timeAgo = resources.getQuantityString(MONTHS, diffMonths, diffMonths);
                         }
                     } else {
-                        builder.append(diffDays + resources.getString(DIAS));
+                        timeAgo = resources.getQuantityString(DAYS, diffDays, diffDays);
                     }
                 } else {
-                    builder.append(diffHours + resources.getString(HORAS));
+                    timeAgo = resources.getQuantityString(HOURS, diffHours, diffHours);
                 }
+            } else if (diffMinutes > 0) {
+                timeAgo = resources.getQuantityString(MINUTES, diffMinutes, diffMinutes);
             } else {
-                builder.append(diffMinutes + resources.getString(MINUTOS));
+                timeAgo = resources.getString(DEFAULT_TIME_AGO);
             }
         } else {
-            builder.append(resources.getString(DEFAULT_TIME_AGO));
+            timeAgo = resources.getString(DEFAULT_TIME_AGO);
         }
 
-        return builder.toString();
+        return timeAgo;
+    }
+
+    @Override
+    public void onClick(View view) {
+        int position = (Integer) view.getTag();
+        Action action = getItem(position);
+        long actionId = action.getId();
+
+        RequestModel model = null;
+        switch (view.getId()) {
+            case R.id.adapter_feeds_button_uwants:
+                WantModel wantModel = new WantModel();
+                wantModel.setActionId(actionId);
+                model = wantModel;
+                break;
+
+            case R.id.adapter_feeds_button_comments:
+                break;
+
+            case R.id.adapter_feeds_button_shares:
+                break;
+
+            default:
+                break;
+        }
+
+        if (model != null) {
+            Requester.executeAsync(model);
+        }
+    }
+
+    private static class ViewHolder {
+        ImageView hImageViewPicture;
+        ImageView hImageViewPictureDetail;
+        ImageView hImageViewProduct;
+        TextView hTextViewSystemMessage;
+        TextView hTextViewUserMessage;
+        TextView hTextViewWhen;
+        Button hButtonUWants;
+        Button hButtonComments;
+        Button hButtonShares;
     }
 
 }

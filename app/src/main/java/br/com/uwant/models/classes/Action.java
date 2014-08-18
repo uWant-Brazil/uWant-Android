@@ -16,9 +16,13 @@ public class Action {
         SHARE,
         WANT,
         REPORT,
-        MESSAGE;
+        MESSAGE,
+        ACTIVITY;
     }
 
+    private long id;
+    private boolean uWant;
+    private boolean uShare;
     private String message;
     private String extra;
     private Type type;
@@ -28,6 +32,14 @@ public class Action {
     private int UWantsCount;
     private int commentsCount;
     private int SharesCount;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getMessage() {
         return message;
@@ -99,5 +111,21 @@ public class Action {
 
     public void setSharesCount(int sharesCount) {
         SharesCount = sharesCount;
+    }
+
+    public boolean isuWant() {
+        return uWant;
+    }
+
+    public void setuWant(boolean uWant) {
+        this.uWant = uWant;
+    }
+
+    public boolean isuShare() {
+        return uShare;
+    }
+
+    public void setuShare(boolean uShare) {
+        this.uShare = uShare;
     }
 }

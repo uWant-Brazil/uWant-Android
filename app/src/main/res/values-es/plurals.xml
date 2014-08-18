@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="text_feeds_years">
+        <item quantity="one">hace %d ano</item>
+        <item quantity="many">hace %d anos</item>
+        <item quantity="other">hace %d anos</item>
+    </plurals>
+    <plurals name="text_feeds_months">
+        <item quantity="one">hace %d mês</item>
+        <item quantity="many">hace %d meses</item>
+        <item quantity="other">hace %d meses</item>
+    </plurals>
+    <plurals name="text_feeds_days">
+        <item quantity="one">hace %d dia</item>
+        <item quantity="many">hace %d dias</item>
+        <item quantity="other">hace %d dias</item>
+    </plurals>
+    <plurals name="text_feeds_hours">
+        <item quantity="one">hace %d hora</item>
+        <item quantity="many">hace %d horas</item>
+        <item quantity="other">hace %d horas</item>
+    </plurals>
+    <plurals name="text_feeds_minutes">
+        <item quantity="one">hace %d minuto</item>
+        <item quantity="many">hace %d minutos</item>
+        <item quantity="other">hace %d minutos</item>
+    </plurals>
+</resources>

@@ -13,29 +13,28 @@ import java.util.List;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
-import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.models.ActionsModel;
-import br.com.uwant.models.cloud.models.AuthModel;
+import br.com.uwant.models.cloud.models.FeedsModel;
 import br.com.uwant.utils.DateUtil;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class ActionsRequest extends AbstractRequest<List<Action>> implements IRequest<ActionsModel, List<Action>> {
+public class FeedsRequest extends AbstractRequest<List<Action>> implements IRequest<FeedsModel, List<Action>> {
 
     /**
      * Route da requisição.
      */
-    private static final String ROUTE = "/mobile/notification/list";
+    private static final String ROUTE = "/mobile/action/feeds";
 
     @Override
-    public void executeAsync(ActionsModel data, OnRequestListener listener) {
+    public void executeAsync(FeedsModel data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<ActionsModel> getDataClass() {
-        return ActionsModel.class;
+    public Class<FeedsModel> getDataClass() {
+        return FeedsModel.class;
     }
 
     @Override
@@ -68,7 +67,7 @@ public class ActionsRequest extends AbstractRequest<List<Action>> implements IRe
 
                                 String message = jsonActionObj.get(Requester.ParameterKey.MESSAGE).getAsString();
 
-                                Date when = null;
+                                Date when;
                                 String dateHour = jsonActionObj.get(Requester.ParameterKey.WHEN).getAsString();
                                 try {
                                     when = DateUtil.parse(dateHour, DateUtil.DATE_HOUR_PATTERN);
@@ -88,15 +87,51 @@ public class ActionsRequest extends AbstractRequest<List<Action>> implements IRe
                                 }
                                 action.setId(id);
 
+                                if (jsonActionObj.has(Requester.ParameterKey.WANT)) {
+                                    JsonElement jsonWant = jsonActionObj.get(Requester.ParameterKey.WANT);
+                                    JsonObject jsonWantObj = jsonWant.getAsJsonObject();
+
+                                    if (jsonWantObj.has(Requester.ParameterKey.COUNT)) {
+                                        int uwantsCount = jsonWantObj.get(Requester.ParameterKey.COUNT).getAsInt();
+                                        action.setUWantsCount(uwantsCount);
+                                    }
+
+                                    boolean uWant = false;
+                                    if (jsonWantObj.has(Requester.ParameterKey.UWANT)) {
+                                        uWant = jsonWantObj.get(Requester.ParameterKey.UWANT).getAsBoolean();
+                                    }
+                                    action.setuWant(uWant);
+                                }
+
+                                if (jsonActionObj.has(Requester.ParameterKey.COMMENTS_COUNT)) {
+                                    int commentsCount = jsonActionObj.get(Requester.ParameterKey.COMMENTS_COUNT).getAsInt();
+                                    action.setCommentsCount(commentsCount);
+                                }
+
+                                if (jsonActionObj.has(Requester.ParameterKey.SHARE)) {
+                                    JsonElement jsonWant = jsonActionObj.get(Requester.ParameterKey.SHARE);
+                                    JsonObject jsonShareObj = jsonWant.getAsJsonObject();
+
+                                    if (jsonShareObj.has(Requester.ParameterKey.COUNT)) {
+                                        int shareCount = jsonShareObj.get(Requester.ParameterKey.COUNT).getAsInt();
+                                        action.setSharesCount(shareCount);
+                                    }
+
+                                    boolean uShare = false;
+                                    if (jsonShareObj.has(Requester.ParameterKey.USHARE)) {
+                                        uShare = jsonShareObj.get(Requester.ParameterKey.USHARE).getAsBoolean();
+                                    }
+                                    action.setuShare(uShare);
+                                }
+
                                 String extra;
                                 if (jsonActionObj.has(Requester.ParameterKey.EXTRA)) {
                                     extra = jsonActionObj.get(Requester.ParameterKey.EXTRA).getAsString();
                                     action.setExtra(extra);
                                 }
 
-                                Person person = null;
                                 if (jsonActionObj.has(Requester.ParameterKey.USER_FROM)) {
-                                    person = new Person();
+                                    Person person = new Person();
 
                                     JsonObject jsonUser = jsonActionObj.getAsJsonObject(Requester.ParameterKey.USER_FROM);
 

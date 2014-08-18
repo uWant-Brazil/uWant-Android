@@ -1,19 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/adapter_feeds_relativeLayout_content"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/GRAY_BACKGROUND">
 
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:id="@+id/frameLayout">
+
+            <ImageView
+                android:layout_width="76dp"
+                android:layout_height="76dp"
+                android:id="@+id/adapter_feeds_imageView_picture"
+                android:src="@drawable/ic_semfoto"
+                android:layout_gravity="center_horizontal" />
+
+            <ImageView
+                android:layout_width="76dp"
+                android:layout_height="76dp"
+                android:src="@drawable/ic_comfoto"
+                android:visibility="invisible"
+                android:id="@+id/adapter_feeds_imageView_pictureDetail"
+                android:layout_gravity="center_horizontal" />
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Name adicionou um desejo da loja Americana."
+            android:id="@+id/adapter_feeds_textView_systemMessage"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:gravity="center_vertical" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:id="@+id/adapter_feeds_imageView_product"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/uwant_login"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/adapter_feeds_textView_userMessage"
+            android:layout_margin="20dp"
+            android:gravity="center_horizontal"
+            android:maxLength="140"
+            android:ellipsize="end"
+            android:layout_weight="0"
+            android:text="O meu já está velho, estou aceitando de presente! Viu, Rodrigo? HAHAHAHAHAHAHAHAHAHAHEHEHEHEHEHEHIHIHIHIHIHIHIHI" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="há 2 horas"
+        android:id="@+id/adapter_feeds_textView_when"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="right"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/GRAY_TEXT" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:id="@+id/linearLayout">
 
         <Button
@@ -51,87 +127,4 @@
             android:layout_marginLeft="1dp" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="há 2 horas"
-        android:id="@+id/adapter_feeds_textView_when"
-        android:layout_above="@+id/linearLayout"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp"
-        android:textColor="@color/GRAY_TEXT" />
-
-    <FrameLayout
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:id="@+id/frameLayout">
-
-        <ImageView
-            android:layout_width="76dp"
-            android:layout_height="76dp"
-            android:id="@+id/adapter_feeds_imageView_picture"
-            android:src="@drawable/ic_semfoto"
-            android:layout_gravity="center_horizontal" />
-
-        <ImageView
-            android:layout_width="76dp"
-            android:layout_height="76dp"
-            android:src="@drawable/ic_comfoto"
-            android:visibility="invisible"
-            android:id="@+id/adapter_feeds_imageView_pictureDetail"
-            android:layout_gravity="center_horizontal" />
-
-    </FrameLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="User Name adicionou um desejo da loja Americana."
-        android:id="@+id/adapter_feeds_textView_systemMessage"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/frameLayout"
-        android:layout_toEndOf="@+id/frameLayout"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/frameLayout"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:gravity="center_vertical" />
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/frameLayout"
-        android:layout_above="@+id/adapter_feeds_textView_when"
-        android:gravity="center_vertical">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/adapter_feeds_imageView_product"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/uwant_login"
-            android:layout_weight="1" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/adapter_feeds_textView_userMessage"
-            android:layout_margin="20dp"
-            android:gravity="center_horizontal"
-            android:maxLength="140"
-            android:ellipsize="end"
-            android:text="O meu já está velho, estou aceitando de presente! Viu, Rodrigo? HAHAHAHAHAHAHAHAHAHAHEHEHEHEHEHEHIHIHIHIHIHIHIHI" />
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

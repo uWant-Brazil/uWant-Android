@@ -45,6 +45,8 @@ import br.com.uwant.utils.PictureUtil;
 
 public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener {
 
+    private static final int REQUEST_CONFIGURATIONS = 0x9872;
+
     private FeedsFragment mFeedsFragment;
 
     private DrawerLayout mDrawerLayout;
@@ -62,7 +64,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
 
         mFeedsFragment = new FeedsFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_frameLayout_content, mFeedsFragment, FeedsFragment.TAG);
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_frameLayout_content, mFeedsFragment, FeedsFragment.TAG).commit();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
