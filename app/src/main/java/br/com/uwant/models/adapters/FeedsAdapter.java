@@ -44,12 +44,14 @@ import br.com.uwant.R;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
+import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.RequestModel;
 import br.com.uwant.models.cloud.Requester;
+import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.WantModel;
 import br.com.uwant.utils.PictureUtil;
 
-public class FeedsAdapter extends BaseAdapter implements View.OnClickListener {
+public class FeedsAdapter extends BaseAdapter {
 
     private static final int DEFAULT_TIME_AGO = R.string.text_feeds_just_now;
     private static final int YEARS = R.plurals.text_feeds_years;
@@ -64,10 +66,12 @@ public class FeedsAdapter extends BaseAdapter implements View.OnClickListener {
 
     private final Context mContext;
     private final List<Action> mActions;
+    private final View.OnClickListener mClickListener;
 
-    public FeedsAdapter(Context context, List<Action> actions) {
+    public FeedsAdapter(Context context, List<Action> actions, View.OnClickListener listener) {
         this.mContext = context;
         this.mActions = actions;
+        this.mClickListener = listener;
 
         Resources res = context.getResources();
         DEFAULT_RADIUS = res.getDimension(R.dimen.cardview_default_radius);
@@ -142,7 +146,9 @@ public class FeedsAdapter extends BaseAdapter implements View.OnClickListener {
         holder.hButtonComments.setTag(position);
         holder.hButtonShares.setTag(position);
 
-        holder.hButtonUWants.setOnClickListener(this);
+        holder.hButtonUWants.setOnClickListener(this.mClickListener);
+        holder.hButtonComments.setOnClickListener(this.mClickListener);
+        holder.hButtonShares.setOnClickListener(this.mClickListener);
 
         Drawable drawableLeftUWant;
         if (uWant) {
@@ -232,35 +238,6 @@ public class FeedsAdapter extends BaseAdapter implements View.OnClickListener {
         }
 
         return timeAgo;
-    }
-
-    @Override
-    public void onClick(View view) {
-        int position = (Integer) view.getTag();
-        Action action = getItem(position);
-        long actionId = action.getId();
-
-        RequestModel model = null;
-        switch (view.getId()) {
-            case R.id.adapter_feeds_button_uwants:
-                WantModel wantModel = new WantModel();
-                wantModel.setActionId(actionId);
-                model = wantModel;
-                break;
-
-            case R.id.adapter_feeds_button_comments:
-                break;
-
-            case R.id.adapter_feeds_button_shares:
-                break;
-
-            default:
-                break;
-        }
-
-        if (model != null) {
-            Requester.executeAsync(model);
-        }
     }
 
     private static class ViewHolder {

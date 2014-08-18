@@ -76,6 +76,14 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new LogoffRequest();
                 break;
 
+            case ACTION_SHARE:
+                request = new ActionShareRequest();
+                break;
+
+            case ACTION_LIST_COMMENTS:
+                request = new ActionCommentsRequest();
+                break;
+
             default:
                 request = null;
                 break;

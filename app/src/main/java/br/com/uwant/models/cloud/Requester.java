@@ -56,6 +56,9 @@ public abstract class Requester {
         public static final String SHARE = "share";
         public static final String UWANT = "uWant";
         public static final String USHARE = "uShare";
+        public static final String COMMENTS = "comments";
+        public static final String TEXT = "text";
+        public static final String SINCE = "since";
     }
 
     /**

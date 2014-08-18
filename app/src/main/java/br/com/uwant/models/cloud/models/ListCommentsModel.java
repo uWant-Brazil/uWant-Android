@@ -10,9 +10,13 @@ import br.com.uwant.models.cloud.Requester;
 /**
  * Model para envio dos parâmetros da requisição de obtenção das listas de desejos do usuário.
  */
-public class WantModel extends RequestModel {
+public class ListCommentsModel extends RequestModel {
 
     private Action action;
+
+    public Action getAction() {
+        return action;
+    }
 
     public void setAction(Action action) {
         this.action = action;
@@ -27,7 +31,7 @@ public class WantModel extends RequestModel {
 
     @Override
     protected IRequest.Type getRequestType() {
-        return IRequest.Type.ACTION_WANT;
+        return IRequest.Type.ACTION_LIST_COMMENTS;
     }
 
 }

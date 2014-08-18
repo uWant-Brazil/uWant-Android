@@ -64,7 +64,9 @@ public interface IRequest<K extends RequestModel, T> {
         LOGOFF,
         EXCLUDE_ACCOUNT,
         FEEDS,
-        ACTION_WANT;
+        ACTION_WANT,
+        ACTION_SHARE,
+        ACTION_LIST_COMMENTS;
     }
 
 }
