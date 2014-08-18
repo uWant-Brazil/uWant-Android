@@ -72,6 +72,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new ActionWantRequest();
                 break;
 
+            case LOGOFF:
+                request = new LogoffRequest();
+                break;
+
             default:
                 request = null;
                 break;
