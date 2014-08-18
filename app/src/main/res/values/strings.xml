@@ -51,5 +51,8 @@
     <string name="text_wait">Aguarde...</string>
     <string name="configurations">Configurações</string>
     <string name="text_exclude_account">Sua conta acaba de ser desativada do uWant.</string>
+    <string name="text_report">Reportar</string>
+    <string name="text_no_activities">Não ver atividades</string>
+    <string name="text_exclude_friend">Excluir amigo</string>
 
 </resources>

@@ -31,6 +31,7 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -109,6 +110,7 @@ public class FeedsAdapter extends BaseAdapter {
             holder.hImageViewPicture = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_picture);
             holder.hImageViewPictureDetail = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_pictureDetail);
             holder.hImageViewProduct = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_product);
+            holder.hImageButtonMenu = (ImageButton) convertView.findViewById(R.id.adapter_feeds_imageButton);
             holder.hTextViewSystemMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_systemMessage);
             holder.hTextViewUserMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_userMessage);
             holder.hTextViewWhen = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_when);
@@ -145,10 +147,12 @@ public class FeedsAdapter extends BaseAdapter {
         holder.hButtonUWants.setTag(position);
         holder.hButtonComments.setTag(position);
         holder.hButtonShares.setTag(position);
+        holder.hImageButtonMenu.setTag(position);
 
         holder.hButtonUWants.setOnClickListener(this.mClickListener);
         holder.hButtonComments.setOnClickListener(this.mClickListener);
         holder.hButtonShares.setOnClickListener(this.mClickListener);
+        holder.hImageButtonMenu.setOnClickListener(this.mClickListener);
 
         Drawable drawableLeftUWant;
         if (uWant) {
@@ -244,6 +248,7 @@ public class FeedsAdapter extends BaseAdapter {
         ImageView hImageViewPicture;
         ImageView hImageViewPictureDetail;
         ImageView hImageViewProduct;
+        ImageButton hImageButtonMenu;
         TextView hTextViewSystemMessage;
         TextView hTextViewUserMessage;
         TextView hTextViewWhen;

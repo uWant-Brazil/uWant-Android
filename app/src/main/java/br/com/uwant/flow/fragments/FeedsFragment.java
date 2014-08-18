@@ -3,7 +3,10 @@ package br.com.uwant.flow.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -25,7 +28,7 @@ import br.com.uwant.models.cloud.models.ShareModel;
 import br.com.uwant.models.cloud.models.WantModel;
 
 public class FeedsFragment extends Fragment implements View.OnClickListener,
-        IRequest.OnRequestListener<List<Action>> {
+        IRequest.OnRequestListener<List<Action>>, PopupMenu.OnMenuItemClickListener {
 
     public static final String TAG = "feedsFragment";
     private static final int DEFAULT_START_INDEX = 0;
@@ -35,6 +38,8 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     private List<Action> mActions;
     private FeedsAdapter mFeedsAdapter;
     private GridView mGridView;
+
+    private static View MENU_VIEW;
 
     private final IRequest.OnRequestListener<Action> LISTENER_WANT = new IRequest.OnRequestListener<Action>() {
 
@@ -173,9 +178,21 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
                 toggleShare(action);
                 break;
 
+            case R.id.adapter_feeds_imageButton:
+                openPopUp(view);
+                break;
+
             default:
                 break;
         }
+    }
+
+    private void openPopUp(View v) {
+        PopupMenu popup = new PopupMenu(getActivity(), v);
+        popup.setOnMenuItemClickListener(this);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.feed_actions, popup.getMenu());
+        popup.show();
     }
 
     private void listComments(Action action) {
@@ -203,6 +220,34 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
             action.setUWantsCount(isWanted ? --count : ++count);
             action.setuWant(!isWanted);
             mFeedsAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getGroupId()) {
+            case R.id.group_action:
+                switch (item.getItemId()) {
+                    case R.id.menu_report:
+                        // TODO ...
+                        break;
+                }
+                return true;
+
+            case R.id.group_friend:
+                switch (item.getItemId()) {
+                    case R.id.menu_activities:
+                        // TODO ...
+                        break;
+
+                    case R.id.menu_exclude:
+                        // TODO ...
+                        break;
+                }
+                return true;
+
+            default:
+                return false;
         }
     }
 }

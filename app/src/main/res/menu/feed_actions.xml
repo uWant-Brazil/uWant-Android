@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/group_action">
+        <item android:id="@+id/menu_report"
+            android:title="@string/text_report" />
+    </group>
+
+    <!-- menu group -->
+    <group android:id="@+id/group_friend">
+        <item android:id="@+id/menu_activities"
+            android:title="@string/text_no_activities" />
+
+        <item android:id="@+id/menu_exclude"
+            android:title="@string/text_exclude_friend" />
+    </group>
+
+</menu>
