@@ -18,10 +18,13 @@ import java.util.List;
 import br.com.uwant.R;
 import br.com.uwant.models.adapters.FeedsAdapter;
 import br.com.uwant.models.classes.Action;
-import br.com.uwant.models.classes.Comment;
+import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
+import br.com.uwant.models.cloud.models.ActionReportModel;
+import br.com.uwant.models.cloud.models.BlockFriendModel;
+import br.com.uwant.models.cloud.models.ExcludeFriendModel;
 import br.com.uwant.models.cloud.models.FeedsModel;
 import br.com.uwant.models.cloud.models.ListCommentsModel;
 import br.com.uwant.models.cloud.models.ShareModel;
@@ -35,11 +38,11 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     private static final int DEFAULT_END_INDEX = 20;
     private static final FeedsModel MODEL = new FeedsModel();
 
+    private Action mActionSelected;
     private List<Action> mActions;
     private FeedsAdapter mFeedsAdapter;
     private GridView mGridView;
 
-    private static View MENU_VIEW;
 
     private final IRequest.OnRequestListener<Action> LISTENER_WANT = new IRequest.OnRequestListener<Action>() {
 
@@ -102,6 +105,54 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
 
     };
 
+    private IRequest.OnRequestListener<Boolean> mListenerReport = new IRequest.OnRequestListener<Boolean>() {
+
+        private ProgressFragmentDialog mProgressDialog;
+
+        @Override
+        public void onPreExecute() {
+            mProgressDialog = ProgressFragmentDialog.show(getFragmentManager());
+        }
+
+        @Override
+        public void onExecute(Boolean result) {
+            if (mProgressDialog != null) {
+                mProgressDialog.dismiss();
+            }
+
+            Toast.makeText(getActivity(), "A atividade foi reportada com sucesso.", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onError(RequestError error) {
+            if (mProgressDialog != null) {
+                mProgressDialog.dismiss();
+            }
+
+            Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+    };
+
+    private IRequest.OnRequestListener<Boolean> mListenerExcludeBlock = new IRequest.OnRequestListener<Boolean>() {
+
+        @Override
+        public void onPreExecute() {
+
+        }
+
+        @Override
+        public void onExecute(Boolean result) {
+            updateFeeds();
+        }
+
+        @Override
+        public void onError(RequestError error) {
+            Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,6 +177,10 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
+        updateFeeds();
+    }
+
+    private void updateFeeds() {
         mActions.clear();
         mFeedsAdapter.notifyDataSetChanged();
 
@@ -174,12 +229,12 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
                 ShareModel shareModel = new ShareModel();
                 shareModel.setAction(action);
 
-                Requester.executeAsync(shareModel, LISTENER_WANT);
+                Requester.executeAsync(shareModel, LISTENER_SHARE);
                 toggleShare(action);
                 break;
 
             case R.id.adapter_feeds_imageButton:
-                openPopUp(view);
+                openPopUp(view, action);
                 break;
 
             default:
@@ -187,7 +242,9 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-    private void openPopUp(View v) {
+    private void openPopUp(View v, Action action) {
+        this.mActionSelected = action;
+
         PopupMenu popup = new PopupMenu(getActivity(), v);
         popup.setOnMenuItemClickListener(this);
         MenuInflater inflater = popup.getMenuInflater();
@@ -225,29 +282,50 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getGroupId()) {
-            case R.id.group_action:
-                switch (item.getItemId()) {
-                    case R.id.menu_report:
-                        // TODO ...
-                        break;
-                }
-                return true;
+        if (this.mActionSelected != null) {
+            switch (item.getGroupId()) {
+                case R.id.group_action:
+                    switch (item.getItemId()) {
+                        case R.id.menu_report:
+                            report();
+                            break;
+                    }
+                    return true;
 
-            case R.id.group_friend:
-                switch (item.getItemId()) {
-                    case R.id.menu_activities:
-                        // TODO ...
-                        break;
+                case R.id.group_friend:
+                    switch (item.getItemId()) {
+                        case R.id.menu_activities:
+                            cancelActivities();
+                            break;
 
-                    case R.id.menu_exclude:
-                        // TODO ...
-                        break;
-                }
-                return true;
-
-            default:
-                return false;
+                        case R.id.menu_exclude:
+                            excludeFriend();
+                            break;
+                    }
+                    return true;
+            }
         }
+        return false;
     }
+
+    private void excludeFriend() {
+        Person person = this.mActionSelected.getFrom();
+        ExcludeFriendModel model = new ExcludeFriendModel();
+        model.setPerson(person);
+        Requester.executeAsync(model, this.mListenerExcludeBlock);
+    }
+
+    private void cancelActivities() {
+        Person person = this.mActionSelected.getFrom();
+        BlockFriendModel model = new BlockFriendModel();
+        model.setPerson(person);
+        Requester.executeAsync(model, this.mListenerExcludeBlock);
+    }
+
+    private void report() {
+        ActionReportModel model = new ActionReportModel();
+        model.setAction(this.mActionSelected);
+        Requester.executeAsync(model, this.mListenerReport);
+    }
+
 }

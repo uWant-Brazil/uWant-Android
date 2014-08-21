@@ -8,30 +8,30 @@ import br.com.uwant.models.cloud.RequestModel;
 import br.com.uwant.models.cloud.Requester;
 
 /**
- * Model para envio dos parâmetros da requisição de obtenção das listas de desejos do usuário.
+ * Model para envio dos parâmetros da requisição de autenticação.
  */
-public class WantModel extends RequestModel {
+public class ActionReportModel extends RequestModel {
 
     private Action action;
-
-    public void setAction(Action action) {
-        this.action = action;
-    }
 
     public Action getAction() {
         return action;
     }
 
+    public void setAction(Action action) {
+        this.action = action;
+    }
+
     @Override
     protected JsonObject toJson() {
-        JsonObject json = new JsonObject();
-        json.addProperty(Requester.ParameterKey.ACTION_ID, this.action.getId());
-        return json;
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty(Requester.ParameterKey.ACTION_ID, this.action.getId());
+        return jsonObject;
     }
 
     @Override
     protected IRequest.Type getRequestType() {
-        return IRequest.Type.ACTION_WANT;
+        return IRequest.Type.ACTION_REPORT;
     }
 
 }

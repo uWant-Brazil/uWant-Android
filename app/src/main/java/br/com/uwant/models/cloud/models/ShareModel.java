@@ -18,6 +18,10 @@ public class ShareModel extends RequestModel {
         this.action = action;
     }
 
+    public Action getAction() {
+        return action;
+    }
+
     @Override
     protected JsonObject toJson() {
         JsonObject json = new JsonObject();

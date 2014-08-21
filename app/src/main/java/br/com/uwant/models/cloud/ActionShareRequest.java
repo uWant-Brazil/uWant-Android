@@ -1,20 +1,24 @@
 package br.com.uwant.models.cloud;
 
+import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.cloud.models.ShareModel;
 import br.com.uwant.models.cloud.models.WantModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class ActionShareRequest extends AbstractRequest<Boolean> implements IRequest<ShareModel, Boolean> {
+public class ActionShareRequest extends AbstractRequest<Action> implements IRequest<ShareModel, Action> {
 
     /**
      * Route da requisição.
      */
     private static final String ROUTE = "/mobile/action/share";
 
+    private Action mAction;
+
     @Override
     public void executeAsync(ShareModel data, OnRequestListener listener) {
+        this.mAction = data.getAction();
         execute(data, listener);
     }
 
@@ -29,7 +33,7 @@ public class ActionShareRequest extends AbstractRequest<Boolean> implements IReq
     }
 
     @Override
-    protected Boolean parse(String response) {
-        return true;
+    protected Action parse(String response) {
+        return this.mAction;
     }
 }

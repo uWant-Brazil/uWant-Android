@@ -66,7 +66,10 @@ public interface IRequest<K extends RequestModel, T> {
         FEEDS,
         ACTION_WANT,
         ACTION_SHARE,
-        ACTION_LIST_COMMENTS;
+        ACTION_LIST_COMMENTS,
+        ACTION_REPORT,
+        EXCLUDE_FRIEND,
+        BLOCK_FRIEND;
     }
 
 }

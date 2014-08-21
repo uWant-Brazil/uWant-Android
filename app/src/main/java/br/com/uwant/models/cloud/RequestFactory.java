@@ -84,6 +84,18 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new ActionCommentsRequest();
                 break;
 
+            case ACTION_REPORT:
+                request = new ActionReportRequest();
+                break;
+
+            case BLOCK_FRIEND:
+                request = new FriendBlockRequest();
+                break;
+
+            case EXCLUDE_FRIEND:
+                request = new FriendExcludeRequest();
+                break;
+
             default:
                 request = null;
                 break;
