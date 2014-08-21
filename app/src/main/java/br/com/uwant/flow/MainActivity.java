@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +44,7 @@ import br.com.uwant.models.cloud.models.LogoffModel;
 import br.com.uwant.models.cloud.models.UserSearchModel;
 import br.com.uwant.utils.PictureUtil;
 
-public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener {
+public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     private static final int REQUEST_CONFIGURATIONS = 0x9872;
 
@@ -75,6 +76,9 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         mImageViewPictureDetail = (ImageView) view.findViewById(R.id.drawer_imageView_pictureDetail);
         mTextViewUserName = (TextView) view.findViewById(R.id.drawer_textView_userName);
         mDrawerList.addHeaderView(view);
+
+        final LinearLayout linearLayoutPerfil = (LinearLayout) view.findViewById(R.id.drawer_linearLayout_perfil);
+        linearLayoutPerfil.setOnClickListener(this);
 
         User user = User.getInstance();
         String name = user.getName();
@@ -286,4 +290,16 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.drawer_linearLayout_perfil:
+                Intent it = new Intent(this, PerfilActivity.class);
+                startActivity(it);
+                break;
+
+            default:
+                break;
+        }
+    }
 }
