@@ -77,4 +77,17 @@ public class SocialRegisterRequest extends AbstractRequest<Boolean> implements I
 
         return null;
     }
+
+    @Override
+    protected Boolean debugParse() {
+        Multimedia picture = new Multimedia();
+        picture.setUrl("http://dailysignal.com/wp-content/uploads/armstrong.jpg");
+
+        User user = User.getInstance();
+        user.setLogin("debug_mode");
+        user.setName("Debug Mode # ON");
+        user.setPicture(picture);
+
+        return true;
+    }
 }

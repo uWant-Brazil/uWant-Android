@@ -31,4 +31,9 @@ public class RegisterRequest extends AbstractRequest<Boolean> implements IReques
     protected Boolean parse(String response) {
         return true;
     }
+
+    @Override
+    protected Boolean debugParse() {
+        return parse(null);
+    }
 }

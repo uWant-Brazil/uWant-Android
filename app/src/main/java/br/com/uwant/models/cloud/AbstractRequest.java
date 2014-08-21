@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.errors.DefaultRequestError;
 import br.com.uwant.models.cloud.errors.RequestError;
+import br.com.uwant.utils.DebugUtil;
 
 /**
  * Classe responsável por realizar a comunicação com o WS, enviando os parâmetros e realizando
@@ -46,8 +47,12 @@ public abstract class AbstractRequest<K> {
      * @param listener - Classe que irá ser avisada ao finalizar a requisição.
      */
     protected void execute(RequestModel model, IRequest.OnRequestListener listener) {
-        final AsyncRequest asyncRequest = new AsyncRequest(listener);
-        asyncRequest.execute(model != null ? model.getRequestBody() : null);
+        if (DebugUtil.DEBUG_WITHOUT_REQUEST) {
+            listener.onExecute(debugParse());
+        } else {
+            final AsyncRequest asyncRequest = new AsyncRequest(listener);
+            asyncRequest.execute(model != null ? model.getRequestBody() : null);
+        }
     }
 
     /**
@@ -65,6 +70,13 @@ public abstract class AbstractRequest<K> {
      * @return K - Classe de resposta
      */
     protected abstract K parse(String response);
+
+    /**
+     * Método responsável por retornar a classe de resposta da requisição.
+     * Dentro desse método você deve realizar o pase localmente para debug.
+     * @return
+     */
+    protected abstract K debugParse();
 
     /**
      * Classe que realizará as chamadas ao WS de forma assíncrona.

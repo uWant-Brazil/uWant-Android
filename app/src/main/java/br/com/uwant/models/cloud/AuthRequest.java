@@ -4,6 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.util.UUID;
+
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.models.AuthModel;
@@ -71,6 +73,19 @@ public class AuthRequest extends AbstractRequest<User> implements IRequest<AuthM
                 }
             }
         }
+
+        return user;
+    }
+
+    @Override
+    protected User debugParse() {
+        Multimedia picture = new Multimedia();
+        picture.setUrl("http://dailysignal.com/wp-content/uploads/armstrong.jpg");
+
+        User user = User.getInstance();
+        user.setLogin(mModel.getLogin());
+        user.setName("Debug Mode # ON");
+        user.setPicture(picture);
 
         return user;
     }
