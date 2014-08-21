@@ -69,7 +69,8 @@ public interface IRequest<K extends RequestModel, T> {
         ACTION_LIST_COMMENTS,
         ACTION_REPORT,
         EXCLUDE_FRIEND,
-        BLOCK_FRIEND;
+        BLOCK_FRIEND,
+        DELETE_WISH_LIST;
     }
 
 }

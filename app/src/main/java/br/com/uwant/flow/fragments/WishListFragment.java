@@ -26,18 +26,46 @@ import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
+import br.com.uwant.models.cloud.models.WishListDeleteModel;
 import br.com.uwant.models.cloud.models.WishListModel;
 
 public class WishListFragment extends Fragment implements IRequest.OnRequestListener<List<WishList>>,
         AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private static final int EMPTY_WISH_LIST_COUNT = 4;
+    private static final WishListModel MODEL = new WishListModel();
 
     private List<WishList> mWishLists;
     private WishList mWishListSelected;
     private WishListAdapter mAdapter;
 
     private GridView mGridView;
+    private ProgressFragmentDialog mProgressDialog;
+
+    private final IRequest.OnRequestListener<Boolean> LISTENER_POPUP = new IRequest.OnRequestListener<Boolean>() {
+        @Override
+        public void onPreExecute() {
+            mProgressDialog = ProgressFragmentDialog.show(getFragmentManager());
+        }
+
+        @Override
+        public void onExecute(Boolean result) {
+            if (mProgressDialog != null) {
+                mProgressDialog.dismiss();
+            }
+
+            updateWishList();
+        }
+
+        @Override
+        public void onError(RequestError error) {
+            if (mProgressDialog != null) {
+                mProgressDialog.dismiss();
+            }
+
+            Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +92,11 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
     @Override
     public void onResume() {
         super.onResume();
-        Requester.executeAsync(new WishListModel(), this);
+        updateWishList();
+    }
+
+    private void updateWishList() {
+        Requester.executeAsync(MODEL, this);
     }
 
     @Override
@@ -190,7 +222,9 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
     }
 
     private void delete() {
-        // TODO ...
+        WishListDeleteModel model = new WishListDeleteModel();
+        model.setWishList(this.mWishListSelected);
+        Requester.executeAsync(model, LISTENER_POPUP);
     }
 
     private void edit() {
