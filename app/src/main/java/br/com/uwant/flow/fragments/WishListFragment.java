@@ -3,6 +3,7 @@ package br.com.uwant.flow.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.models.adapters.WishListAdapter;
+import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
@@ -27,21 +29,21 @@ import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.WishListModel;
 
 public class WishListFragment extends Fragment implements IRequest.OnRequestListener<List<WishList>>,
-        AdapterView.OnItemClickListener, SearchView.OnQueryTextListener {
+        AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private static final int EMPTY_WISH_LIST_COUNT = 4;
 
     private List<WishList> mWishLists;
+    private WishList mWishListSelected;
     private WishListAdapter mAdapter;
 
-    private SearchView mSearchView;
     private GridView mGridView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mWishLists = new ArrayList<WishList>(5);
-        mAdapter = new WishListAdapter(getActivity(), mWishLists);
+        mAdapter = new WishListAdapter(getActivity(), mWishLists, this);
     }
 
     @Override
@@ -118,4 +120,81 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
         }
         return false;
     }
+
+    @Override
+    public void onClick(View view) {
+        Integer position = (Integer) view.getTag();
+        WishList wishList = null;
+        if (position != null)
+            wishList = mAdapter.getItem(position);
+
+        switch (view.getId()) {
+            case R.id.adapter_wishlist_imageView_popup:
+                openPopUp(view, wishList);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void openPopUp(View v, WishList wishList) {
+        this.mWishListSelected = wishList;
+
+        PopupMenu popup = new PopupMenu(getActivity(), v);
+        popup.setOnMenuItemClickListener(this);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.wishlist_actions, popup.getMenu());
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        if (mWishListSelected != null) {
+            switch (menuItem.getGroupId()) {
+                case R.id.group_action:
+                    switch (menuItem.getItemId()) {
+                        case R.id.menu_edit:
+                            edit();
+                            break;
+
+                        case R.id.menu_delete:
+                            delete();
+                            break;
+
+                        case R.id.menu_share:
+                            share();
+                            break;
+
+                        case R.id.menu_report:
+                            report();
+                            break;
+
+                        default:
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        return false;
+    }
+
+    private void report() {
+        // TODO ...
+    }
+
+    private void share() {
+        // TODO ...
+    }
+
+    private void delete() {
+        // TODO ...
+    }
+
+    private void edit() {
+        // TODO ...
+    }
+
 }

@@ -17,19 +17,18 @@ import br.com.uwant.R;
 import br.com.uwant.models.classes.Product;
 import br.com.uwant.models.classes.WishList;
 
-/**
- * Created by felipebenezi on 02/08/14.
- */
 public class WishListAdapter extends BaseAdapter implements Filterable {
 
     private final Context mContext;
     private final List<WishList> mWishLists;
     private List<WishList> mFilteredWishLists;
     private Filter mFilter;
+    private View.OnClickListener mListener;
 
-    public WishListAdapter(Context context, List<WishList> wishLists) {
+    public WishListAdapter(Context context, List<WishList> wishLists, View.OnClickListener listener) {
         this.mContext = context;
         this.mWishLists = wishLists;
+        this.mListener = listener;
     }
 
     @Override
@@ -55,23 +54,30 @@ public class WishListAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        ViewHolder holder;
         if (view == null) {
-            // TODO Verificar se com o ViewHolder ficaria melhor!!!!
+            holder = new ViewHolder();
             view = LayoutInflater.from(this.mContext).inflate(R.layout.adapter_wish_list, viewGroup, false);
+            holder.hTextViewTitle = (TextView) view.findViewById(R.id.adapter_wishlist_textView_title);
+            holder.hImageViewProducts = (ImageView) view.findViewById(R.id.adapter_wishlist_imageView_products);
+            holder.hImageViewPopUp = (ImageView) view.findViewById(R.id.adapter_wishlist_imageView_popup);
+            holder.hImageViewPopUp.setOnClickListener(this.mListener);
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
         }
 
-        final TextView textViewTitle = (TextView) view.findViewById(R.id.wishList_adapter_textView_title);
-        final ImageView imageViewProducts = (ImageView) view.findViewById(R.id.wishList_adapter_imageView_products);
+        holder.hImageViewPopUp.setTag(i);
 
         WishList wishList = getItem(i);
         long id = wishList.getId();
         String title = wishList.getTitle();
         List<Product> products = wishList.getProducts();
 
-        textViewTitle.setText(title);
+        holder.hTextViewTitle.setText(title);
         if (id == WishList.EMPTY_ID || products == null || products.size() == 0) {
             // FIXME Trocar a imagem pela correta.
-            imageViewProducts.setImageResource(R.drawable.ic_launcher);
+            holder.hImageViewProducts.setImageResource(R.drawable.ic_perfil_semfoto);
         } else {
             // TODO Como irei gerar as imagens??? :)
         }
@@ -128,4 +134,11 @@ public class WishListAdapter extends BaseAdapter implements Filterable {
             }
         };
     }
+
+    private static class ViewHolder {
+        TextView hTextViewTitle;
+        ImageView hImageViewProducts;
+        ImageView hImageViewPopUp;
+    }
+
 }

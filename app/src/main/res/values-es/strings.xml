@@ -51,5 +51,8 @@
     <string name="text_report">Reportar</string>
     <string name="text_no_activities">Não ver atividades</string>
     <string name="text_exclude_friend">Excluir amigo</string>
+    <string name="text_edit">Editar</string>
+    <string name="text_delete">Deletar</string>
+    <string name="text_share">Compartilhar</string>
 
 </resources>

@@ -20,23 +20,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.uwant.R;
+import br.com.uwant.flow.MainActivity;
+import br.com.uwant.flow.fragments.FriendsCircleFragment;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.WishList;
 
-/**
- * Created by felipebenezi on 03/08/14.
- */
 public class FriendsCircleAdapter extends BaseAdapter implements Filterable {
 
     private final Context mContext;
     private final List<Person> mFriends;
+    private final View.OnClickListener mListener;
     private List<Person> mFilteredFriends;
     private Filter mFilter;
+
+    public FriendsCircleAdapter(Context context, List<Person> friends, View.OnClickListener listener) {
+        this.mContext = context;
+        this.mFriends = friends;
+        this.mListener = listener;
+    }
 
     public FriendsCircleAdapter(Context context, List<Person> friends) {
         this.mContext = context;
         this.mFriends = friends;
+        this.mListener = new FriendsCircleFragment();
     }
 
     @Override
@@ -67,10 +74,14 @@ public class FriendsCircleAdapter extends BaseAdapter implements Filterable {
             holder = new ViewHolder();
             view = LayoutInflater.from(this.mContext).inflate(R.layout.adapter_friends_circle, viewGroup, false);
             holder.hTextViewName = (TextView) view.findViewById(R.id.friendsCircle_adapter_textView_name);
+            holder.hImageViewPopUp = (ImageView) view.findViewById(R.id.friendsCircle_adapter_imageView_popUp);
+            holder.hImageViewPopUp.setOnClickListener(this.mListener);
             view.setTag(holder);
         } else {
             holder = (ViewHolder)view.getTag();
         }
+
+        holder.hImageViewPopUp.setTag(i);
 
         Person person = getItem(i);
         String name = person.getName();
@@ -132,6 +143,7 @@ public class FriendsCircleAdapter extends BaseAdapter implements Filterable {
 
     private static class ViewHolder {
         TextView hTextViewName;
+        ImageView hImageViewPopUp;
     }
 
 }

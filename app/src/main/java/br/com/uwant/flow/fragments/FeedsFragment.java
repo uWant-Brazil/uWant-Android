@@ -210,7 +210,9 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onClick(View view) {
         Integer position = (Integer) view.getTag();
-        final Action action = mFeedsAdapter.getItem(position);;
+        Action action = null;
+        if (position != null)
+            action = mFeedsAdapter.getItem(position);
 
         switch (view.getId()) {
             case R.id.adapter_feeds_button_uwants:

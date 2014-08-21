@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -24,29 +25,82 @@ import java.util.List;
 import br.com.uwant.R;
 import br.com.uwant.flow.ContactsActivity;
 import br.com.uwant.models.adapters.FriendsCircleAdapter;
+import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
+import br.com.uwant.models.cloud.models.ActionReportModel;
+import br.com.uwant.models.cloud.models.BlockFriendModel;
+import br.com.uwant.models.cloud.models.ExcludeFriendModel;
 import br.com.uwant.models.cloud.models.FriendsCircleModel;
 
 public class FriendsCircleFragment extends Fragment implements IRequest.OnRequestListener<List<Person>>,
-        AdapterView.OnItemClickListener, SearchView.OnQueryTextListener {
+        AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private static final int RQ_ADD_CONTACTS = 1230;
+    private static final FriendsCircleModel MODEL = new FriendsCircleModel();
 
     private List<Person> mFriends;
+    private Person mPersonSelected;
     private FriendsCircleAdapter mAdapter;
 
-    private SearchView mSearchView;
     private ListView mListView;
+
+    private IRequest.OnRequestListener<Boolean> mListenerReport = new IRequest.OnRequestListener<Boolean>() {
+
+        private ProgressFragmentDialog mProgressDialog;
+
+        @Override
+        public void onPreExecute() {
+            mProgressDialog = ProgressFragmentDialog.show(getFragmentManager());
+        }
+
+        @Override
+        public void onExecute(Boolean result) {
+            if (mProgressDialog != null) {
+                mProgressDialog.dismiss();
+            }
+
+            Toast.makeText(getActivity(), "A atividade foi reportada com sucesso.", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onError(RequestError error) {
+            if (mProgressDialog != null) {
+                mProgressDialog.dismiss();
+            }
+
+            Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+    };
+
+    private IRequest.OnRequestListener<Boolean> mListenerExcludeBlock = new IRequest.OnRequestListener<Boolean>() {
+
+        @Override
+        public void onPreExecute() {
+
+        }
+
+        @Override
+        public void onExecute(Boolean result) {
+            updateFriends();
+        }
+
+        @Override
+        public void onError(RequestError error) {
+            Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mFriends = new ArrayList<Person>(50);
-        this.mAdapter = new FriendsCircleAdapter(getActivity(), this.mFriends);
+        this.mAdapter = new FriendsCircleAdapter(getActivity(), this.mFriends, this);
     }
 
     @Override
@@ -68,7 +122,11 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
     @Override
     public void onResume() {
         super.onResume();
-        Requester.executeAsync(new FriendsCircleModel(), this);
+        updateFriends();
+    }
+
+    private void updateFriends() {
+        Requester.executeAsync(MODEL, this);
     }
 
     @Override
@@ -123,4 +181,64 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
         }
         return false;
     }
+
+    @Override
+    public void onClick(View view) {
+        Integer position = (Integer) view.getTag();
+        Person person = null;
+        if (position != null)
+            person = mAdapter.getItem(position);
+
+        switch (view.getId()) {
+            case R.id.friendsCircle_adapter_imageView_popUp:
+                openPopUp(view, person);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void openPopUp(View v, Person person) {
+        this.mPersonSelected = person;
+
+        PopupMenu popup = new PopupMenu(getActivity(), v);
+        popup.setOnMenuItemClickListener(this);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.friends_circle_actions, popup.getMenu());
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        if (this.mPersonSelected != null) {
+            switch (item.getGroupId()) {
+                case R.id.group_friend:
+                    switch (item.getItemId()) {
+                        case R.id.menu_activities:
+                            cancelActivities();
+                            break;
+
+                        case R.id.menu_exclude:
+                            excludeFriend();
+                            break;
+                    }
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private void excludeFriend() {
+        ExcludeFriendModel model = new ExcludeFriendModel();
+        model.setPerson(this.mPersonSelected);
+        Requester.executeAsync(model, this.mListenerExcludeBlock);
+    }
+
+    private void cancelActivities() {
+        BlockFriendModel model = new BlockFriendModel();
+        model.setPerson(this.mPersonSelected);
+        Requester.executeAsync(model, this.mListenerExcludeBlock);
+    }
+
 }

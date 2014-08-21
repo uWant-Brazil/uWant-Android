@@ -10,14 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/wishlist_adapter_background"
-        android:id="@+id/wishList_adapter_imageView_products" />
+        android:id="@+id/adapter_wishlist_imageView_products" />
 
     <LinearLayout
         android:background="@color/GRAY_WITH_TRANSPARENCY_BACKGROUND"
         android:layout_gravity="left|top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp">
+        android:padding="5dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
         <TextView
             android:layout_width="match_parent"
@@ -26,7 +28,13 @@
             android:text="Wish List Name"
             android:textSize="12sp"
             android:textColor="@color/WHITE"
-            android:id="@+id/wishList_adapter_textView_title" />
+            android:id="@+id/adapter_wishlist_textView_title" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/adapter_wishlist_imageView_popup"
+            android:src="@drawable/abc_ic_menu_moreoverflow_normal_holo_dark" />
 
     </LinearLayout>
 

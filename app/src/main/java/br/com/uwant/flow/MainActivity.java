@@ -31,6 +31,7 @@ import java.util.List;
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
 import br.com.uwant.flow.fragments.FeedsFragment;
+import br.com.uwant.flow.fragments.FriendsCircleFragment;
 import br.com.uwant.flow.fragments.ProgressFragmentDialog;
 import br.com.uwant.models.adapters.DrawerAdapter;
 import br.com.uwant.models.adapters.FriendsCircleAdapter;
