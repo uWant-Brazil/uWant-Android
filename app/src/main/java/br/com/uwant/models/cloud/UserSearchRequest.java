@@ -99,4 +99,17 @@ public class UserSearchRequest extends AbstractRequest<List<Person>> implements 
 
         return persons;
     }
+
+    @Override
+    protected List<Person> debugParse() {
+        int friendsSize = (int)(Math.random() * 15);
+        List<Person> persons = new ArrayList<Person>(friendsSize + 5);
+        for (int i = 0;i < friendsSize;i++) {
+            Person person = new Person();
+            person.setLogin("search.login." + i);
+            person.setName("Name @ " + i);
+            persons.add(person);
+        }
+        return persons;
+    }
 }

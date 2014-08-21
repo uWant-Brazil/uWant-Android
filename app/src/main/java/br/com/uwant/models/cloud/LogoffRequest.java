@@ -38,4 +38,9 @@ public class LogoffRequest extends AbstractRequest<Boolean> implements IRequest<
     protected Boolean parse(String response) {
         return true;
     }
+
+    @Override
+    protected Boolean debugParse() {
+        return parse(null);
+    }
 }

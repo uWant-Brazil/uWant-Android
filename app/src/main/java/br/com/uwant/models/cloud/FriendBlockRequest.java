@@ -32,4 +32,9 @@ public class FriendBlockRequest extends AbstractRequest<Boolean> implements IReq
     protected Boolean parse(String response) {
         return true;
     }
+
+    @Override
+    protected Boolean debugParse() {
+        return parse(null);
+    }
 }

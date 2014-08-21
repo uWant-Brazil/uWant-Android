@@ -41,4 +41,9 @@ public class WishListDeleteRequest extends AbstractRequest<Boolean> implements I
     protected Boolean parse(String response) {
         return true;
     }
+
+    @Override
+    protected Boolean debugParse() {
+        return parse(null);
+    }
 }

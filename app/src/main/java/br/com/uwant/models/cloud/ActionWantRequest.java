@@ -45,4 +45,9 @@ public class ActionWantRequest extends AbstractRequest<Action> implements IReque
     protected Action parse(String response) {
         return this.action;
     }
+
+    @Override
+    protected Action debugParse() {
+        return parse(null);
+    }
 }

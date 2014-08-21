@@ -36,4 +36,9 @@ public class ActionShareRequest extends AbstractRequest<Action> implements IRequ
     protected Action parse(String response) {
         return this.mAction;
     }
+
+    @Override
+    protected Action debugParse() {
+        return parse(null);
+    }
 }

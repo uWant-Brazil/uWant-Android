@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -120,6 +121,29 @@ public class ActionCommentsRequest extends AbstractRequest<Action> implements IR
                     }
                 }
             }
+        }
+
+        this.mAction.setComments(comments);
+        return this.mAction;
+    }
+
+    @Override
+    protected Action debugParse() {
+        List<Comment> comments = new ArrayList<Comment>();
+        for (int i = 0;i < this.mAction.getCommentsCount();i++) {
+            Person who = new Person();
+            who.setLogin("who.login." + i);
+            who.setName("Name # " + i);
+
+            Calendar since = Calendar.getInstance();
+            since.add(Calendar.MINUTE, (-1) * (i + 1));
+
+            Comment comment = new Comment();
+            comment.setId(i);
+            comment.setText("Text @ " + i);
+            comment.setWho(who);
+            comment.setSince(since.getTime());
+            comments.add(comment);
         }
 
         this.mAction.setComments(comments);

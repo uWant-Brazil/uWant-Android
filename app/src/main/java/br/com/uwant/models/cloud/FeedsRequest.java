@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -171,6 +172,34 @@ public class FeedsRequest extends AbstractRequest<List<Action>> implements IRequ
             }
         }
 
+        return actions;
+    }
+
+    @Override
+    protected List<Action> debugParse() {
+        int actionsSize = (int)(Math.random() * 25) + 1;
+        List<Action> actions = new ArrayList<Action>(actionsSize + 5);
+        for (int i = 0;i < actionsSize;i++) {
+            Person from = new Person();
+            from.setLogin("from.login." + i);
+            from.setName("Name # " + i);
+
+            Calendar when = Calendar.getInstance();
+            when.add(Calendar.MINUTE, (-1) * ((i * 3) + 1));
+
+            Action action = new Action();
+            action.setId(i);
+            action.setType(Action.Type.ACTIVITY);
+            action.setuWant(i % 3 == 0);
+            action.setUWantsCount(i % 6 == 0 ? i + 1 : i - 1);
+            action.setSharesCount(i % 5 == 0 ? i + 1 : i - 1);
+            action.setExtra("Text Extra # " + i);
+            action.setCommentsCount(i % 5 == 0 ? i + 1 : i - 1);
+            action.setFrom(from);
+            action.setMessage("Message @ " + i);
+            action.setWhen(when.getTime());
+            actions.add(action);
+        }
         return actions;
     }
 }
