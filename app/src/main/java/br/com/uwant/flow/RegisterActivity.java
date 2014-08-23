@@ -5,14 +5,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,9 +22,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
 import org.apache.http.impl.cookie.DateUtils;
 
 import java.io.File;
@@ -46,8 +35,8 @@ import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.RegisterModel;
-import br.com.uwant.models.cloud.models.SocialRegisterModel;
+import br.com.uwant.models.cloud.models.RegisterModelAbstract;
+import br.com.uwant.models.cloud.models.SocialRegisterModelAbstract;
 import br.com.uwant.utils.KeyboardUtil;
 import br.com.uwant.utils.PictureUtil;
 
@@ -277,7 +266,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
 
 
-        RegisterModel model = new RegisterModel();
+        RegisterModelAbstract model = new RegisterModelAbstract();
         model.setLogin(login);
         model.setPassword(password);
         model.setName(name);
@@ -286,8 +275,8 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         model.setGender(mGender);
 
         Intent it = getIntent();
-        if (it.hasExtra(SocialRegisterModel.EXTRA)) {
-            SocialRegisterModel socialModel = (SocialRegisterModel) it.getSerializableExtra(SocialRegisterModel.EXTRA);
+        if (it.hasExtra(SocialRegisterModelAbstract.EXTRA)) {
+            SocialRegisterModelAbstract socialModel = (SocialRegisterModelAbstract) it.getSerializableExtra(SocialRegisterModelAbstract.EXTRA);
             model.setSocialModel(socialModel);
         }
 

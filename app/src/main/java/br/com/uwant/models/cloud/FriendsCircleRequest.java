@@ -9,18 +9,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
-import br.com.uwant.models.classes.WishList;
-import br.com.uwant.models.cloud.models.FriendsCircleModel;
-import br.com.uwant.models.cloud.models.WishListModel;
+import br.com.uwant.models.cloud.models.FriendsCircleModelAbstract;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class FriendsCircleRequest extends AbstractRequest<List<Person>> implements IRequest<FriendsCircleModel, List<Person>> {
+public class FriendsCircleRequest extends AbstractRequest<List<Person>> implements IRequest<FriendsCircleModelAbstract, List<Person>> {
 
     /**
      * Route da requisição.
@@ -28,13 +25,13 @@ public class FriendsCircleRequest extends AbstractRequest<List<Person>> implemen
     private static final String ROUTE = "/mobile/user/circle/list";
 
     @Override
-    public void executeAsync(FriendsCircleModel data, OnRequestListener listener) {
+    public void executeAsync(FriendsCircleModelAbstract data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<FriendsCircleModel> getDataClass() {
-        return FriendsCircleModel.class;
+    public Class<FriendsCircleModelAbstract> getDataClass() {
+        return FriendsCircleModelAbstract.class;
     }
 
     @Override

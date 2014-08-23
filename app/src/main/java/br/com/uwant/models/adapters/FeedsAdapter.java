@@ -27,10 +27,8 @@ import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,11 +43,6 @@ import br.com.uwant.R;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
-import br.com.uwant.models.cloud.IRequest;
-import br.com.uwant.models.cloud.RequestModel;
-import br.com.uwant.models.cloud.Requester;
-import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.WantModel;
 import br.com.uwant.utils.PictureUtil;
 
 public class FeedsAdapter extends BaseAdapter {

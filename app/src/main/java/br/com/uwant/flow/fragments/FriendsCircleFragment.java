@@ -9,13 +9,11 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,22 +23,20 @@ import java.util.List;
 import br.com.uwant.R;
 import br.com.uwant.flow.ContactsActivity;
 import br.com.uwant.models.adapters.FriendsCircleAdapter;
-import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.ActionReportModel;
-import br.com.uwant.models.cloud.models.BlockFriendModel;
-import br.com.uwant.models.cloud.models.ExcludeFriendModel;
-import br.com.uwant.models.cloud.models.FriendsCircleModel;
+import br.com.uwant.models.cloud.models.BlockFriendModelAbstract;
+import br.com.uwant.models.cloud.models.ExcludeFriendModelAbstract;
+import br.com.uwant.models.cloud.models.FriendsCircleModelAbstract;
 
 public class FriendsCircleFragment extends Fragment implements IRequest.OnRequestListener<List<Person>>,
         AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private static final int RQ_ADD_CONTACTS = 1230;
-    private static final FriendsCircleModel MODEL = new FriendsCircleModel();
+    private static final FriendsCircleModelAbstract MODEL = new FriendsCircleModelAbstract();
 
     private List<Person> mFriends;
     private Person mPersonSelected;
@@ -230,13 +226,13 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
     }
 
     private void excludeFriend() {
-        ExcludeFriendModel model = new ExcludeFriendModel();
+        ExcludeFriendModelAbstract model = new ExcludeFriendModelAbstract();
         model.setPerson(this.mPersonSelected);
         Requester.executeAsync(model, this.mListenerExcludeBlock);
     }
 
     private void cancelActivities() {
-        BlockFriendModel model = new BlockFriendModel();
+        BlockFriendModelAbstract model = new BlockFriendModelAbstract();
         model.setPerson(this.mPersonSelected);
         Requester.executeAsync(model, this.mListenerExcludeBlock);
     }

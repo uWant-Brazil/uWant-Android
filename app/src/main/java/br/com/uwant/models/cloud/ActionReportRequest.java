@@ -1,12 +1,11 @@
 package br.com.uwant.models.cloud;
 
-import br.com.uwant.models.cloud.models.ActionReportModel;
-import br.com.uwant.models.cloud.models.ShareModel;
+import br.com.uwant.models.cloud.models.ActionReportModelAbstract;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class ActionReportRequest extends AbstractRequest<Boolean> implements IRequest<ActionReportModel, Boolean> {
+public class ActionReportRequest extends AbstractRequest<Boolean> implements IRequest<ActionReportModelAbstract, Boolean> {
 
     /**
      * Route da requisição.
@@ -14,13 +13,13 @@ public class ActionReportRequest extends AbstractRequest<Boolean> implements IRe
     private static final String ROUTE = "/mobile/action/report";
 
     @Override
-    public void executeAsync(ActionReportModel data, OnRequestListener listener) {
+    public void executeAsync(ActionReportModelAbstract data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<ActionReportModel> getDataClass() {
-        return ActionReportModel.class;
+    public Class<ActionReportModelAbstract> getDataClass() {
+        return ActionReportModelAbstract.class;
     }
 
     @Override

@@ -8,7 +8,6 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,19 +23,18 @@ import java.util.List;
 import br.com.uwant.R;
 import br.com.uwant.flow.WishListActivity;
 import br.com.uwant.models.adapters.WishListAdapter;
-import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.WishListDeleteModel;
-import br.com.uwant.models.cloud.models.WishListModel;
+import br.com.uwant.models.cloud.models.WishListDeleteModelAbstract;
+import br.com.uwant.models.cloud.models.WishListModelAbstract;
 
 public class WishListFragment extends Fragment implements IRequest.OnRequestListener<List<WishList>>,
         AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private static final int EMPTY_WISH_LIST_COUNT = 4;
-    private static final WishListModel MODEL = new WishListModel();
+    private static final WishListModelAbstract MODEL = new WishListModelAbstract();
 
     private List<WishList> mWishLists;
     private WishList mWishListSelected;
@@ -233,7 +231,7 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
     }
 
     private void delete() {
-        WishListDeleteModel model = new WishListDeleteModel();
+        WishListDeleteModelAbstract model = new WishListDeleteModelAbstract();
         model.setWishList(this.mWishListSelected);
         Requester.executeAsync(model, LISTENER_POPUP);
     }

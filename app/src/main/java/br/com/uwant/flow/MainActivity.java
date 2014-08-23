@@ -31,7 +31,6 @@ import java.util.List;
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
 import br.com.uwant.flow.fragments.FeedsFragment;
-import br.com.uwant.flow.fragments.FriendsCircleFragment;
 import br.com.uwant.flow.fragments.ProgressFragmentDialog;
 import br.com.uwant.models.adapters.DrawerAdapter;
 import br.com.uwant.models.adapters.FriendsCircleAdapter;
@@ -41,8 +40,8 @@ import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.LogoffModel;
-import br.com.uwant.models.cloud.models.UserSearchModel;
+import br.com.uwant.models.cloud.models.LogoffModelAbstract;
+import br.com.uwant.models.cloud.models.UserSearchModelAbstract;
 import br.com.uwant.utils.PictureUtil;
 
 public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -169,7 +168,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                     mSearchFriends.clear();
                     mSearchAdapter.notifyDataSetChanged();
 
-                    UserSearchModel model = new UserSearchModel();
+                    UserSearchModelAbstract model = new UserSearchModelAbstract();
                     model.setQuery(s.toString());
                     Requester.executeAsync(model, this.searchListener);
                 }
@@ -238,7 +237,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     }
 
     private void performLogoff() {
-        LogoffModel model = new LogoffModel();
+        LogoffModelAbstract model = new LogoffModelAbstract();
         Requester.executeAsync(model, new IRequest.OnRequestListener() {
 
             public ProgressFragmentDialog progressFragmentDialog;

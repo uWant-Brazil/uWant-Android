@@ -34,7 +34,7 @@ public abstract class AbstractRequest<K> {
     /**
      * Padrão das URLs de requisição.
      */
-    public static final String URL_COMMON = "http://192.168.1.10:9000/v1";
+    public static final String URL_COMMON = "http://192.168.1.7:9000/v1";
 
     /**
      * Header responsável por conter o token de autenticação para requisições.
@@ -46,12 +46,19 @@ public abstract class AbstractRequest<K> {
      * @param model - RequestModel com os parâmetros de envio.
      * @param listener - Classe que irá ser avisada ao finalizar a requisição.
      */
-    protected void execute(RequestModel model, IRequest.OnRequestListener listener) {
+    protected void execute(AbstractRequestModel model, IRequest.OnRequestListener listener) {
         if (DebugUtil.DEBUG_WITHOUT_REQUEST) {
             listener.onExecute(debugParse());
+        } else if (model instanceof MultipartDataModelAbstract) {
+            MultipartDataModelAbstract mdma = (MultipartDataModelAbstract) model;
+
+            final AsyncMultipartDataRequest asyncRequest = new AsyncMultipartDataRequest(listener);
+//            asyncRequest.execute(mdma.getRequestBody());
         } else {
+            JSONRequestModel jrm = (JSONRequestModel) model;
+
             final AsyncRequest asyncRequest = new AsyncRequest(listener);
-            asyncRequest.execute(model != null ? model.getRequestBody() : null);
+            asyncRequest.execute(jrm.getRequestBody());
         }
     }
 
@@ -208,4 +215,48 @@ public abstract class AbstractRequest<K> {
 
     }
 
+    private class AsyncMultipartDataRequest extends AsyncTask<MultipartDataModelAbstract, Void, K> {
+
+        /**
+         * Timeout padrão para a requisição em minutos.
+         */
+        private static final long DEFAULT_TIMEOUT = 2;
+
+        /**
+         * Classe responsável por montar a classe de requisição.
+         */
+        private OkHttpClient mClient;
+
+        /**
+         * Listener para os eventos da requisição.
+         */
+        private IRequest.OnRequestListener<K> mListener;
+
+        /**
+         * Resposta gerada pelo WS após a requisição.
+         */
+        private String mResponse;
+
+        public AsyncMultipartDataRequest(IRequest.OnRequestListener<K> listener) {
+            this.mListener = listener;
+            mClient = new OkHttpClient();
+            mClient.setConnectTimeout(DEFAULT_TIMEOUT, TimeUnit.MINUTES);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected K doInBackground(MultipartDataModelAbstract... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(K k) {
+            super.onPostExecute(k);
+        }
+
+    }
 }

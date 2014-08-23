@@ -12,14 +12,12 @@ import java.util.List;
 
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
-import br.com.uwant.models.classes.WishList;
-import br.com.uwant.models.cloud.models.UserSearchModel;
-import br.com.uwant.models.cloud.models.WishListModel;
+import br.com.uwant.models.cloud.models.UserSearchModelAbstract;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class UserSearchRequest extends AbstractRequest<List<Person>> implements IRequest<UserSearchModel, List<Person>> {
+public class UserSearchRequest extends AbstractRequest<List<Person>> implements IRequest<UserSearchModelAbstract, List<Person>> {
 
     /**
      * Route da requisição.
@@ -27,13 +25,13 @@ public class UserSearchRequest extends AbstractRequest<List<Person>> implements 
     private static final String ROUTE = "/mobile/user/search";
 
     @Override
-    public void executeAsync(UserSearchModel data, OnRequestListener listener) {
+    public void executeAsync(UserSearchModelAbstract data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<UserSearchModel> getDataClass() {
-        return UserSearchModel.class;
+    public Class<UserSearchModelAbstract> getDataClass() {
+        return UserSearchModelAbstract.class;
     }
 
     @Override

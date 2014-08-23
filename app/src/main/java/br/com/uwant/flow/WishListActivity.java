@@ -9,13 +9,18 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.lucasr.twowayview.TwoWayView;
@@ -28,14 +33,19 @@ import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
 import br.com.uwant.flow.fragments.ProgressFragmentDialog;
 import br.com.uwant.models.adapters.WishListProductAdapter;
+import br.com.uwant.models.classes.Manufacturer;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Product;
+import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
+import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
+import br.com.uwant.models.cloud.models.WishListCreateModelAbstract;
+import br.com.uwant.models.cloud.models.WishListProductPicture;
 import br.com.uwant.utils.PictureUtil;
 
 public class WishListActivity extends ActionBarActivity implements View.OnClickListener,
-        IRequest.OnRequestListener<Boolean> {
+        IRequest.OnRequestListener<List<Product>> {
 
     private static final int REQUEST_CAMERA = 984;
     private static final int REQUEST_GALLERY = 989;
@@ -48,8 +58,10 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
     private EditText mEditTextComment;
     private EditText mEditTextStore;
     private EditText mEditTextWishList;
+    private EditText mEditTextLink;
     private ProgressFragmentDialog mProgressDialog;
     private TwoWayView mTwoWayView;
+    private AlertFragmentDialog mAlertLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,11 +105,49 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
                 return true;
 
             case R.id.menu_wishlist_accept:
-                // TODO Requisição...
+                verify();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void verify() {
+        String store = mEditTextStore.getText().toString();
+        String comment = mEditTextComment.getText().toString();
+        String wishListName = mEditTextWishList.getText().toString();
+
+        if (!store.isEmpty()
+                && !comment.isEmpty()
+                && !wishListName.isEmpty()
+                && !mProducts.isEmpty()) {
+            WishList wishList = (WishList) mEditTextWishList.getTag();
+            if (wishList == null) {
+                // Criar lista de desejos
+                for (Product product : this.mProducts) {
+                    Manufacturer manufacturer = new Manufacturer();
+                    manufacturer.setName(store);
+                    product.setManufacturer(manufacturer);
+                    product.setName("Product#" + mProducts.indexOf(product));
+                    product.setNickName("Product#" + mProducts.indexOf(product));
+                }
+
+                wishList = new WishList();
+                wishList.setTitle(wishListName);
+                wishList.setDescription(comment);
+
+                WishListCreateModelAbstract model = new WishListCreateModelAbstract();
+                model.setWishList(wishList);
+                model.setProducts(this.mProducts);
+                Requester.executeAsync(model, this);
+            } else {
+                // Atualizar produtos da lista de desejos
+                // O comentário virá a mensagem(EXTRA) para o feed na atualização...
+
+            }
+        } else {
+            Toast.makeText(this, R.string.text_field_all_fields_correctly, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -135,6 +185,17 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
         Multimedia multimedia = new Multimedia();
         multimedia.setUri(Uri.fromFile(pictureFile));
 
+        fillProduct(multimedia);
+    }
+
+    private void saveProduct(String url) {
+        Multimedia multimedia = new Multimedia();
+        multimedia.setUrl(url);
+
+        fillProduct(multimedia);
+    }
+
+    private void fillProduct(Multimedia multimedia) {
         Product product = new Product();
         product.setPicture(multimedia);
         this.mProducts.add(product);
@@ -142,8 +203,8 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
 
         if (!mTwoWayView.isShown()) {
             mTwoWayView.setVisibility(View.VISIBLE);
-            ImageView imageViewPresent = (ImageView) findViewById(R.id.wishList_imageView_present);
-            imageViewPresent.setVisibility(View.GONE);
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.wishList_linearLayout_present);
+            linearLayout.setVisibility(View.GONE);
         }
     }
 
@@ -153,7 +214,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
             case R.id.wishList_imageButton_picture:
                 mLastProductPicture = new File(Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES),
-                        "product-" + System.currentTimeMillis());
+                        "uw-product-" + System.currentTimeMillis() + ".jpg");
 
                 PictureUtil.takePicture(this, this.mLastProductPicture, REQUEST_CAMERA);
                 break;
@@ -162,8 +223,67 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
                 PictureUtil.openGallery(this, REQUEST_GALLERY);
                 break;
 
+            case R.id.wishList_imageButton_link:
+                if (this.mEditTextLink == null) {
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    params.setMargins(5, 5, 5, 5);
+
+                    mEditTextLink = new EditText(this);
+                    mEditTextLink.setLayoutParams(params);
+                    mEditTextLink.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    mEditTextLink.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
+                    mEditTextLink.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+                        @Override
+                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                                if (mAlertLink != null) {
+                                    mAlertLink.dismiss();
+                                }
+
+                                loadLink();
+                                return true;
+                            }
+
+                            return false;
+                        }
+
+                    });
+                } else {
+                    this.mEditTextLink.setText("");
+                }
+
+                DialogInterface.OnClickListener listenerP = new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        loadLink();
+                    }
+
+                };
+
+                mAlertLink = AlertFragmentDialog.create(
+                        getString(R.string.app_name),
+                        mEditTextLink,
+                        getString(R.string.text_ok),
+                        listenerP,
+                        getString(R.string.text_cancel),
+                        null
+                );
+                mAlertLink.show(getSupportFragmentManager(), "link_tag");
+                break;
+
             default:
                 break;
+        }
+    }
+
+    private void loadLink() {
+        String url = mEditTextLink.getText().toString();
+        if (!url.isEmpty()) {
+            saveProduct(url);
+        } else {
+            Toast.makeText(this, R.string.text_field_all_fields_correctly, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -173,10 +293,14 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
     }
 
     @Override
-    public void onExecute(Boolean result) {
+    public void onExecute(List<Product> result) {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
+
+        WishListProductPicture model = new WishListProductPicture();
+        model.setProducts(result);
+        Requester.executeAsync(model);
 
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
 
@@ -188,7 +312,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
         };
 
         AlertFragmentDialog alertDialog = AlertFragmentDialog.create(getString(R.string.text_attention),
-                "A sua lista de desejos foi criada com sucesso.",
+                getString(R.string.text_wishlist_created),
                 getString(R.string.text_ok),
                 listener);
         alertDialog.show(getSupportFragmentManager(), "heads_up_wihlist");

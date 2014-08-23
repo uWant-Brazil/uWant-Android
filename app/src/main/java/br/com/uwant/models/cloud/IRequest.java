@@ -7,7 +7,7 @@ import br.com.uwant.models.cloud.errors.RequestError;
  * @param <K> - RequestModel para envio
  * @param <T> - Classe para resposta
  */
-public interface IRequest<K extends RequestModel, T> {
+public interface IRequest<K extends AbstractRequestModel, T> {
 
     /**
      * Método responsável por iniciar o processo de integração.
@@ -70,7 +70,9 @@ public interface IRequest<K extends RequestModel, T> {
         ACTION_REPORT,
         EXCLUDE_FRIEND,
         BLOCK_FRIEND,
-        DELETE_WISH_LIST;
+        DELETE_WISH_LIST,
+        CREATE_WISH_LIST,
+        WISH_LIST_PRODUCT_PICTURE;
     }
 
 }

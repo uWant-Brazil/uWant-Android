@@ -1,9 +1,5 @@
 package br.com.uwant.models.cloud;
 
-import android.app.Activity;
-
-import br.com.uwant.flow.fragments.WishListFragment;
-
 /**
  * Classe utilitária responsável por realizar e configurar toda a chamada ao WS.
  * Esta classe deve ser executada a partir de classes que irão realizar as chamadas da requisição,
@@ -59,6 +55,10 @@ public abstract class Requester {
         public static final String COMMENTS = "comments";
         public static final String TEXT = "text";
         public static final String SINCE = "since";
+        public static final String PRODUCTS = "products";
+        public static final String NICK_NAME = "nickName";
+        public static final String MANUFACTURER = "manufacturer";
+        public static final String MULTIMEDIA_PRODUCT = "multimediaProduct";
     }
 
     /**
@@ -67,7 +67,7 @@ public abstract class Requester {
      * @param model - RequestModel com os parâmetros.
      * @param listener - OnRequestListener para os eventos da requisição.
      */
-    public static void executeAsync(RequestModel model, IRequest.OnRequestListener listener) {
+    public static void executeAsync(AbstractRequestModel model, IRequest.OnRequestListener listener) {
         RequestFactory factory = RequestFactory.getInstance();
         IRequest request = factory.get(model.getRequestType());
 
@@ -88,7 +88,7 @@ public abstract class Requester {
      * nenhum lister necessita ser passado para saber os passos da requisição.
      * @param model - RequestModel com os parâmetros.
      */
-    public static void executeAsync(RequestModel model) {
+    public static void executeAsync(AbstractRequestModel model) {
         executeAsync(model, null);
     }
 

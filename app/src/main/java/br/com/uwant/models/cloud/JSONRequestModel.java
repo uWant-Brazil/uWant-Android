@@ -3,9 +3,10 @@ package br.com.uwant.models.cloud;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import java.io.Serializable;
-
-public abstract class RequestModel implements Serializable {
+/**
+ * Created by felipebenezi on 23/08/14.
+ */
+public abstract class JSONRequestModel extends AbstractRequestModel<String> {
 
     /**
      * Gson para transformar o JsonObject em String.
@@ -19,18 +20,12 @@ public abstract class RequestModel implements Serializable {
      */
     protected abstract JsonObject toJson();
 
-    /**
-     * Método responsável por retornar o tipo da requisição no qual o RequestModel se encaixa.
-     * Ele será utilizado pelo RequestFactory montar a requisição correta.
-     * @return type - tipo da requisição
-     */
-    protected abstract IRequest.Type getRequestType();
+    @Override
+    protected IRequest.Type getRequestType() {
+        return null;
+    }
 
-    /**
-     * Método responsável por realizar o parse do JsonObject para String.
-     * Será utilizado para formar o Body da requisição.
-     * @return body
-     */
+    @Override
     protected String getRequestBody() {
         JsonObject json = toJson();
         return json != null ? GSON.toJson(json) : null;

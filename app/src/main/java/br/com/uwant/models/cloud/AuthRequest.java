@@ -4,16 +4,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import java.util.UUID;
-
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.User;
-import br.com.uwant.models.cloud.models.AuthModel;
+import br.com.uwant.models.cloud.models.AuthModelAbstract;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class AuthRequest extends AbstractRequest<User> implements IRequest<AuthModel, User> {
+public class AuthRequest extends AbstractRequest<User> implements IRequest<AuthModelAbstract, User> {
 
     /**
      * Route da requisição.
@@ -23,17 +21,17 @@ public class AuthRequest extends AbstractRequest<User> implements IRequest<AuthM
     /**
      * Model que será enviado.
      */
-    private AuthModel mModel;
+    private AuthModelAbstract mModel;
 
     @Override
-    public void executeAsync(AuthModel data, OnRequestListener listener) {
+    public void executeAsync(AuthModelAbstract data, OnRequestListener listener) {
         this.mModel = data;
         execute(data, listener);
     }
 
     @Override
-    public Class<AuthModel> getDataClass() {
-        return AuthModel.class;
+    public Class<AuthModelAbstract> getDataClass() {
+        return AuthModelAbstract.class;
     }
 
     @Override

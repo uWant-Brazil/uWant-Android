@@ -100,6 +100,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new WishListDeleteRequest();
                 break;
 
+            case CREATE_WISH_LIST:
+                request = new WishListCreateRequest();
+                break;
+
             default:
                 request = null;
                 break;

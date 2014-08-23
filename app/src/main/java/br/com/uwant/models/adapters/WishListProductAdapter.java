@@ -60,8 +60,12 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
         Product product = getItem(i);
         Multimedia picture = product.getPicture();
         Uri uri = picture.getUri();
-
-        Picasso.with(this.mContext).load(uri).into(holder.hImageViewProduct);
+        if (uri == null) {
+            String url = picture.getUrl();
+            Picasso.with(this.mContext).load(url).into(holder.hImageViewProduct);
+        } else {
+            Picasso.with(this.mContext).load(uri).into(holder.hImageViewProduct);
+        }
 
         return view;
     }

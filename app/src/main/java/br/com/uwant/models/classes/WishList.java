@@ -16,6 +16,9 @@ public class WishList implements Serializable {
     private String description;
     private List<Product> products;
 
+    public WishList() {
+    }
+
     public WishList(long id, String title) {
         this.id = id;
         this.title = title;
@@ -31,12 +34,24 @@ public class WishList implements Serializable {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<Product> getProducts() {

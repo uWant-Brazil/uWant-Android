@@ -39,9 +39,9 @@ import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.AuthModel;
-import br.com.uwant.models.cloud.models.RecoveryPasswordModel;
-import br.com.uwant.models.cloud.models.SocialRegisterModel;
+import br.com.uwant.models.cloud.models.AuthModelAbstract;
+import br.com.uwant.models.cloud.models.RecoveryPasswordModelAbstract;
+import br.com.uwant.models.cloud.models.SocialRegisterModelAbstract;
 import br.com.uwant.utils.GoogleCloudMessageUtil;
 import br.com.uwant.utils.KeyboardUtil;
 
@@ -72,7 +72,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
                             final String birthday = graphUser.getBirthday();
                             final String mail = (String) graphUser.getProperty("email");
 
-                            final SocialRegisterModel model = new SocialRegisterModel();
+                            final SocialRegisterModelAbstract model = new SocialRegisterModelAbstract();
                             model.setLogin(login == null ? mail : login);
                             model.setProvider(SocialProvider.FACEBOOK);
                             model.setToken(session.getAccessToken());
@@ -148,7 +148,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
                                         final Intent intent = new Intent(AuthenticationActivity.this, RegisterActivity.class);
                                         intent.putExtra(User.EXTRA, user);
-                                        intent.putExtra(SocialRegisterModel.EXTRA, model);
+                                        intent.putExtra(SocialRegisterModelAbstract.EXTRA, model);
                                         startActivity(intent);
                                     }
                                 }
@@ -323,7 +323,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
             return;
         }
 
-        RecoveryPasswordModel model = new RecoveryPasswordModel();
+        RecoveryPasswordModelAbstract model = new RecoveryPasswordModelAbstract();
         model.setMail(mail);
         Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
 
@@ -388,7 +388,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
             return;
         }
 
-        AuthModel model = new AuthModel();
+        AuthModelAbstract model = new AuthModelAbstract();
         model.setLogin(login);
         model.setPassword(password);
 

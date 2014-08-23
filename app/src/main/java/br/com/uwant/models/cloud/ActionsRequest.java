@@ -15,15 +15,13 @@ import java.util.UUID;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
-import br.com.uwant.models.classes.User;
-import br.com.uwant.models.cloud.models.ActionsModel;
-import br.com.uwant.models.cloud.models.AuthModel;
+import br.com.uwant.models.cloud.models.ActionsModelAbstract;
 import br.com.uwant.utils.DateUtil;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class ActionsRequest extends AbstractRequest<List<Action>> implements IRequest<ActionsModel, List<Action>> {
+public class ActionsRequest extends AbstractRequest<List<Action>> implements IRequest<ActionsModelAbstract, List<Action>> {
 
     /**
      * Route da requisição.
@@ -31,13 +29,13 @@ public class ActionsRequest extends AbstractRequest<List<Action>> implements IRe
     private static final String ROUTE = "/mobile/notification/list";
 
     @Override
-    public void executeAsync(ActionsModel data, OnRequestListener listener) {
+    public void executeAsync(ActionsModelAbstract data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<ActionsModel> getDataClass() {
-        return ActionsModel.class;
+    public Class<ActionsModelAbstract> getDataClass() {
+        return ActionsModelAbstract.class;
     }
 
     @Override

@@ -14,14 +14,13 @@ import java.util.List;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
-import br.com.uwant.models.cloud.models.ActionsModel;
-import br.com.uwant.models.cloud.models.FeedsModel;
+import br.com.uwant.models.cloud.models.FeedsModelAbstract;
 import br.com.uwant.utils.DateUtil;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class FeedsRequest extends AbstractRequest<List<Action>> implements IRequest<FeedsModel, List<Action>> {
+public class FeedsRequest extends AbstractRequest<List<Action>> implements IRequest<FeedsModelAbstract, List<Action>> {
 
     /**
      * Route da requisição.
@@ -29,13 +28,13 @@ public class FeedsRequest extends AbstractRequest<List<Action>> implements IRequ
     private static final String ROUTE = "/mobile/action/feeds";
 
     @Override
-    public void executeAsync(FeedsModel data, OnRequestListener listener) {
+    public void executeAsync(FeedsModelAbstract data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<FeedsModel> getDataClass() {
-        return FeedsModel.class;
+    public Class<FeedsModelAbstract> getDataClass() {
+        return FeedsModelAbstract.class;
     }
 
     @Override

@@ -77,14 +77,14 @@
             android:layout_height="fill_parent"
             android:layout_gravity="center"
             android:gravity="center"
+            android:id="@+id/wishList_linearLayout_present"
             style="@style/UWEditText">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_post_presente"
-                android:layout_gravity="center"
-                android:id="@+id/wishList_imageView_present" />
+                android:layout_gravity="center" />
         </LinearLayout>
     </FrameLayout>
 

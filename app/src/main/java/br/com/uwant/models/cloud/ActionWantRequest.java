@@ -1,22 +1,12 @@
 package br.com.uwant.models.cloud;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.uwant.models.classes.Action;
-import br.com.uwant.models.classes.WishList;
-import br.com.uwant.models.cloud.models.WantModel;
-import br.com.uwant.models.cloud.models.WishListModel;
+import br.com.uwant.models.cloud.models.WantModelAbstract;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class ActionWantRequest extends AbstractRequest<Action> implements IRequest<WantModel, Action> {
+public class ActionWantRequest extends AbstractRequest<Action> implements IRequest<WantModelAbstract, Action> {
 
     /**
      * Route da requisição.
@@ -26,14 +16,14 @@ public class ActionWantRequest extends AbstractRequest<Action> implements IReque
     private Action action;
 
     @Override
-    public void executeAsync(WantModel data, OnRequestListener listener) {
+    public void executeAsync(WantModelAbstract data, OnRequestListener listener) {
         this.action = data.getAction();
         execute(data, listener);
     }
 
     @Override
-    public Class<WantModel> getDataClass() {
-        return WantModel.class;
+    public Class<WantModelAbstract> getDataClass() {
+        return WantModelAbstract.class;
     }
 
     @Override

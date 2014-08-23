@@ -21,15 +21,12 @@ import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AgendaFragment;
-import br.com.uwant.flow.fragments.AlertFragmentDialog;
 import br.com.uwant.flow.fragments.ContactsFragment;
 import br.com.uwant.flow.fragments.FacebookFragment;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
-import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
-import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.ContactsModel;
+import br.com.uwant.models.cloud.models.ContactsModelAbstract;
 
 public class ContactsActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -174,7 +171,7 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
 
         if (canSkip) {
             if (contacts != null && contacts.size() > 0) {
-                ContactsModel model = new ContactsModel();
+                ContactsModelAbstract model = new ContactsModelAbstract();
                 model.setEmails(contacts);
 
                 Requester.executeAsync(model);

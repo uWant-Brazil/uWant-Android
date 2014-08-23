@@ -15,15 +15,13 @@ import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Comment;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
-import br.com.uwant.models.classes.WishList;
-import br.com.uwant.models.cloud.models.ListCommentsModel;
-import br.com.uwant.models.cloud.models.WantModel;
+import br.com.uwant.models.cloud.models.ListCommentsModelAbstract;
 import br.com.uwant.utils.DateUtil;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class ActionCommentsRequest extends AbstractRequest<Action> implements IRequest<ListCommentsModel, Action> {
+public class ActionCommentsRequest extends AbstractRequest<Action> implements IRequest<ListCommentsModelAbstract, Action> {
 
     /**
      * Route da requisição.
@@ -33,14 +31,14 @@ public class ActionCommentsRequest extends AbstractRequest<Action> implements IR
     private Action mAction;
 
     @Override
-    public void executeAsync(ListCommentsModel data, OnRequestListener listener) {
+    public void executeAsync(ListCommentsModelAbstract data, OnRequestListener listener) {
         this.mAction = data.getAction();
         execute(data, listener);
     }
 
     @Override
-    public Class<ListCommentsModel> getDataClass() {
-        return ListCommentsModel.class;
+    public Class<ListCommentsModelAbstract> getDataClass() {
+        return ListCommentsModelAbstract.class;
     }
 
     @Override
