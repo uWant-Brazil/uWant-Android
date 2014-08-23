@@ -96,6 +96,14 @@
             android:configChanges="orientation"
             android:label="@string/configurations">
         </activity>
+        <activity
+            android:icon="@drawable/ic_action_uwant"
+            android:theme="@style/AppThemeActionBar"
+            android:name=".flow.WishListActivity"
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="orientation"
+            android:label="@string/text_add_wishes">
+        </activity>
 
         <receiver
             android:name=".GCMBroadcastReceiver"

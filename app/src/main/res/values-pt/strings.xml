@@ -54,5 +54,7 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_edit">Editar</string>
     <string name="text_delete">Deletar</string>
     <string name="text_share">Compartilhar</string>
+    <string name="text_confirm">Confirmar</string>
+    <string name="text_add_wishes">Adicionar desejos</string>
 
 </resources>

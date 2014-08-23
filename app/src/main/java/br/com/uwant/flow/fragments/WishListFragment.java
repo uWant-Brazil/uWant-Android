@@ -1,5 +1,6 @@
 package br.com.uwant.flow.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,12 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.uwant.R;
+import br.com.uwant.flow.WishListActivity;
 import br.com.uwant.models.adapters.WishListAdapter;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.WishList;
@@ -87,6 +90,9 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
         mGridView.setAdapter(mAdapter); // TODO Adapter correto...
         mGridView.setOnItemClickListener(this);
         mGridView.setTextFilterEnabled(true);
+
+        final ImageButton buttonCreate = (ImageButton) view.findViewById(R.id.wishList_imageButton_create);
+        buttonCreate.setOnClickListener(this);
     }
 
     @Override
@@ -163,6 +169,11 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
         switch (view.getId()) {
             case R.id.adapter_wishlist_imageView_popup:
                 openPopUp(view, wishList);
+                break;
+
+            case R.id.wishList_imageButton_create:
+                Intent it = new Intent(getActivity(), WishListActivity.class);
+                startActivity(it);
                 break;
 
             default:

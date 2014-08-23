@@ -1,7 +1,16 @@
 package br.com.uwant.models.classes;
 
-/**
- * Created by felipebenezi on 01/07/14.
- */
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
+
+    private Multimedia picture;
+
+    public Multimedia getPicture() {
+        return picture;
+    }
+
+    public void setPicture(Multimedia picture) {
+        this.picture = picture;
+    }
 }
