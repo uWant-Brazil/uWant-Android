@@ -1,14 +1,12 @@
 package br.com.uwant.models.cloud.models;
 
-import com.google.gson.JsonObject;
-
 import java.util.List;
 
 import br.com.uwant.models.classes.Product;
+import br.com.uwant.models.cloud.AbstractMultipartDataModel;
 import br.com.uwant.models.cloud.IRequest;
-import br.com.uwant.models.cloud.MultipartDataModelAbstract;
 
-public class WishListProductPicture extends MultipartDataModelAbstract {
+public class WishListProductPicture extends AbstractMultipartDataModel {
 
     private List<Product> products;
 

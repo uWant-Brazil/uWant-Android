@@ -49,8 +49,8 @@ public abstract class AbstractRequest<K> {
     protected void execute(AbstractRequestModel model, IRequest.OnRequestListener listener) {
         if (DebugUtil.DEBUG_WITHOUT_REQUEST) {
             listener.onExecute(debugParse());
-        } else if (model instanceof MultipartDataModelAbstract) {
-            MultipartDataModelAbstract mdma = (MultipartDataModelAbstract) model;
+        } else if (model instanceof AbstractMultipartDataModel) {
+            AbstractMultipartDataModel mdma = (AbstractMultipartDataModel) model;
 
             final AsyncMultipartDataRequest asyncRequest = new AsyncMultipartDataRequest(listener);
 //            asyncRequest.execute(mdma.getRequestBody());
@@ -215,7 +215,7 @@ public abstract class AbstractRequest<K> {
 
     }
 
-    private class AsyncMultipartDataRequest extends AsyncTask<MultipartDataModelAbstract, Void, K> {
+    private class AsyncMultipartDataRequest extends AsyncTask<AbstractMultipartDataModel, Void, K> {
 
         /**
          * Timeout padrão para a requisição em minutos.
@@ -249,7 +249,7 @@ public abstract class AbstractRequest<K> {
         }
 
         @Override
-        protected K doInBackground(MultipartDataModelAbstract... params) {
+        protected K doInBackground(AbstractMultipartDataModel... params) {
             return null;
         }
 

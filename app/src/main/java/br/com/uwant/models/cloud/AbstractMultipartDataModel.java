@@ -2,7 +2,7 @@ package br.com.uwant.models.cloud;
 
 import java.io.Serializable;
 
-public abstract class MultipartDataModelAbstract extends AbstractRequestModel implements Serializable {
+public abstract class AbstractMultipartDataModel extends AbstractRequestModel implements Serializable {
 
     protected abstract void toMultipartData();
 
