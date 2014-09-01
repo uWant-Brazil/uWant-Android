@@ -4,9 +4,10 @@ import com.google.gson.JsonObject;
 
 import br.com.uwant.models.cloud.AbstractRequestModel;
 import br.com.uwant.models.cloud.IRequest;
+import br.com.uwant.models.cloud.JSONRequestModel;
 import br.com.uwant.models.cloud.Requester;
 
-public class FeedsModelAbstract extends AbstractRequestModel {
+public class FeedsModelAbstract extends JSONRequestModel {
 
     private int startIndex;
     private int endIndex;

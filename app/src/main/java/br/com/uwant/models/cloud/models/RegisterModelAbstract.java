@@ -5,9 +5,10 @@ import com.google.gson.JsonObject;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.cloud.AbstractRequestModel;
 import br.com.uwant.models.cloud.IRequest;
+import br.com.uwant.models.cloud.JSONRequestModel;
 import br.com.uwant.models.cloud.Requester;
 
-public class RegisterModelAbstract extends AbstractRequestModel {
+public class RegisterModelAbstract extends JSONRequestModel {
 
     private String login;
     private String password;
