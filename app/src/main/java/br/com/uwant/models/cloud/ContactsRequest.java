@@ -1,11 +1,11 @@
 package br.com.uwant.models.cloud;
 
-import br.com.uwant.models.cloud.models.ContactsModelAbstract;
+import br.com.uwant.models.cloud.models.ContactsModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class ContactsRequest extends AbstractRequest<Boolean> implements IRequest<ContactsModelAbstract, Boolean> {
+public class ContactsRequest extends AbstractRequest<Boolean> implements IRequest<ContactsModel, Boolean> {
 
     /**
      * Route da requisição.
@@ -13,13 +13,13 @@ public class ContactsRequest extends AbstractRequest<Boolean> implements IReques
     private static final String ROUTE = "/mobile/user/contacts";
 
     @Override
-    public void executeAsync(ContactsModelAbstract data, OnRequestListener listener) {
+    public void executeAsync(ContactsModel data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<ContactsModelAbstract> getDataClass() {
-        return ContactsModelAbstract.class;
+    public Class<ContactsModel> getDataClass() {
+        return ContactsModel.class;
     }
 
     @Override

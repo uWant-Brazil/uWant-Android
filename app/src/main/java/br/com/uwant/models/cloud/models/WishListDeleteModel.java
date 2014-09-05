@@ -3,11 +3,11 @@ package br.com.uwant.models.cloud.models;
 import com.google.gson.JsonObject;
 
 import br.com.uwant.models.classes.WishList;
-import br.com.uwant.models.cloud.JSONRequestModel;
+import br.com.uwant.models.cloud.AbstractJSONRequestModel;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 
-public class WishListDeleteModelAbstract extends JSONRequestModel {
+public class WishListDeleteModel extends AbstractJSONRequestModel {
 
     private WishList wishList;
 

@@ -3,11 +3,11 @@ package br.com.uwant.models.cloud.models;
 import com.google.gson.JsonObject;
 
 import br.com.uwant.models.classes.SocialProvider;
-import br.com.uwant.models.cloud.JSONRequestModel;
+import br.com.uwant.models.cloud.AbstractJSONRequestModel;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 
-public class SocialRegisterModelAbstract extends JSONRequestModel {
+public class SocialRegisterModel extends AbstractJSONRequestModel {
 
     public static final String EXTRA = "extra_social_model";
 

@@ -2,13 +2,13 @@ package br.com.uwant.models.cloud.models;
 
 import com.google.gson.JsonObject;
 
-import br.com.uwant.models.cloud.JSONRequestModel;
 import br.com.uwant.models.cloud.IRequest;
+import br.com.uwant.models.cloud.AbstractJSONRequestModel;
 
 /**
  * Model para envio dos parâmetros da requisição de obtenção das listas de desejos do usuário.
  */
-public class LogoffModelAbstract extends JSONRequestModel {
+public class WishListModel extends AbstractJSONRequestModel {
 
     @Override
     protected JsonObject toJson() {
@@ -17,7 +17,7 @@ public class LogoffModelAbstract extends JSONRequestModel {
 
     @Override
     protected IRequest.Type getRequestType() {
-        return IRequest.Type.LOGOFF;
+        return IRequest.Type.WISH_LIST;
     }
 
 }

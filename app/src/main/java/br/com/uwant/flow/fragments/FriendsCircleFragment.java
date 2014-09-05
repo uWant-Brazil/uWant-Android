@@ -28,15 +28,15 @@ import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.BlockFriendModelAbstract;
-import br.com.uwant.models.cloud.models.ExcludeFriendModelAbstract;
-import br.com.uwant.models.cloud.models.FriendsCircleModelAbstract;
+import br.com.uwant.models.cloud.models.BlockFriendModel;
+import br.com.uwant.models.cloud.models.ExcludeFriendModel;
+import br.com.uwant.models.cloud.models.FriendsCircleModel;
 
 public class FriendsCircleFragment extends Fragment implements IRequest.OnRequestListener<List<Person>>,
         AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private static final int RQ_ADD_CONTACTS = 1230;
-    private static final FriendsCircleModelAbstract MODEL = new FriendsCircleModelAbstract();
+    private static final FriendsCircleModel MODEL = new FriendsCircleModel();
 
     private List<Person> mFriends;
     private Person mPersonSelected;
@@ -226,13 +226,13 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
     }
 
     private void excludeFriend() {
-        ExcludeFriendModelAbstract model = new ExcludeFriendModelAbstract();
+        ExcludeFriendModel model = new ExcludeFriendModel();
         model.setPerson(this.mPersonSelected);
         Requester.executeAsync(model, this.mListenerExcludeBlock);
     }
 
     private void cancelActivities() {
-        BlockFriendModelAbstract model = new BlockFriendModelAbstract();
+        BlockFriendModel model = new BlockFriendModel();
         model.setPerson(this.mPersonSelected);
         Requester.executeAsync(model, this.mListenerExcludeBlock);
     }

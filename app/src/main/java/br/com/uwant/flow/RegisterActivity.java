@@ -35,8 +35,8 @@ import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.RegisterModelAbstract;
-import br.com.uwant.models.cloud.models.SocialRegisterModelAbstract;
+import br.com.uwant.models.cloud.models.RegisterModel;
+import br.com.uwant.models.cloud.models.SocialRegisterModel;
 import br.com.uwant.utils.KeyboardUtil;
 import br.com.uwant.utils.PictureUtil;
 
@@ -266,7 +266,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
 
 
-        RegisterModelAbstract model = new RegisterModelAbstract();
+        RegisterModel model = new RegisterModel();
         model.setLogin(login);
         model.setPassword(password);
         model.setName(name);
@@ -275,8 +275,8 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         model.setGender(mGender);
 
         Intent it = getIntent();
-        if (it.hasExtra(SocialRegisterModelAbstract.EXTRA)) {
-            SocialRegisterModelAbstract socialModel = (SocialRegisterModelAbstract) it.getSerializableExtra(SocialRegisterModelAbstract.EXTRA);
+        if (it.hasExtra(SocialRegisterModel.EXTRA)) {
+            SocialRegisterModel socialModel = (SocialRegisterModel) it.getSerializableExtra(SocialRegisterModel.EXTRA);
             model.setSocialModel(socialModel);
         }
 

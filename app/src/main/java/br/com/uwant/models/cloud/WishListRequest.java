@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.uwant.models.classes.WishList;
-import br.com.uwant.models.cloud.models.WishListModelAbstract;
+import br.com.uwant.models.cloud.models.WishListModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class WishListRequest extends AbstractRequest<List<WishList>> implements IRequest<WishListModelAbstract, List<WishList>> {
+public class WishListRequest extends AbstractRequest<List<WishList>> implements IRequest<WishListModel, List<WishList>> {
 
     /**
      * Route da requisição.
@@ -22,13 +22,13 @@ public class WishListRequest extends AbstractRequest<List<WishList>> implements 
     private static final String ROUTE = "/mobile/wishlist/list";
 
     @Override
-    public void executeAsync(WishListModelAbstract data, OnRequestListener listener) {
+    public void executeAsync(WishListModel data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<WishListModelAbstract> getDataClass() {
-        return WishListModelAbstract.class;
+    public Class<WishListModel> getDataClass() {
+        return WishListModel.class;
     }
 
     @Override

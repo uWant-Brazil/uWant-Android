@@ -37,7 +37,7 @@ import br.com.uwant.R;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.ExcludeAccountModelAbstract;
+import br.com.uwant.models.cloud.models.ExcludeAccountModel;
 
 public class ConfigurationsActivity extends PreferenceActivity {
 
@@ -74,7 +74,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                ExcludeAccountModelAbstract model = new ExcludeAccountModelAbstract();
+                ExcludeAccountModel model = new ExcludeAccountModel();
                 Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
 
                     @Override
@@ -179,7 +179,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    ExcludeAccountModelAbstract model = new ExcludeAccountModelAbstract();
+                    ExcludeAccountModel model = new ExcludeAccountModel();
                     Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
 
                         @Override

@@ -9,29 +9,29 @@ import java.util.List;
 
 import br.com.uwant.models.classes.Manufacturer;
 import br.com.uwant.models.classes.Product;
-import br.com.uwant.models.cloud.models.WishListCreateModelAbstract;
+import br.com.uwant.models.cloud.models.WishListCreateModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class WishListCreateRequest extends AbstractRequest<List<Product>> implements IRequest<WishListCreateModelAbstract, List<Product>> {
+public class WishListCreateRequest extends AbstractRequest<List<Product>> implements IRequest<WishListCreateModel, List<Product>> {
 
     /**
      * Route da requisição.
      */
     private static final String ROUTE = "/mobile/wishlist/create";
 
-    private WishListCreateModelAbstract model;
+    private WishListCreateModel mModel;
 
     @Override
-    public void executeAsync(WishListCreateModelAbstract data, OnRequestListener listener) {
-        this.model = model;
+    public void executeAsync(WishListCreateModel data, OnRequestListener listener) {
+        this.mModel = data;
         execute(data, listener);
     }
 
     @Override
-    public Class<WishListCreateModelAbstract> getDataClass() {
-        return WishListCreateModelAbstract.class;
+    public Class<WishListCreateModel> getDataClass() {
+        return WishListCreateModel.class;
     }
 
     @Override
@@ -49,10 +49,10 @@ public class WishListCreateRequest extends AbstractRequest<List<Product>> implem
                 JsonElement jsonWishLists = jsonObject.get(Requester.ParameterKey.PRODUCTS);
                 if (jsonWishLists.isJsonObject()) {
                     JsonObject arrayWishLists = jsonWishLists.getAsJsonObject();
-                    for (int i = 0;i < model.getProducts().size();i++) {
+                    for (int i = 0;i < mModel.getProducts().size();i++) {
                         if (arrayWishLists.has(String.valueOf(i))) {
                             long productId = arrayWishLists.get(String.valueOf(i)).getAsLong();
-                            Product product = model.getProducts().get(i);
+                            Product product = mModel.getProducts().get(i);
                             product.setId(productId);
                         }
                     }
@@ -60,7 +60,7 @@ public class WishListCreateRequest extends AbstractRequest<List<Product>> implem
             }
         }
 
-        return model.getProducts();
+        return mModel.getProducts();
     }
 
     @Override

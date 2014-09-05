@@ -26,7 +26,7 @@ import br.com.uwant.flow.fragments.FacebookFragment;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.Requester;
-import br.com.uwant.models.cloud.models.ContactsModelAbstract;
+import br.com.uwant.models.cloud.models.ContactsModel;
 
 public class ContactsActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -171,7 +171,7 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
 
         if (canSkip) {
             if (contacts != null && contacts.size() > 0) {
-                ContactsModelAbstract model = new ContactsModelAbstract();
+                ContactsModel model = new ContactsModel();
                 model.setEmails(contacts);
 
                 Requester.executeAsync(model);

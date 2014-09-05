@@ -6,16 +6,15 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
-import br.com.uwant.models.cloud.AbstractRequestModel;
 import br.com.uwant.models.cloud.IRequest;
-import br.com.uwant.models.cloud.JSONRequestModel;
+import br.com.uwant.models.cloud.AbstractJSONRequestModel;
 import br.com.uwant.models.cloud.Requester;
 
 /**
  * Model para envio dos parâmetros da requisição de envio de contatos que serão
  * adicionados na lista de amigos ou convidados a participar do uWant.
  */
-public class ContactsModelAbstract extends JSONRequestModel {
+public class ContactsModel extends AbstractJSONRequestModel {
 
     private List<String> emails;
 

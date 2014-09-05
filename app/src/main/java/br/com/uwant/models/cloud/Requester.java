@@ -59,6 +59,8 @@ public abstract class Requester {
         public static final String NICK_NAME = "nickName";
         public static final String MANUFACTURER = "manufacturer";
         public static final String MULTIMEDIA_PRODUCT = "multimediaProduct";
+        public static final String MULTIMEDIA_USER_PICTURE = "multimediaUserPicture";
+        public static final String MULTIMEDIA = "multimedia";
     }
 
     /**

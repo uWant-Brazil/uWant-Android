@@ -1,11 +1,11 @@
 package br.com.uwant.models.cloud;
 
-import br.com.uwant.models.cloud.models.ExcludeFriendModelAbstract;
+import br.com.uwant.models.cloud.models.ExcludeFriendModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class FriendExcludeRequest extends AbstractRequest<Boolean> implements IRequest<ExcludeFriendModelAbstract, Boolean> {
+public class FriendExcludeRequest extends AbstractRequest<Boolean> implements IRequest<ExcludeFriendModel, Boolean> {
 
     /**
      * Route da requisição.
@@ -13,13 +13,13 @@ public class FriendExcludeRequest extends AbstractRequest<Boolean> implements IR
     private static final String ROUTE = "/mobile/user/circle/leave";
 
     @Override
-    public void executeAsync(ExcludeFriendModelAbstract data, OnRequestListener listener) {
+    public void executeAsync(ExcludeFriendModel data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<ExcludeFriendModelAbstract> getDataClass() {
-        return ExcludeFriendModelAbstract.class;
+    public Class<ExcludeFriendModel> getDataClass() {
+        return ExcludeFriendModel.class;
     }
 
     @Override

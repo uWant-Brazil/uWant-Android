@@ -1,12 +1,12 @@
 package br.com.uwant.models.cloud;
 
 import br.com.uwant.models.classes.Action;
-import br.com.uwant.models.cloud.models.ShareModelAbstract;
+import br.com.uwant.models.cloud.models.ShareModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class ActionShareRequest extends AbstractRequest<Action> implements IRequest<ShareModelAbstract, Action> {
+public class ActionShareRequest extends AbstractRequest<Action> implements IRequest<ShareModel, Action> {
 
     /**
      * Route da requisição.
@@ -16,14 +16,14 @@ public class ActionShareRequest extends AbstractRequest<Action> implements IRequ
     private Action mAction;
 
     @Override
-    public void executeAsync(ShareModelAbstract data, OnRequestListener listener) {
+    public void executeAsync(ShareModel data, OnRequestListener listener) {
         this.mAction = data.getAction();
         execute(data, listener);
     }
 
     @Override
-    public Class<ShareModelAbstract> getDataClass() {
-        return ShareModelAbstract.class;
+    public Class<ShareModel> getDataClass() {
+        return ShareModel.class;
     }
 
     @Override

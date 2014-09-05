@@ -2,14 +2,14 @@ package br.com.uwant.models.cloud.models;
 
 import com.google.gson.JsonObject;
 
-import br.com.uwant.models.cloud.JSONRequestModel;
+import br.com.uwant.models.cloud.AbstractJSONRequestModel;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 
 /**
  * Model para envio dos parâmetros da requisição de obtenção das listas de desejos do usuário.
  */
-public class GCMRegistrationModelAbstract extends JSONRequestModel {
+public class GCMRegistrationModel extends AbstractJSONRequestModel {
 
     private static final int ANDROID = 0;
 

@@ -27,14 +27,14 @@ import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.WishListDeleteModelAbstract;
-import br.com.uwant.models.cloud.models.WishListModelAbstract;
+import br.com.uwant.models.cloud.models.WishListDeleteModel;
+import br.com.uwant.models.cloud.models.WishListModel;
 
 public class WishListFragment extends Fragment implements IRequest.OnRequestListener<List<WishList>>,
         AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private static final int EMPTY_WISH_LIST_COUNT = 4;
-    private static final WishListModelAbstract MODEL = new WishListModelAbstract();
+    private static final WishListModel MODEL = new WishListModel();
 
     private List<WishList> mWishLists;
     private WishList mWishListSelected;
@@ -231,7 +231,7 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
     }
 
     private void delete() {
-        WishListDeleteModelAbstract model = new WishListDeleteModelAbstract();
+        WishListDeleteModel model = new WishListDeleteModel();
         model.setWishList(this.mWishListSelected);
         Requester.executeAsync(model, LISTENER_POPUP);
     }
