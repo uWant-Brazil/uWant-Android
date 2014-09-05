@@ -1,11 +1,11 @@
 package br.com.uwant.models.cloud;
 
-import br.com.uwant.models.cloud.models.BlockFriendModelAbstract;
+import br.com.uwant.models.cloud.models.BlockFriendModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class FriendBlockRequest extends AbstractRequest<Boolean> implements IRequest<BlockFriendModelAbstract, Boolean> {
+public class FriendBlockRequest extends AbstractRequest<Boolean> implements IRequest<BlockFriendModel, Boolean> {
 
     /**
      * Route da requisição.
@@ -13,13 +13,13 @@ public class FriendBlockRequest extends AbstractRequest<Boolean> implements IReq
     private static final String ROUTE = "/mobile/action/toggleBlock";
 
     @Override
-    public void executeAsync(BlockFriendModelAbstract data, OnRequestListener listener) {
+    public void executeAsync(BlockFriendModel data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<BlockFriendModelAbstract> getDataClass() {
-        return BlockFriendModelAbstract.class;
+    public Class<BlockFriendModel> getDataClass() {
+        return BlockFriendModel.class;
     }
 
     @Override

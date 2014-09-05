@@ -6,7 +6,7 @@ import br.com.uwant.models.classes.Product;
 import br.com.uwant.models.cloud.AbstractMultipartDataModel;
 import br.com.uwant.models.cloud.IRequest;
 
-public class WishListProductPicture extends AbstractMultipartDataModel {
+public class WishListProductPictureModel extends AbstractMultipartDataModel {
 
     private List<Product> products;
 

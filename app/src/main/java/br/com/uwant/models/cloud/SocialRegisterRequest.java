@@ -6,12 +6,12 @@ import com.google.gson.JsonParser;
 
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.User;
-import br.com.uwant.models.cloud.models.SocialRegisterModelAbstract;
+import br.com.uwant.models.cloud.models.SocialRegisterModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class SocialRegisterRequest extends AbstractRequest<Boolean> implements IRequest<SocialRegisterModelAbstract, Boolean> {
+public class SocialRegisterRequest extends AbstractRequest<Boolean> implements IRequest<SocialRegisterModel, Boolean> {
 
     /**
      * Route da requisição.
@@ -19,13 +19,13 @@ public class SocialRegisterRequest extends AbstractRequest<Boolean> implements I
     private static final String ROUTE = "/mobile/social/signUp";
 
     @Override
-    public void executeAsync(SocialRegisterModelAbstract data, OnRequestListener listener) {
+    public void executeAsync(SocialRegisterModel data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<SocialRegisterModelAbstract> getDataClass() {
-        return SocialRegisterModelAbstract.class;
+    public Class<SocialRegisterModel> getDataClass() {
+        return SocialRegisterModel.class;
     }
 
     @Override

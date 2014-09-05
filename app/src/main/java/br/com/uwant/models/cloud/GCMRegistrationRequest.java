@@ -1,11 +1,11 @@
 package br.com.uwant.models.cloud;
 
-import br.com.uwant.models.cloud.models.GCMRegistrationModelAbstract;
+import br.com.uwant.models.cloud.models.GCMRegistrationModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class GCMRegistrationRequest extends AbstractRequest<Boolean> implements IRequest<GCMRegistrationModelAbstract, Boolean> {
+public class GCMRegistrationRequest extends AbstractRequest<Boolean> implements IRequest<GCMRegistrationModel, Boolean> {
 
     /**
      * Route da requisição.
@@ -13,13 +13,13 @@ public class GCMRegistrationRequest extends AbstractRequest<Boolean> implements 
     private static final String ROUTE = "/mobile/notification/register";
 
     @Override
-    public void executeAsync(GCMRegistrationModelAbstract data, OnRequestListener listener) {
+    public void executeAsync(GCMRegistrationModel data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<GCMRegistrationModelAbstract> getDataClass() {
-        return GCMRegistrationModelAbstract.class;
+    public Class<GCMRegistrationModel> getDataClass() {
+        return GCMRegistrationModel.class;
     }
 
     @Override

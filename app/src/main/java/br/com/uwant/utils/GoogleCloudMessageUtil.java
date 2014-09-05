@@ -12,7 +12,7 @@ import java.io.IOException;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.GCMRegistrationModelAbstract;
+import br.com.uwant.models.cloud.models.GCMRegistrationModel;
 
 /**
  * Created by felipebenezi on 01/07/14.
@@ -45,7 +45,7 @@ public abstract class GoogleCloudMessageUtil {
                     final SharedPreferences sharedPreferences = context.
                             getSharedPreferences(GCM_PREFERENCES, Activity.MODE_PRIVATE);
                     if (!regId.equals(sharedPreferences.getString(GCM_KEY, null))) {
-                        GCMRegistrationModelAbstract model = new GCMRegistrationModelAbstract();
+                        GCMRegistrationModel model = new GCMRegistrationModel();
                         model.setRegId(regId);
 
                         Requester.executeAsync(model, new IRequest.OnRequestListener() {

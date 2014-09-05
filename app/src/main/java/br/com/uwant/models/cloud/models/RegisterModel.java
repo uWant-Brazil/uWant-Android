@@ -3,12 +3,11 @@ package br.com.uwant.models.cloud.models;
 import com.google.gson.JsonObject;
 
 import br.com.uwant.models.classes.Person;
-import br.com.uwant.models.cloud.AbstractRequestModel;
 import br.com.uwant.models.cloud.IRequest;
-import br.com.uwant.models.cloud.JSONRequestModel;
+import br.com.uwant.models.cloud.AbstractJSONRequestModel;
 import br.com.uwant.models.cloud.Requester;
 
-public class RegisterModelAbstract extends JSONRequestModel {
+public class RegisterModel extends AbstractJSONRequestModel {
 
     private String login;
     private String password;
@@ -17,7 +16,7 @@ public class RegisterModelAbstract extends JSONRequestModel {
     private String birthday;
     private Person.Gender gender;
 
-    private SocialRegisterModelAbstract socialModel;
+    private SocialRegisterModel socialModel;
 
     public String getLogin() {
         return login;
@@ -67,11 +66,11 @@ public class RegisterModelAbstract extends JSONRequestModel {
         this.gender = gender;
     }
 
-    public SocialRegisterModelAbstract getSocialModel() {
+    public SocialRegisterModel getSocialModel() {
         return socialModel;
     }
 
-    public void setSocialModel(SocialRegisterModelAbstract socialModel) {
+    public void setSocialModel(SocialRegisterModel socialModel) {
         this.socialModel = socialModel;
     }
 

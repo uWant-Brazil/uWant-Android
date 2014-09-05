@@ -12,12 +12,12 @@ import java.util.List;
 
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
-import br.com.uwant.models.cloud.models.FriendsCircleModelAbstract;
+import br.com.uwant.models.cloud.models.FriendsCircleModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class FriendsCircleRequest extends AbstractRequest<List<Person>> implements IRequest<FriendsCircleModelAbstract, List<Person>> {
+public class FriendsCircleRequest extends AbstractRequest<List<Person>> implements IRequest<FriendsCircleModel, List<Person>> {
 
     /**
      * Route da requisição.
@@ -25,13 +25,13 @@ public class FriendsCircleRequest extends AbstractRequest<List<Person>> implemen
     private static final String ROUTE = "/mobile/user/circle/list";
 
     @Override
-    public void executeAsync(FriendsCircleModelAbstract data, OnRequestListener listener) {
+    public void executeAsync(FriendsCircleModel data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<FriendsCircleModelAbstract> getDataClass() {
-        return FriendsCircleModelAbstract.class;
+    public Class<FriendsCircleModel> getDataClass() {
+        return FriendsCircleModel.class;
     }
 
     @Override

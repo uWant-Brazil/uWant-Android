@@ -8,11 +8,11 @@ import java.util.List;
 import br.com.uwant.models.classes.Manufacturer;
 import br.com.uwant.models.classes.Product;
 import br.com.uwant.models.classes.WishList;
-import br.com.uwant.models.cloud.JSONRequestModel;
+import br.com.uwant.models.cloud.AbstractJSONRequestModel;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 
-public class WishListCreateModelAbstract extends JSONRequestModel {
+public class WishListCreateModel extends AbstractJSONRequestModel {
 
     private WishList wishList;
     private List<Product> products;

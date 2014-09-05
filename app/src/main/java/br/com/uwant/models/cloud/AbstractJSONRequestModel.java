@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 /**
  * Created by felipebenezi on 23/08/14.
  */
-public abstract class JSONRequestModel extends AbstractRequestModel<String> {
+public abstract class AbstractJSONRequestModel extends AbstractRequestModel<String> {
 
     /**
      * Gson para transformar o JsonObject em String.

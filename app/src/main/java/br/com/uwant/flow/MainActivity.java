@@ -40,8 +40,8 @@ import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.LogoffModelAbstract;
-import br.com.uwant.models.cloud.models.UserSearchModelAbstract;
+import br.com.uwant.models.cloud.models.LogoffModel;
+import br.com.uwant.models.cloud.models.UserSearchModel;
 import br.com.uwant.utils.PictureUtil;
 
 public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -168,7 +168,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                     mSearchFriends.clear();
                     mSearchAdapter.notifyDataSetChanged();
 
-                    UserSearchModelAbstract model = new UserSearchModelAbstract();
+                    UserSearchModel model = new UserSearchModel();
                     model.setQuery(s.toString());
                     Requester.executeAsync(model, this.searchListener);
                 }
@@ -237,7 +237,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     }
 
     private void performLogoff() {
-        LogoffModelAbstract model = new LogoffModelAbstract();
+        LogoffModel model = new LogoffModel();
         Requester.executeAsync(model, new IRequest.OnRequestListener() {
 
             public ProgressFragmentDialog progressFragmentDialog;

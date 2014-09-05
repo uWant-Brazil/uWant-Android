@@ -2,11 +2,11 @@ package br.com.uwant.models.cloud.models;
 
 import com.google.gson.JsonObject;
 
-import br.com.uwant.models.cloud.JSONRequestModel;
+import br.com.uwant.models.cloud.AbstractJSONRequestModel;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 
-public class RecoveryPasswordModelAbstract extends JSONRequestModel {
+public class RecoveryPasswordModel extends AbstractJSONRequestModel {
 
     private String mail;
 

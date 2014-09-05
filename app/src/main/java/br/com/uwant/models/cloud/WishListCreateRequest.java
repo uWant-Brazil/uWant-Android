@@ -9,29 +9,29 @@ import java.util.List;
 
 import br.com.uwant.models.classes.Manufacturer;
 import br.com.uwant.models.classes.Product;
-import br.com.uwant.models.cloud.models.WishListCreateModelAbstract;
+import br.com.uwant.models.cloud.models.WishListCreateModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class WishListCreateRequest extends AbstractRequest<List<Product>> implements IRequest<WishListCreateModelAbstract, List<Product>> {
+public class WishListCreateRequest extends AbstractRequest<List<Product>> implements IRequest<WishListCreateModel, List<Product>> {
 
     /**
      * Route da requisição.
      */
     private static final String ROUTE = "/mobile/wishlist/create";
 
-    private WishListCreateModelAbstract model;
+    private WishListCreateModel model;
 
     @Override
-    public void executeAsync(WishListCreateModelAbstract data, OnRequestListener listener) {
+    public void executeAsync(WishListCreateModel data, OnRequestListener listener) {
         this.model = model;
         execute(data, listener);
     }
 
     @Override
-    public Class<WishListCreateModelAbstract> getDataClass() {
-        return WishListCreateModelAbstract.class;
+    public Class<WishListCreateModel> getDataClass() {
+        return WishListCreateModel.class;
     }
 
     @Override

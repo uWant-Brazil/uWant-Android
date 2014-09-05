@@ -34,7 +34,7 @@ public abstract class AbstractRequest<K> {
     /**
      * Padrão das URLs de requisição.
      */
-    public static final String URL_COMMON = "http://192.168.1.7:9000/v1";
+    public static final String URL_COMMON = "http://192.168.1.8:9000/v1";
 
     /**
      * Header responsável por conter o token de autenticação para requisições.
@@ -55,7 +55,7 @@ public abstract class AbstractRequest<K> {
             final AsyncMultipartDataRequest asyncRequest = new AsyncMultipartDataRequest(listener);
 //            asyncRequest.execute(mdma.getRequestBody());
         } else {
-            JSONRequestModel jrm = (JSONRequestModel) model;
+            AbstractJSONRequestModel jrm = (AbstractJSONRequestModel) model;
 
             final AsyncRequest asyncRequest = new AsyncRequest(listener);
             asyncRequest.execute(jrm.getRequestBody());

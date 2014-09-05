@@ -1,12 +1,12 @@
 package br.com.uwant.models.cloud;
 
 import br.com.uwant.models.classes.Action;
-import br.com.uwant.models.cloud.models.WantModelAbstract;
+import br.com.uwant.models.cloud.models.WantModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class ActionWantRequest extends AbstractRequest<Action> implements IRequest<WantModelAbstract, Action> {
+public class ActionWantRequest extends AbstractRequest<Action> implements IRequest<WantModel, Action> {
 
     /**
      * Route da requisição.
@@ -16,14 +16,14 @@ public class ActionWantRequest extends AbstractRequest<Action> implements IReque
     private Action action;
 
     @Override
-    public void executeAsync(WantModelAbstract data, OnRequestListener listener) {
+    public void executeAsync(WantModel data, OnRequestListener listener) {
         this.action = data.getAction();
         execute(data, listener);
     }
 
     @Override
-    public Class<WantModelAbstract> getDataClass() {
-        return WantModelAbstract.class;
+    public Class<WantModel> getDataClass() {
+        return WantModel.class;
     }
 
     @Override

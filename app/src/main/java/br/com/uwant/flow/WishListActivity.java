@@ -40,8 +40,8 @@ import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.WishListCreateModelAbstract;
-import br.com.uwant.models.cloud.models.WishListProductPicture;
+import br.com.uwant.models.cloud.models.WishListCreateModel;
+import br.com.uwant.models.cloud.models.WishListProductPictureModel;
 import br.com.uwant.utils.PictureUtil;
 
 public class WishListActivity extends ActionBarActivity implements View.OnClickListener,
@@ -137,7 +137,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
                 wishList.setTitle(wishListName);
                 wishList.setDescription(comment);
 
-                WishListCreateModelAbstract model = new WishListCreateModelAbstract();
+                WishListCreateModel model = new WishListCreateModel();
                 model.setWishList(wishList);
                 model.setProducts(this.mProducts);
                 Requester.executeAsync(model, this);
@@ -298,7 +298,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
             mProgressDialog.dismiss();
         }
 
-        WishListProductPicture model = new WishListProductPicture();
+        WishListProductPictureModel model = new WishListProductPictureModel();
         model.setProducts(result);
         Requester.executeAsync(model);
 

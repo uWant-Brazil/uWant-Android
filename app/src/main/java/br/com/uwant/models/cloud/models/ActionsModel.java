@@ -2,15 +2,14 @@ package br.com.uwant.models.cloud.models;
 
 import com.google.gson.JsonObject;
 
-import br.com.uwant.models.cloud.AbstractRequestModel;
 import br.com.uwant.models.cloud.IRequest;
-import br.com.uwant.models.cloud.JSONRequestModel;
+import br.com.uwant.models.cloud.AbstractJSONRequestModel;
 import br.com.uwant.models.cloud.Requester;
 
 /**
  * Model para envio dos parâmetros da requisição de autenticação.
  */
-public class ActionsModelAbstract extends JSONRequestModel {
+public class ActionsModel extends AbstractJSONRequestModel {
 
     private int startIndex;
     private int endIndex;

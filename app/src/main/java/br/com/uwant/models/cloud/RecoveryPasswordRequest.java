@@ -1,11 +1,11 @@
 package br.com.uwant.models.cloud;
 
-import br.com.uwant.models.cloud.models.RecoveryPasswordModelAbstract;
+import br.com.uwant.models.cloud.models.RecoveryPasswordModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class RecoveryPasswordRequest extends AbstractRequest<Boolean> implements IRequest<RecoveryPasswordModelAbstract, Boolean> {
+public class RecoveryPasswordRequest extends AbstractRequest<Boolean> implements IRequest<RecoveryPasswordModel, Boolean> {
 
     /**
      * Route da requisição.
@@ -13,13 +13,13 @@ public class RecoveryPasswordRequest extends AbstractRequest<Boolean> implements
     private static final String ROUTE = "/mobile/recoveryPassword";
 
     @Override
-    public void executeAsync(RecoveryPasswordModelAbstract data, OnRequestListener listener) {
+    public void executeAsync(RecoveryPasswordModel data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<RecoveryPasswordModelAbstract> getDataClass() {
-        return RecoveryPasswordModelAbstract.class;
+    public Class<RecoveryPasswordModel> getDataClass() {
+        return RecoveryPasswordModel.class;
     }
 
     @Override

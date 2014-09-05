@@ -1,11 +1,11 @@
 package br.com.uwant.models.cloud;
 
-import br.com.uwant.models.cloud.models.WishListDeleteModelAbstract;
+import br.com.uwant.models.cloud.models.WishListDeleteModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class WishListDeleteRequest extends AbstractRequest<Boolean> implements IRequest<WishListDeleteModelAbstract, Boolean> {
+public class WishListDeleteRequest extends AbstractRequest<Boolean> implements IRequest<WishListDeleteModel, Boolean> {
 
     /**
      * Route da requisição.
@@ -13,13 +13,13 @@ public class WishListDeleteRequest extends AbstractRequest<Boolean> implements I
     private static final String ROUTE = "/mobile/wishlist/delete";
 
     @Override
-    public void executeAsync(WishListDeleteModelAbstract data, OnRequestListener listener) {
+    public void executeAsync(WishListDeleteModel data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<WishListDeleteModelAbstract> getDataClass() {
-        return WishListDeleteModelAbstract.class;
+    public Class<WishListDeleteModel> getDataClass() {
+        return WishListDeleteModel.class;
     }
 
     @Override

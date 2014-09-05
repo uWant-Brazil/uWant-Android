@@ -2,36 +2,36 @@ package br.com.uwant.models.cloud.models;
 
 import com.google.gson.JsonObject;
 
-import br.com.uwant.models.classes.Person;
-import br.com.uwant.models.cloud.JSONRequestModel;
+import br.com.uwant.models.classes.Action;
+import br.com.uwant.models.cloud.AbstractJSONRequestModel;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 
 /**
  * Model para envio dos parâmetros da requisição de autenticação.
  */
-public class BlockFriendModelAbstract extends JSONRequestModel {
+public class ActionReportModel extends AbstractJSONRequestModel {
 
-    private Person person;
+    private Action action;
 
-    public Person getPerson() {
-        return person;
+    public Action getAction() {
+        return action;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setAction(Action action) {
+        this.action = action;
     }
 
     @Override
     protected JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(Requester.ParameterKey.LOGIN, this.person.getLogin());
+        jsonObject.addProperty(Requester.ParameterKey.ACTION_ID, this.action.getId());
         return jsonObject;
     }
 
     @Override
     protected IRequest.Type getRequestType() {
-        return IRequest.Type.BLOCK_FRIEND;
+        return IRequest.Type.ACTION_REPORT;
     }
 
 }

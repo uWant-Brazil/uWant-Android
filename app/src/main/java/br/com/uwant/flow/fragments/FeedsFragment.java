@@ -22,13 +22,13 @@ import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.ActionReportModelAbstract;
-import br.com.uwant.models.cloud.models.BlockFriendModelAbstract;
-import br.com.uwant.models.cloud.models.ExcludeFriendModelAbstract;
-import br.com.uwant.models.cloud.models.FeedsModelAbstract;
-import br.com.uwant.models.cloud.models.ListCommentsModelAbstract;
-import br.com.uwant.models.cloud.models.ShareModelAbstract;
-import br.com.uwant.models.cloud.models.WantModelAbstract;
+import br.com.uwant.models.cloud.models.ActionReportModel;
+import br.com.uwant.models.cloud.models.BlockFriendModel;
+import br.com.uwant.models.cloud.models.ExcludeFriendModel;
+import br.com.uwant.models.cloud.models.FeedsModel;
+import br.com.uwant.models.cloud.models.ListCommentsModel;
+import br.com.uwant.models.cloud.models.ShareModel;
+import br.com.uwant.models.cloud.models.WantModel;
 
 public class FeedsFragment extends Fragment implements View.OnClickListener,
         IRequest.OnRequestListener<List<Action>>, PopupMenu.OnMenuItemClickListener {
@@ -36,7 +36,7 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     public static final String TAG = "feedsFragment";
     private static final int DEFAULT_START_INDEX = 0;
     private static final int DEFAULT_END_INDEX = 20;
-    private static final FeedsModelAbstract MODEL = new FeedsModelAbstract();
+    private static final FeedsModel MODEL = new FeedsModel();
 
     private Action mActionSelected;
     private List<Action> mActions;
@@ -216,7 +216,7 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
 
         switch (view.getId()) {
             case R.id.adapter_feeds_button_uwants:
-                WantModelAbstract wantModel = new WantModelAbstract();
+                WantModel wantModel = new WantModel();
                 wantModel.setAction(action);
 
                 Requester.executeAsync(wantModel, LISTENER_WANT);
@@ -228,7 +228,7 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.adapter_feeds_button_shares:
-                ShareModelAbstract shareModel = new ShareModelAbstract();
+                ShareModel shareModel = new ShareModel();
                 shareModel.setAction(action);
 
                 Requester.executeAsync(shareModel, LISTENER_SHARE);
@@ -255,7 +255,7 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     }
 
     private void listComments(Action action) {
-        ListCommentsModelAbstract model = new ListCommentsModelAbstract();
+        ListCommentsModel model = new ListCommentsModel();
         model.setAction(action);
 
         Requester.executeAsync(model, LISTENER_COMMENTS);
@@ -312,20 +312,20 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
 
     private void excludeFriend() {
         Person person = this.mActionSelected.getFrom();
-        ExcludeFriendModelAbstract model = new ExcludeFriendModelAbstract();
+        ExcludeFriendModel model = new ExcludeFriendModel();
         model.setPerson(person);
         Requester.executeAsync(model, this.mListenerExcludeBlock);
     }
 
     private void cancelActivities() {
         Person person = this.mActionSelected.getFrom();
-        BlockFriendModelAbstract model = new BlockFriendModelAbstract();
+        BlockFriendModel model = new BlockFriendModel();
         model.setPerson(person);
         Requester.executeAsync(model, this.mListenerExcludeBlock);
     }
 
     private void report() {
-        ActionReportModelAbstract model = new ActionReportModelAbstract();
+        ActionReportModel model = new ActionReportModel();
         model.setAction(this.mActionSelected);
         Requester.executeAsync(model, this.mListenerReport);
     }
