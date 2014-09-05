@@ -155,7 +155,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CAMERA) {
-            if (resultCode == RESULT_OK && this.mLastProductPicture.exists()) {
+            if (resultCode == RESULT_OK && this.mLastProductPicture != null && this.mLastProductPicture.exists()) {
                 saveProduct(this.mLastProductPicture);
 
                 this.mLastProductPicture = null;
@@ -293,14 +293,24 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
     }
 
     @Override
-    public void onExecute(List<Product> result) {
+    public void onExecute(final List<Product> result) {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
 
-        WishListProductPictureModel model = new WishListProductPictureModel();
-        model.setProducts(result);
-        Requester.executeAsync(model);
+        new Thread() {
+
+            @Override
+            public void run() {
+                super.run();
+                for (Product product : result) {
+                    WishListProductPictureModel model = new WishListProductPictureModel();
+                    model.setProduct(product);
+                    Requester.executeAsync(model);
+                }
+            }
+
+        }.start();
 
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
 

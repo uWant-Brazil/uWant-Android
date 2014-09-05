@@ -1,17 +1,32 @@
 package br.com.uwant.models.cloud.models;
 
+import com.google.gson.JsonObject;
+
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.util.Calendar;
 import java.util.List;
 
+import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Product;
+import br.com.uwant.models.cloud.AbstractJSONRequestModel;
 import br.com.uwant.models.cloud.AbstractMultipartDataModel;
+import br.com.uwant.models.cloud.AbstractRequest;
 import br.com.uwant.models.cloud.IRequest;
+import br.com.uwant.models.cloud.Requester;
 
 public class WishListProductPictureModel extends AbstractMultipartDataModel {
 
-    private List<Product> products;
+    private Product product;
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     @Override
@@ -20,7 +35,18 @@ public class WishListProductPictureModel extends AbstractMultipartDataModel {
     }
 
     @Override
-    protected void toMultipartData() {
+    protected MultipartEntityBuilder toMultipartData() {
+        Calendar c = Calendar.getInstance();
+        long now = c.getTimeInMillis();
+        long productId = product.getId();
+        Multimedia picture = product.getPicture();
+
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.addPart(Requester.ParameterKey.MULTIMEDIA_PRODUCT,
+                new StringBody(String.valueOf(productId), ContentType.APPLICATION_FORM_URLENCODED));
+        builder.addPart(Requester.ParameterKey.MULTIMEDIA, new FileBody(new File(picture.getUri().getPath()), ContentType.MULTIPART_FORM_DATA, now + "-P-" + productId + ".jpg"));
+
+        return builder;
     }
 
 }

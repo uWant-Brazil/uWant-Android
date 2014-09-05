@@ -21,11 +21,11 @@ public class WishListCreateRequest extends AbstractRequest<List<Product>> implem
      */
     private static final String ROUTE = "/mobile/wishlist/create";
 
-    private WishListCreateModel model;
+    private WishListCreateModel mModel;
 
     @Override
     public void executeAsync(WishListCreateModel data, OnRequestListener listener) {
-        this.model = model;
+        this.mModel = data;
         execute(data, listener);
     }
 
@@ -49,10 +49,10 @@ public class WishListCreateRequest extends AbstractRequest<List<Product>> implem
                 JsonElement jsonWishLists = jsonObject.get(Requester.ParameterKey.PRODUCTS);
                 if (jsonWishLists.isJsonObject()) {
                     JsonObject arrayWishLists = jsonWishLists.getAsJsonObject();
-                    for (int i = 0;i < model.getProducts().size();i++) {
+                    for (int i = 0;i < mModel.getProducts().size();i++) {
                         if (arrayWishLists.has(String.valueOf(i))) {
                             long productId = arrayWishLists.get(String.valueOf(i)).getAsLong();
-                            Product product = model.getProducts().get(i);
+                            Product product = mModel.getProducts().get(i);
                             product.setId(productId);
                         }
                     }
@@ -60,7 +60,7 @@ public class WishListCreateRequest extends AbstractRequest<List<Product>> implem
             }
         }
 
-        return model.getProducts();
+        return mModel.getProducts();
     }
 
     @Override

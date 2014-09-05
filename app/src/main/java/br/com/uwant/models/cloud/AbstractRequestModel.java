@@ -1,9 +1,12 @@
 package br.com.uwant.models.cloud;
 
+import android.os.AsyncTask;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.io.Serializable;
+import java.util.concurrent.Executor;
 
 public abstract class AbstractRequestModel<R> implements Serializable {
 
@@ -20,5 +23,13 @@ public abstract class AbstractRequestModel<R> implements Serializable {
      * @return body
      */
     protected abstract R getRequestBody();
+
+    /**
+     * Executor padrão utilizado na asynctask para requisições.
+     * @return executor
+     */
+    protected Executor getExecutor() {
+        return AsyncTask.THREAD_POOL_EXECUTOR;
+    }
 
 }
