@@ -89,6 +89,8 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
 
         mTwoWayView = (TwoWayView) findViewById(R.id.wishList_twoWayView);
         mTwoWayView.setAdapter(mAdapter);
+        mTwoWayView.setOrientation(TwoWayView.Orientation.HORIZONTAL);
+        mTwoWayView.setItemMargin(10);
     }
 
     @Override
