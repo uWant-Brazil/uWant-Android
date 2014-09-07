@@ -50,6 +50,12 @@ public class AuthRequest extends AbstractRequest<User> implements IRequest<AuthM
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             if (jsonObject.has(Requester.ParameterKey.USER)) {
                 JsonObject jsonUser = jsonObject.getAsJsonObject(Requester.ParameterKey.USER);
+
+                if (jsonUser.has(Requester.ParameterKey.ID)) {
+                    long id = jsonUser.get(Requester.ParameterKey.ID).getAsLong();
+                    user.setId(id);
+                }
+
                 if (jsonUser.has(Requester.ParameterKey.NAME)) {
                     String name = jsonUser.get(Requester.ParameterKey.NAME).getAsString();
                     user.setName(name);
