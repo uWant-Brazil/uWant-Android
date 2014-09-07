@@ -83,7 +83,7 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
         if (uri == null) {
             String url = picture.getUrl();
             ImageLoader imageLoader = ImageLoader.getInstance();
-            imageLoader.loadImage(uri.toString(), this.mOptions, new ImageLoadingListener() {
+            imageLoader.loadImage(url, this.mOptions, new ImageLoadingListener() {
 
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
