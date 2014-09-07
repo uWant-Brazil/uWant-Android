@@ -20,7 +20,6 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 import br.com.uwant.models.classes.User;
@@ -44,7 +43,7 @@ public abstract class AbstractRequest<K> {
     /**
      * Padrão das URLs de requisição.
      */
-    public static final String URL_COMMON = "http://192.168.1.8:9000/v1";
+    public static final String URL_COMMON = "http://192.168.1.5:9000/v1";
 
     /**
      * Header responsável por conter o token de autenticação para requisições.

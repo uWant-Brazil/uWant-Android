@@ -30,17 +30,19 @@ import java.util.Date;
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
 import br.com.uwant.flow.fragments.ProgressFragmentDialog;
+import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.RegisterModel;
+import br.com.uwant.models.cloud.models.RegisterPictureModel;
 import br.com.uwant.models.cloud.models.SocialRegisterModel;
 import br.com.uwant.utils.KeyboardUtil;
 import br.com.uwant.utils.PictureUtil;
 
-public class RegisterActivity extends ActionBarActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, IRequest.OnRequestListener {
+public class RegisterActivity extends ActionBarActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, IRequest.OnRequestListener<User> {
 
     private static final int PICTURE_REQUEST_CODE = 9898;
     private static final int GALLERY_REQUEST_CODE = 9797;
@@ -264,15 +266,16 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             return;
         }
 
-
+        User user = new User();
+        user.setLogin(login);
+        user.setName(name);
+        user.setMail(mail);
+        user.setGender(mGender);
 
         RegisterModel model = new RegisterModel();
-        model.setLogin(login);
+        model.setUser(user);
         model.setPassword(password);
-        model.setName(name);
-        model.setMail(mail);
         model.setBirthday(birthday);
-        model.setGender(mGender);
 
         Intent it = getIntent();
         if (it.hasExtra(SocialRegisterModel.EXTRA)) {
@@ -326,9 +329,19 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     }
 
     @Override
-    public void onExecute(Object result) {
+    public void onExecute(User result) {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
+        }
+
+        if (this.mPicturePath != null && this.mPicturePath.exists()) {
+            Multimedia multimedia = new Multimedia();
+            multimedia.setUri(Uri.fromFile(this.mPicturePath));
+            result.setPicture(multimedia);
+
+            RegisterPictureModel model = new RegisterPictureModel();
+            model.setUser(result);
+            Requester.executeAsync(model);
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

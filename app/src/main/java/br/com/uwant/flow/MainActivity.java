@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -22,8 +21,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,26 +88,20 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         Multimedia picture = user.getPicture();
         if (picture != null) {
             String url = picture.getUrl();
-            Picasso.with(this).load(url).into(new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    bitmap = PictureUtil.cropToFit(bitmap);
-                    bitmap = PictureUtil.scale(bitmap, mImageViewPicture);
-                    bitmap = PictureUtil.circle(bitmap);
 
-                    mImageViewPicture.setImageBitmap(bitmap);
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.loadImage(url, new SimpleImageLoadingListener() {
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    loadedImage = PictureUtil.cropToFit(loadedImage);
+                    loadedImage = PictureUtil.scale(loadedImage, mImageViewPicture);
+                    loadedImage = PictureUtil.circle(loadedImage);
+
+                    mImageViewPicture.setImageBitmap(loadedImage);
                     mImageViewPictureDetail.setVisibility(View.VISIBLE);
                 }
 
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
-
-                }
-
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                }
             });
         }
 

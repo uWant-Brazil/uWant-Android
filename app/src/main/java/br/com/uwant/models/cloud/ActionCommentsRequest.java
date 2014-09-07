@@ -69,11 +69,13 @@ public class ActionCommentsRequest extends AbstractRequest<Action> implements IR
                                     JsonObject jsonFriendObj = jsonElementPerson.getAsJsonObject();
 
                                     if (jsonFriendObj.has(Requester.ParameterKey.LOGIN)
-                                            && jsonFriendObj.has(Requester.ParameterKey.NAME)) {
+                                            && jsonFriendObj.has(Requester.ParameterKey.NAME)
+                                            && jsonFriendObj.has(Requester.ParameterKey.ID)) {
+                                        long userId = jsonFriendObj.get(Requester.ParameterKey.ID).getAsLong();
                                         String login = jsonFriendObj.get(Requester.ParameterKey.LOGIN).getAsString();
                                         String name = jsonFriendObj.get(Requester.ParameterKey.NAME).getAsString();
 
-                                        Person who = new Person(login, name);
+                                        Person who = new Person(userId, login, name);
 
                                         if (jsonFriendObj.has(Requester.ParameterKey.PICTURE)) {
                                             JsonElement jsonElementPicture = jsonFriendObj.get(Requester.ParameterKey.PICTURE);

@@ -3,67 +3,33 @@ package br.com.uwant.models.cloud.models;
 import com.google.gson.JsonObject;
 
 import br.com.uwant.models.classes.Person;
-import br.com.uwant.models.cloud.IRequest;
+import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.AbstractJSONRequestModel;
+import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 
 public class RegisterModel extends AbstractJSONRequestModel {
 
-    private String login;
+    private User user;
     private String password;
-    private String name;
-    private String mail;
     private String birthday;
-    private Person.Gender gender;
 
     private SocialRegisterModel socialModel;
 
-    public String getLogin() {
-        return login;
+    public User getUser() {
+        return user;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
     public void setBirthday(String birthday) {
         this.birthday = birthday;
-    }
-
-    public Person.Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Person.Gender gender) {
-        this.gender = gender;
     }
 
     public SocialRegisterModel getSocialModel() {
@@ -76,13 +42,18 @@ public class RegisterModel extends AbstractJSONRequestModel {
 
     @Override
     protected JsonObject toJson() {
+        String login = user.getLogin();
+        String name = user.getName();
+        String mail = user.getMail();
+        Person.Gender gender = user.getGender();
+
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(Requester.ParameterKey.LOGIN, this.login);
+        jsonObject.addProperty(Requester.ParameterKey.LOGIN, login);
         jsonObject.addProperty(Requester.ParameterKey.PASSWORD, this.password);
-        jsonObject.addProperty(Requester.ParameterKey.FULL_NAME, this.name);
-        jsonObject.addProperty(Requester.ParameterKey.MAIL, this.mail);
+        jsonObject.addProperty(Requester.ParameterKey.FULL_NAME, name);
+        jsonObject.addProperty(Requester.ParameterKey.MAIL, mail);
         jsonObject.addProperty(Requester.ParameterKey.BIRTHDAY, this.birthday);
-        jsonObject.addProperty(Requester.ParameterKey.GENDER, this.gender.ordinal());
+        jsonObject.addProperty(Requester.ParameterKey.GENDER, gender.ordinal());
 
         if (this.socialModel != null) {
             JsonObject jsonSocial = new JsonObject();

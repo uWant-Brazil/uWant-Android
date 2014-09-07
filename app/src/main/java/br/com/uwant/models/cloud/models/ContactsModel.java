@@ -6,8 +6,8 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
-import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.AbstractJSONRequestModel;
+import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 
 /**

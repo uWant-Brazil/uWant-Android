@@ -57,11 +57,13 @@ public class FriendsCircleRequest extends AbstractRequest<List<Person>> implemen
                             JsonObject jsonFriendObj = jsonFriend.getAsJsonObject();
 
                             if (jsonFriendObj.has(Requester.ParameterKey.LOGIN)
-                                    && jsonFriendObj.has(Requester.ParameterKey.NAME)) {
+                                    && jsonFriendObj.has(Requester.ParameterKey.NAME)
+                                    && jsonFriendObj.has(Requester.ParameterKey.ID)) {
+                                long id = jsonFriendObj.get(Requester.ParameterKey.ID).getAsLong();
                                 String login = jsonFriendObj.get(Requester.ParameterKey.LOGIN).getAsString();
                                 String name = jsonFriendObj.get(Requester.ParameterKey.NAME).getAsString();
 
-                                Person person = new Person(login, name);
+                                Person person = new Person(id, login, name);
 
                                 if (jsonFriendObj.has(Requester.ParameterKey.PICTURE)) {
                                     JsonElement jsonElementPicture = jsonFriendObj.get(Requester.ParameterKey.PICTURE);
@@ -105,7 +107,7 @@ public class FriendsCircleRequest extends AbstractRequest<List<Person>> implemen
         for (int i = 0;i < friendsSize;i++) {
             String login = "person_" + i;
             String name = "Person#" + i;
-            Person person = new Person(login, name);
+            Person person = new Person(i, login, name);
 
             if (i % 3 == 0) {
                 Multimedia picture = new Multimedia();

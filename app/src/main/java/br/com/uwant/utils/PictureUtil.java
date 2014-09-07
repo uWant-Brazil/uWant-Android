@@ -10,7 +10,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.widget.ImageView;
 

@@ -1,12 +1,12 @@
 package br.com.uwant.models.cloud;
 
 import br.com.uwant.models.classes.Multimedia;
-import br.com.uwant.models.cloud.models.WishListProductPictureModel;
+import br.com.uwant.models.cloud.models.RegisterPictureModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class WishListProductPictureRequest extends AbstractRequest<Multimedia> implements IRequest<WishListProductPictureModel, Multimedia> {
+public class RegisterPictureRequest extends AbstractRequest<Multimedia> implements IRequest<RegisterPictureModel, Multimedia> {
 
     /**
      * Route da requisição.
@@ -14,13 +14,13 @@ public class WishListProductPictureRequest extends AbstractRequest<Multimedia> i
     private static final String ROUTE = "/mobile/cdn/retrieve";
 
     @Override
-    public void executeAsync(WishListProductPictureModel data, OnRequestListener listener) {
+    public void executeAsync(RegisterPictureModel data, OnRequestListener listener) {
         execute(data, listener);
     }
 
     @Override
-    public Class<WishListProductPictureModel> getDataClass() {
-        return WishListProductPictureModel.class;
+    public Class<RegisterPictureModel> getDataClass() {
+        return RegisterPictureModel.class;
     }
 
     @Override

@@ -33,8 +33,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.Date;
 import java.util.List;
@@ -61,11 +65,20 @@ public class FeedsAdapter extends BaseAdapter {
     private final Context mContext;
     private final List<Action> mActions;
     private final View.OnClickListener mClickListener;
+    private final DisplayImageOptions mOptions;
 
     public FeedsAdapter(Context context, List<Action> actions, View.OnClickListener listener) {
         this.mContext = context;
         this.mActions = actions;
         this.mClickListener = listener;
+        this.mOptions = new DisplayImageOptions.Builder()
+                .resetViewBeforeLoading(true)
+                .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .considerExifParams(true)
+                .displayer(new FadeInBitmapDisplayer(300))
+                .build();
 
         Resources res = context.getResources();
         DEFAULT_RADIUS = res.getDimension(R.dimen.cardview_default_radius);
@@ -163,32 +176,36 @@ public class FeedsAdapter extends BaseAdapter {
         if (multimedia != null) {
             Uri uri = multimedia.getUri();
             if (uri != null) {
-                Picasso.with(this.mContext)
-                        .load(uri)
-                        .placeholder(R.drawable.ic_semfoto)
-                        .into(new Target() {
+                ImageLoader imageLoader = ImageLoader.getInstance();
+                imageLoader.loadImage(uri.toString(), this.mOptions, new ImageLoadingListener() {
 
-                            @Override
-                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                bitmap = PictureUtil.cropToFit(bitmap);
-                                bitmap = PictureUtil.scale(bitmap, hImageViewPicture);
-                                bitmap = PictureUtil.circle(bitmap);
-                                hImageViewPicture.setImageBitmap(bitmap);
-                                hImageViewPictureDetail.setVisibility(View.VISIBLE);
-                            }
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+                        hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
+                    }
 
-                            @Override
-                            public void onBitmapFailed(Drawable errorDrawable) {
-                                hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
-                                hImageViewPictureDetail.setVisibility(View.INVISIBLE);
-                            }
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                        hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
+                        hImageViewPictureDetail.setVisibility(View.INVISIBLE);
+                    }
 
-                            @Override
-                            public void onPrepareLoad(Drawable placeHolderDrawable) {
-                                hImageViewPicture.setImageDrawable(placeHolderDrawable);
-                            }
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+                        bitmap = PictureUtil.cropToFit(bitmap);
+                        bitmap = PictureUtil.scale(bitmap, hImageViewPicture);
+                        bitmap = PictureUtil.circle(bitmap);
+                        hImageViewPicture.setImageBitmap(bitmap);
+                        hImageViewPictureDetail.setVisibility(View.VISIBLE);
+                    }
 
-                        });
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+                        hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
+                        hImageViewPictureDetail.setVisibility(View.INVISIBLE);
+                    }
+
+                });
             } else {
                 hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
                 hImageViewPictureDetail.setVisibility(View.INVISIBLE);

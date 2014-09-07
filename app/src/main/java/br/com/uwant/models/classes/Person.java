@@ -1,18 +1,12 @@
 package br.com.uwant.models.classes;
 
-import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
-import com.google.gson.JsonObject;
 
-import org.apache.http.impl.cookie.DateParseException;
-import org.apache.http.impl.cookie.DateUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
 
 public class Person implements Serializable {
 
@@ -22,6 +16,7 @@ public class Person implements Serializable {
         FEMALE, MALE;
     }
 
+    private long id;
     private String name;
     private String login;
     private String mail;
@@ -32,7 +27,8 @@ public class Person implements Serializable {
     public Person() {
     }
 
-    public Person(String login, String name) {
+    public Person(long id, String login, String name) {
+        this.id = id;
         this.login = login;
         this.name = name;
     }
@@ -60,6 +56,14 @@ public class Person implements Serializable {
 
         this.name = name;
         this.mail = mail;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
