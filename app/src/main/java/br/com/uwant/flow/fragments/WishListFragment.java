@@ -23,12 +23,14 @@ import java.util.List;
 import br.com.uwant.R;
 import br.com.uwant.flow.WishListActivity;
 import br.com.uwant.models.adapters.WishListAdapter;
+import br.com.uwant.models.classes.Product;
 import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.WishListDeleteModel;
 import br.com.uwant.models.cloud.models.WishListModel;
+import br.com.uwant.models.cloud.models.WishListProductsModel;
 
 public class WishListFragment extends Fragment implements IRequest.OnRequestListener<List<WishList>>,
         AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
@@ -123,6 +125,35 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
             }
         } else {
             mWishLists.addAll(result);
+
+            for (int i = 0;i < result.size();i++) {
+                final int index = i;
+                final WishList wl = result.get(i);
+
+                WishListProductsModel model = new WishListProductsModel();
+                model.setWishList(wl);
+                Requester.executeAsync(model, new IRequest.OnRequestListener<List<Product>>() {
+
+                    @Override
+                    public void onPreExecute() {
+
+                    }
+
+                    @Override
+                    public void onExecute(List<Product> result) {
+                        wl.setProducts(result);
+                        if (index <= 2 || index % 3 == 0) {
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onError(RequestError error) {
+
+                    }
+
+                });
+            }
         }
 
         mAdapter.notifyDataSetChanged();

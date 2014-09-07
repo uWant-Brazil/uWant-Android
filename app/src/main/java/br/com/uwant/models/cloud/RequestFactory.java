@@ -112,6 +112,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new RegisterPictureRequest();
                 break;
 
+            case WISH_LIST_PRODUCTS:
+                request = new WishListProductsRequest();
+                break;
+
             default:
                 request = null;
                 break;
