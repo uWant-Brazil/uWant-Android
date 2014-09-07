@@ -57,5 +57,6 @@
     <string name="text_confirm">Confirmar</string>
     <string name="text_add_wishes">Adicionar desejos</string>
     <string name="text_wishlist_created">A sua lista de desejos foi criada com sucesso.</string>
+    <string name="text_ancient_easter_eager">Um ancião foi detectado, parabéns mestre!</string>
 
 </resources>

@@ -25,6 +25,8 @@ import android.widget.Toast;
 import org.apache.http.impl.cookie.DateUtils;
 
 import java.io.File;
+import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 
 import br.com.uwant.R;
@@ -39,6 +41,8 @@ import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.RegisterModel;
 import br.com.uwant.models.cloud.models.RegisterPictureModel;
 import br.com.uwant.models.cloud.models.SocialRegisterModel;
+import br.com.uwant.models.watchers.DateWatcher;
+import br.com.uwant.utils.DateUtil;
 import br.com.uwant.utils.KeyboardUtil;
 import br.com.uwant.utils.PictureUtil;
 
@@ -78,6 +82,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         mEditTextMail = (EditText) findViewById(R.id.register_editText_mail);
         mEditTextPassword = (EditText) findViewById(R.id.register_editText_password);
         mEditTextBirthday = (EditText) findViewById(R.id.register_editText_birthday);
+        mEditTextBirthday.addTextChangedListener(new DateWatcher(mEditTextBirthday));
         mEditTextBirthday.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
@@ -266,6 +271,8 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             return;
         }
 
+        easterEager(birthday);
+
         User user = new User();
         user.setLogin(login);
         user.setName(name);
@@ -284,6 +291,21 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         }
 
         Requester.executeAsync(model, this);
+    }
+
+    private void easterEager(String birthday) {
+        try {
+            Date date = DateUtil.parse(birthday, DateUtil.DATE_PATTERN);
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+
+            int year = c.get(Calendar.YEAR);
+            if (year <= 1950) {
+                Toast.makeText(this, R.string.text_ancient_easter_eager, Toast.LENGTH_LONG).show();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
