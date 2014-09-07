@@ -42,11 +42,13 @@ import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.AuthModel;
 import br.com.uwant.models.cloud.models.RecoveryPasswordModel;
 import br.com.uwant.models.cloud.models.SocialRegisterModel;
+import br.com.uwant.models.databases.UserDatabase;
 import br.com.uwant.utils.GoogleCloudMessageUtil;
 import br.com.uwant.utils.KeyboardUtil;
 
 public class AuthenticationActivity extends FragmentActivity implements View.OnClickListener, IRequest.OnRequestListener<User> {
 
+    private static final int REQUEST_REGISTER = 8724;
     private static final String TAG_RECOVERY_PASSWORD = "RecuperarSenhaTag";
     private static final String TAG_ATTENTION_DIALOG = "AtencaoDialog";
     private static final List<String> FACEBOOK_PERMISSIONS = Arrays.asList("public_profile", "email", "user_birthday", "user_friends");
@@ -149,7 +151,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
                                         final Intent intent = new Intent(AuthenticationActivity.this, RegisterActivity.class);
                                         intent.putExtra(User.EXTRA, user);
                                         intent.putExtra(SocialRegisterModel.EXTRA, model);
-                                        startActivity(intent);
+                                        startActivityForResult(intent, REQUEST_REGISTER);
                                     }
                                 }
 
@@ -233,9 +235,16 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Session session = Session.getActiveSession();
-        if (session != null) {
-            session.onActivityResult(this, requestCode, resultCode, data);
+        if (requestCode == REQUEST_REGISTER) {
+            if (resultCode == RESULT_OK) {
+                finish();
+                successLogin();
+            }
+        } else {
+            Session session = Session.getActiveSession();
+            if (session != null) {
+                session.onActivityResult(this, requestCode, resultCode, data);
+            }
         }
     }
 
@@ -247,8 +256,8 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
                 break;
 
             case R.id.auth_button_register:
-                Intent intentRegister = new Intent(this, RegisterActivity.class);
-                startActivity(intentRegister);
+                final Intent intent = new Intent(AuthenticationActivity.this, RegisterActivity.class);
+                startActivityForResult(intent, REQUEST_REGISTER);
                 break;
 
             case R.id.auth_button_facebook:
@@ -408,6 +417,13 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
     public void onExecute(User result) {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
+        }
+
+        String token = result.getToken();
+        if (token != null) {
+            UserDatabase db = new UserDatabase(this);
+            db.removeAll();
+            db.create(result);
         }
 
         successLogin();
