@@ -9,6 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -16,11 +18,13 @@ import java.util.List;
 import br.com.uwant.R;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Product;
+import br.com.uwant.utils.PictureUtil;
 
 public class WishListProductAdapter extends BaseAdapter implements View.OnClickListener {
 
     private final Context mContext;
     private List<Product> mProducts;
+    private static final int SIZE = 300;
 
     public WishListProductAdapter(Context context, List<Product> products) {
         this.mContext = context;
@@ -62,9 +66,13 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
         Uri uri = picture.getUri();
         if (uri == null) {
             String url = picture.getUrl();
-            Picasso.with(this.mContext).load(url).into(holder.hImageViewProduct);
+//            Picasso.with(this.mContext).load(url).into(holder.hImageViewProduct);
+//            holder.hImageViewProduct.setImageURI(uri);
+            Picasso.with(this.mContext).load(uri).resize(SIZE,SIZE).centerCrop().into(holder.hImageViewProduct);
         } else {
-            Picasso.with(this.mContext).load(uri).into(holder.hImageViewProduct);
+            Picasso.with(this.mContext).load(uri).resize(SIZE,SIZE).centerCrop().into(holder.hImageViewProduct);
+//            Picasso.with(this.mContext).load("https://s3-sa-east-1.amazonaws.com/uwant-cdn/images/teste.jpg").resize(400,600).centerCrop().into(holder.hImageViewProduct);
+//            holder.hImageViewProduct.setImageURI(uri);
         }
 
         return view;
