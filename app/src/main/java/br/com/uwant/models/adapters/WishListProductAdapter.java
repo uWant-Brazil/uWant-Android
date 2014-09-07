@@ -1,6 +1,7 @@
 package br.com.uwant.models.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -16,15 +24,27 @@ import java.util.List;
 import br.com.uwant.R;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Product;
+import br.com.uwant.utils.PictureUtil;
 
 public class WishListProductAdapter extends BaseAdapter implements View.OnClickListener {
 
     private final Context mContext;
+    private final DisplayImageOptions mOptions;
+    private final ImageSize mTargetSize;
     private List<Product> mProducts;
 
     public WishListProductAdapter(Context context, List<Product> products) {
         this.mContext = context;
         this.mProducts = products;
+        this.mOptions = new DisplayImageOptions.Builder()
+                .resetViewBeforeLoading(true)
+                .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .considerExifParams(true)
+                .displayer(new FadeInBitmapDisplayer(300))
+                .build();
+        this.mTargetSize = new ImageSize(300, 300);
     }
 
     @Override
@@ -44,7 +64,7 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        ViewHolder holder;
+        final ViewHolder holder;
         if (view == null) {
             holder = new ViewHolder();
             view = LayoutInflater.from(this.mContext).inflate(R.layout.adapter_wish_list_product, viewGroup, false);
@@ -62,7 +82,33 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
         Uri uri = picture.getUri();
         if (uri == null) {
             String url = picture.getUrl();
-            Picasso.with(this.mContext).load(url).into(holder.hImageViewProduct);
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.loadImage(uri.toString(), this.mOptions, new ImageLoadingListener() {
+
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                    holder.hImageViewProduct.setImageResource(R.drawable.ic_semfoto);
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    holder.hImageViewProduct.setImageResource(R.drawable.ic_semfoto);
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+                    bitmap = PictureUtil.cropToFit(bitmap);
+                    bitmap = PictureUtil.scale(bitmap, holder.hImageViewProduct);
+                    bitmap = PictureUtil.circle(bitmap);
+                    holder.hImageViewProduct.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+                    holder.hImageViewProduct.setImageResource(R.drawable.ic_semfoto);
+                }
+
+            });
         } else {
             Picasso.with(this.mContext).load(uri).into(holder.hImageViewProduct);
         }

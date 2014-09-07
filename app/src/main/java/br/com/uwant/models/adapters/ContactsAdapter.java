@@ -71,7 +71,7 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
 
     @Override
     public Person getItem(int i) {
-        return this.mPersons.get(i);
+        return this.mPersons.get(i - 1);
     }
 
     @Override

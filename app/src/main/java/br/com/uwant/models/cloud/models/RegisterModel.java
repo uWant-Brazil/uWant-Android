@@ -2,12 +2,10 @@ package br.com.uwant.models.cloud.models;
 
 import com.google.gson.JsonObject;
 
-import java.util.Date;
-
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
-import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.AbstractJSONRequestModel;
+import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 
 public class RegisterModel extends AbstractJSONRequestModel {

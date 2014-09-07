@@ -1,16 +1,6 @@
 package br.com.uwant.models.cloud;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.uwant.models.classes.Multimedia;
-import br.com.uwant.models.classes.WishList;
-import br.com.uwant.models.cloud.models.WishListModel;
 import br.com.uwant.models.cloud.models.WishListProductPictureModel;
 
 /**

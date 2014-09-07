@@ -1,8 +1,6 @@
 package br.com.uwant.flow;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,8 +18,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.FriendsCircleFragment;
@@ -37,6 +36,8 @@ public class PerfilActivity extends ActionBarActivity {
     private PerfilPagerAdapter mAdapter;
     private SearchView.OnQueryTextListener mCurrentFragment;
     private SearchView mSearchView;
+    private ImageView mImageViewPictureDetail;
+    private ImageView mImageViewPicture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,9 @@ public class PerfilActivity extends ActionBarActivity {
         TABS = getResources().getStringArray(R.array.options_perfil);
 
         setContentView(R.layout.activity_perfil);
+
+        mImageViewPicture = (ImageView) findViewById(R.id.perfil_imageView_picture);
+        mImageViewPictureDetail = (ImageView) findViewById(R.id.perfil_imageView_pictureDetail);
 
         mAdapter = new PerfilPagerAdapter(getSupportFragmentManager());
 
@@ -107,31 +111,36 @@ public class PerfilActivity extends ActionBarActivity {
         textViewName.setText(name);
 
         if (multimedia != null) {
-            // FIXME Não está funcionado. Por que eu não sei!
-//            Picasso.with(this).load(multimedia.getUrl()).into(new Target() {
-//
-//                @Override
-//                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-//                    final ImageView imageViewPicture = (ImageView) findViewById(R.id.perfil_imageView_picture);
-//                    final ImageView imageViewPictureDetail = (ImageView) findViewById(R.id.perfil_imageView_pictureDetail);
-//
-//                    bitmap = PictureUtil.cropToFit(bitmap);
-//                    bitmap = PictureUtil.scale(bitmap, imageViewPicture);
-//                    bitmap = PictureUtil.circle(bitmap);
-//
-//                    imageViewPictureDetail.setVisibility(View.VISIBLE);
-//                    imageViewPicture.setImageBitmap(bitmap);
-//                }
-//
-//                @Override
-//                public void onBitmapFailed(Drawable errorDrawable) {
-//                }
-//
-//                @Override
-//                public void onPrepareLoad(Drawable placeHolderDrawable) {
-//                }
-//
-//            });
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.displayImage(multimedia.getUrl(), mImageViewPicture, new ImageLoadingListener() {
+
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                    mImageViewPicture.setImageResource(R.drawable.ic_semfoto);
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    mImageViewPicture.setImageResource(R.drawable.ic_semfoto);
+                    mImageViewPictureDetail.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+                    bitmap = PictureUtil.cropToFit(bitmap);
+                    bitmap = PictureUtil.scale(bitmap, mImageViewPicture);
+                    bitmap = PictureUtil.circle(bitmap);
+                    mImageViewPicture.setImageBitmap(bitmap);
+                    mImageViewPictureDetail.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+                    mImageViewPicture.setImageResource(R.drawable.ic_semfoto);
+                    mImageViewPictureDetail.setVisibility(View.INVISIBLE);
+                }
+
+            });
         }
     }
 

@@ -9,7 +9,6 @@ import java.io.File;
 import java.util.Calendar;
 
 import br.com.uwant.models.classes.Multimedia;
-import br.com.uwant.models.classes.Product;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.AbstractMultipartDataModel;
 import br.com.uwant.models.cloud.IRequest;

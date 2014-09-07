@@ -7,7 +7,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.ImageView;
 
-import com.facebook.LoginActivity;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import br.com.uwant.R;
 
@@ -22,6 +24,17 @@ public class SplashActivity extends Activity implements Runnable {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+                .diskCacheExtraOptions(480, 800, null)
+                .denyCacheImageMultipleSizesInMemory()
+                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+                .memoryCacheSize(2 * 1024 * 1024)
+                .diskCacheSize(50 * 1024 * 1024)
+                .diskCacheFileCount(100)
+                .writeDebugLogs()
+                .build();
+        ImageLoader.getInstance().init(config);
+
         setContentView(R.layout.activity_splash);
 
         final ImageView imageView = (ImageView) findViewById(R.id.splash_imageView);

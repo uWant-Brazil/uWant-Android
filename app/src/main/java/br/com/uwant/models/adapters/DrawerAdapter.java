@@ -27,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import br.com.uwant.R;
-import br.com.uwant.flow.MainActivity;
 
 public class DrawerAdapter extends BaseAdapter {
 

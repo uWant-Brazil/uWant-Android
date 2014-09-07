@@ -1,18 +1,12 @@
 package br.com.uwant.models.classes;
 
-import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
-import com.google.gson.JsonObject;
 
-import org.apache.http.impl.cookie.DateParseException;
-import org.apache.http.impl.cookie.DateUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
 
 public class Person implements Serializable {
 

@@ -2,7 +2,6 @@ package br.com.uwant.models.cloud;
 
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.cloud.models.RegisterPictureModel;
-import br.com.uwant.models.cloud.models.WishListProductPictureModel;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.

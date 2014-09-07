@@ -1,23 +1,16 @@
 package br.com.uwant.models.cloud.models;
 
-import com.google.gson.JsonObject;
-
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.json.JSONObject;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
-import java.util.List;
 
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Product;
-import br.com.uwant.models.cloud.AbstractJSONRequestModel;
 import br.com.uwant.models.cloud.AbstractMultipartDataModel;
-import br.com.uwant.models.cloud.AbstractRequest;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 

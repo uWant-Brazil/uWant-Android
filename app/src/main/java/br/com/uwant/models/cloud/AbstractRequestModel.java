@@ -2,9 +2,6 @@ package br.com.uwant.models.cloud;
 
 import android.os.AsyncTask;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 import java.io.Serializable;
 import java.util.concurrent.Executor;
 
