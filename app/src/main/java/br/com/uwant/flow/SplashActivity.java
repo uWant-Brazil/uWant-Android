@@ -12,6 +12,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import br.com.uwant.R;
+import br.com.uwant.models.classes.User;
+import br.com.uwant.models.databases.UserDatabase;
 
 
 public class SplashActivity extends Activity implements Runnable {
@@ -19,6 +21,7 @@ public class SplashActivity extends Activity implements Runnable {
     private static final long SLEEP_TIME = 300;
 
     private int counter = 0;
+    private boolean isLogged;
     private Handler mHandler;
 
     @Override
@@ -48,7 +51,7 @@ public class SplashActivity extends Activity implements Runnable {
                 if (resource != 0) {
                     imageView.setImageResource(resource);
                 } else {
-                    Intent intent = new Intent(SplashActivity.this, AuthenticationActivity.class);
+                    Intent intent = new Intent(SplashActivity.this, isLogged ? MainActivity.class : AuthenticationActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -58,6 +61,12 @@ public class SplashActivity extends Activity implements Runnable {
 
         final Thread thread = new Thread(this);
         thread.start();
+
+        UserDatabase db = new UserDatabase(this);
+        isLogged = db.existAnything();
+        if (isLogged) {
+            User.newInstance(db.selectAll().get(0));
+        }
     }
 
     @Override
