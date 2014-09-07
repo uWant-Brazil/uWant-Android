@@ -3,6 +3,8 @@ package br.com.uwant.flow;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,7 +27,11 @@ import android.widget.Toast;
 
 import org.lucasr.twowayview.TwoWayView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -185,8 +191,23 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
 
     private void saveProduct(File pictureFile) {
         Multimedia multimedia = new Multimedia();
-        multimedia.setUri(Uri.fromFile(pictureFile));
+        Bitmap bitmap = BitmapFactory.decodeFile(pictureFile.getAbsolutePath());
+//        bitmap = PictureUtil.scale(bitmap);
 
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bos);
+            byte[] bitmapData = bos.toByteArray();
+
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            fos.write(bitmapData);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        multimedia.setUri(Uri.fromFile(pictureFile));
         fillProduct(multimedia);
     }
 
@@ -208,6 +229,14 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
             LinearLayout linearLayout = (LinearLayout) findViewById(R.id.wishList_linearLayout_present);
             linearLayout.setVisibility(View.GONE);
         }
+
+        mTwoWayView.post(new Runnable() {
+            @Override
+            public void run() {
+                mTwoWayView.setSelection(mAdapter.getCount());
+            }
+        });
+
     }
 
     @Override

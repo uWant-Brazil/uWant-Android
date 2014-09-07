@@ -1,14 +1,19 @@
 package br.com.uwant.models.classes;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
-public class Product implements Serializable {
+public class Product implements Serializable{
 
     private long id;
     private String name;
     private String nickName;
     private Manufacturer manufacturer;
     private Multimedia picture;
+    /*
+    * Attibuto utilizado para criacao do adapater
+    */
+    private boolean fake;
 
     public long getId() {
         return id;
@@ -48,5 +53,13 @@ public class Product implements Serializable {
 
     public void setManufacturer(Manufacturer manufacturer) {
         this.manufacturer = manufacturer;
+    }
+
+    public boolean isFake() {
+        return fake;
+    }
+
+    public void setFake(boolean fake) {
+        this.fake = fake;
     }
 }

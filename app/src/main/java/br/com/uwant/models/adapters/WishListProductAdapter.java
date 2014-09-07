@@ -2,6 +2,7 @@ package br.com.uwant.models.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -18,24 +20,29 @@ import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Product;
-import br.com.uwant.utils.PictureUtil;
 
 public class WishListProductAdapter extends BaseAdapter implements View.OnClickListener {
 
+    private static final int SIZE = 300;
     private final Context mContext;
     private final DisplayImageOptions mOptions;
     private final ImageSize mTargetSize;
     private List<Product> mProducts;
 
+
     public WishListProductAdapter(Context context, List<Product> products) {
         this.mContext = context;
         this.mProducts = products;
+//        setFakeProduct(products);
         this.mOptions = new DisplayImageOptions.Builder()
                 .resetViewBeforeLoading(true)
                 .cacheOnDisk(true)
@@ -44,9 +51,23 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
                 .considerExifParams(true)
                 .displayer(new FadeInBitmapDisplayer(300))
                 .build();
-        this.mTargetSize = new ImageSize(300, 300);
+        this.mTargetSize = new ImageSize(SIZE, SIZE);
     }
 
+    void setFakeProduct(List<Product> products) {
+        if (products != null) {
+            Product product = new Product();
+            product.setId(100000);
+            product.setName("Fake");
+            product.setManufacturer(null);
+            product.setNickName("fake");
+            product.setFake(true);
+            Multimedia multimedia = new Multimedia();
+            multimedia.setUrl("");
+            product.setPicture(multimedia);
+            mProducts.add(product);
+        }
+    }
     @Override
     public int getCount() {
         return this.mProducts != null ? mProducts.size() : 0;
@@ -70,6 +91,7 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
             view = LayoutInflater.from(this.mContext).inflate(R.layout.adapter_wish_list_product, viewGroup, false);
             holder.hImageViewProduct = (ImageView) view.findViewById(R.id.adapter_wishlistProduct_imageView);
             holder.hButtonRemove = (ImageButton) view.findViewById(R.id.adapter_wishlistProduct_button_remove);
+            holder.mProgressBar = (ProgressBar) view.findViewById(R.id.adapter_wishlist_product_loading);
             holder.hButtonRemove.setOnClickListener(this);
             view.setTag(holder);
         } else {
@@ -80,37 +102,64 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
         Product product = getItem(i);
         Multimedia picture = product.getPicture();
         Uri uri = picture.getUri();
-        if (uri == null) {
+        if (product.isFake()){
+            holder.hImageViewProduct.setImageResource(R.drawable.ic_post_presente);
+            holder.hButtonRemove.setVisibility(View.GONE);
+        } else if (uri == null) {
             String url = picture.getUrl();
-            ImageLoader imageLoader = ImageLoader.getInstance();
-            imageLoader.loadImage(url, this.mOptions, new ImageLoadingListener() {
+            final ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.loadImage(url, this.mTargetSize, this.mOptions, new ImageLoadingListener() {
 
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
-                    holder.hImageViewProduct.setImageResource(R.drawable.ic_semfoto);
+                    holder.mProgressBar.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    holder.mProgressBar.setVisibility(View.GONE);
                     holder.hImageViewProduct.setImageResource(R.drawable.ic_semfoto);
                 }
 
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-                    bitmap = PictureUtil.cropToFit(bitmap);
-                    bitmap = PictureUtil.scale(bitmap, holder.hImageViewProduct);
-                    bitmap = PictureUtil.circle(bitmap);
+                    holder.mProgressBar.setVisibility(View.GONE);
                     holder.hImageViewProduct.setImageBitmap(bitmap);
                 }
 
                 @Override
                 public void onLoadingCancelled(String imageUri, View view) {
+                    holder.mProgressBar.setVisibility(View.GONE);
                     holder.hImageViewProduct.setImageResource(R.drawable.ic_semfoto);
                 }
 
             });
-        } else {
-            Picasso.with(this.mContext).load(uri).into(holder.hImageViewProduct);
+        } else if (uri != null && !product.isFake()){
+            holder.mProgressBar.setVisibility(View.VISIBLE);
+            Picasso.with(this.mContext)
+                    .load(uri)
+                    .resize(SIZE, SIZE)
+                    .centerCrop()
+                    .into(new Target() {
+
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    holder.mProgressBar.setVisibility(View.GONE);
+                    holder.hImageViewProduct.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+                    holder.mProgressBar.setVisibility(View.GONE);
+                    holder.hImageViewProduct.setImageResource(R.drawable.ic_semfoto);
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                    holder.mProgressBar.setVisibility(View.VISIBLE);
+                }
+
+            });
         }
 
         return view;
@@ -144,6 +193,7 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
     private static class ViewHolder {
         ImageView hImageViewProduct;
         ImageButton hButtonRemove;
+        ProgressBar mProgressBar;
     }
 
 }
