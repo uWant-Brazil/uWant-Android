@@ -22,8 +22,6 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import br.com.uwant.R;
