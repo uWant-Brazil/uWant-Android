@@ -7,6 +7,9 @@
         <item name="android:textSelectHandleLeft">@drawable/uwant_text_select_handle_left</item>
         <item name="android:textSelectHandleRight">@drawable/uwant_text_select_handle_right</item>
         <item name="android:textSelectHandle">@drawable/uwant_text_select_handle_middle</item>
+
+
+        <item name="android:editTextBackground">@drawable/uwant_edittext_selector_background</item>
     </style>
 
   <style name="uWant" parent="@style/_uWant">
@@ -15,6 +18,8 @@
     <item name="android:textSelectHandleRight">@drawable/uwant_text_select_handle_right</item>
     <item name="android:textSelectHandle">@drawable/uwant_text_select_handle_middle</item>
 
+
+      <item name="android:editTextBackground">@drawable/uwant_edittext_selector_background</item>
   </style>
 
 </resources>

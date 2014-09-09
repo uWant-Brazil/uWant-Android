@@ -76,4 +76,8 @@
       <item name="android:textColor">#000000</item>
   </style>
 
+  <style name="EditTextuWant" parent="android:Widget.Holo.EditText">
+      <item name="android:editTextBackground">@drawable/uwant_edittext_selector_background</item>
+  </style>
+
 </resources>
