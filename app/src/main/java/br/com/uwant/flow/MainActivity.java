@@ -42,6 +42,7 @@ import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.LogoffModel;
 import br.com.uwant.models.cloud.models.UserSearchModel;
 import br.com.uwant.models.databases.UserDatabase;
+import br.com.uwant.utils.GoogleCloudMessageUtil;
 import br.com.uwant.utils.PictureUtil;
 
 public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -62,6 +63,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GoogleCloudMessageUtil.registerAsync(this);
+
         setContentView(R.layout.activity_main);
 
         mFeedsFragment = new FeedsFragment();

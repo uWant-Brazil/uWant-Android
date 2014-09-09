@@ -177,8 +177,6 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
     private void successLogin(List<Person> persons) {
         Toast.makeText(this, R.string.text_welcome, Toast.LENGTH_SHORT).show();
 
-        GoogleCloudMessageUtil.registerAsync(this);
-
         Intent it = new Intent(this, ContactsActivity.class);
         if (persons != null) {
             it.putExtra(Person.EXTRA, (java.io.Serializable) persons);
