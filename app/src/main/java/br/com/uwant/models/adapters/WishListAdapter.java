@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.List;
 import br.com.uwant.R;
 import br.com.uwant.models.classes.Product;
 import br.com.uwant.models.classes.WishList;
+import br.com.uwant.utils.WishListUtil;
 
 public class WishListAdapter extends BaseAdapter implements Filterable {
 
@@ -54,32 +57,35 @@ public class WishListAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        ViewHolder holder;
         if (view == null) {
-            holder = new ViewHolder();
             view = LayoutInflater.from(this.mContext).inflate(R.layout.adapter_wish_list, viewGroup, false);
-            holder.hTextViewTitle = (TextView) view.findViewById(R.id.adapter_wishlist_textView_title);
-            holder.hImageViewProducts = (ImageView) view.findViewById(R.id.adapter_wishlist_imageView_products);
-            holder.hImageViewPopUp = (ImageView) view.findViewById(R.id.adapter_wishlist_imageView_popup);
-            holder.hImageViewPopUp.setOnClickListener(this.mListener);
-            view.setTag(holder);
-        } else {
-            holder = (ViewHolder) view.getTag();
         }
 
-        holder.hImageViewPopUp.setTag(i);
+        TextView hTextViewTitle = (TextView) view.findViewById(R.id.adapter_wishlist_textView_title);
+        GridLayout hGridLayoutPictures = (GridLayout) view.findViewById(R.id.adapter_wishlist_gridlayout_pictures);
+        ProgressBar hProgressBar = (ProgressBar) view.findViewById(R.id.adapter_wishlist_progressBar);
+        ImageView hImageViewProducts = (ImageView) view.findViewById(R.id.adapter_wishlist_imageView_products);
+        ImageView hImageViewPopUp = (ImageView) view.findViewById(R.id.adapter_wishlist_imageView_popup);
+        hImageViewPopUp.setOnClickListener(this.mListener);
+        hImageViewPopUp.setTag(i);
 
         WishList wishList = getItem(i);
         long id = wishList.getId();
         String title = wishList.getTitle();
         List<Product> products = wishList.getProducts();
 
-        holder.hTextViewTitle.setText(title);
-        if (id == WishList.EMPTY_ID || products == null || products.size() == 0) {
-            // FIXME Trocar a imagem pela correta.
-            holder.hImageViewProducts.setImageResource(R.drawable.ic_perfil_semfoto);
-        } else {
-            // TODO Como irei gerar as imagens??? :)
+        hTextViewTitle.setText(title);
+        if ((id == WishList.EMPTY_ID) && hImageViewProducts.getVisibility() != View.VISIBLE) {
+           hImageViewProducts.setVisibility(View.VISIBLE);
+        } else if (products != null && products.size() > 0) {
+            WishListUtil.renderProducts(this.mContext, products, hGridLayoutPictures);
+
+            if (hProgressBar.getVisibility() == View.VISIBLE) {
+                hProgressBar.setVisibility(View.GONE);
+            }
+            if (hImageViewProducts.getVisibility() == View.VISIBLE) {
+                hImageViewProducts.setVisibility(View.GONE);
+            }
         }
 
         return view;
@@ -133,12 +139,6 @@ public class WishListAdapter extends BaseAdapter implements Filterable {
                 return results;
             }
         };
-    }
-
-    private static class ViewHolder {
-        TextView hTextViewTitle;
-        ImageView hImageViewProducts;
-        ImageView hImageViewPopUp;
     }
 
 }

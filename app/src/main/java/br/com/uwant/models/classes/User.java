@@ -22,4 +22,12 @@ public class User extends Person implements Serializable {
         this.token = token;
     }
 
+    public static void newInstance(User user) {
+        User instance = getInstance();
+        instance.setToken(instance.getToken() == null ? user.getToken() : instance.getToken());
+        instance.setLogin(user.getLogin());
+        instance.setName(user.getName());
+        instance.setGender(user.getGender());
+        instance.setBirthday(user.getBirthday());
+    }
 }

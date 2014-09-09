@@ -37,8 +37,9 @@ public class RegisterRequest extends AbstractRequest<User> implements IRequest<R
 
     @Override
     protected User parse(String response) {
-        User user = this.mModel.getUser();
-        
+        User.newInstance(this.mModel.getUser());
+        User user = User.getInstance();
+
         JsonParser jsonParser = new JsonParser();
         JsonElement jsonElement = jsonParser.parse(response);
         if (jsonElement.isJsonObject()) {

@@ -41,6 +41,7 @@ import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.LogoffModel;
 import br.com.uwant.models.cloud.models.UserSearchModel;
+import br.com.uwant.models.databases.UserDatabase;
 import br.com.uwant.utils.PictureUtil;
 
 public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -245,6 +246,9 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                 if (progressFragmentDialog != null) {
                     progressFragmentDialog.dismiss();
                 }
+
+                UserDatabase db = new UserDatabase(MainActivity.this);
+                db.removeAll();
 
                 Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
                 startActivity(intent);

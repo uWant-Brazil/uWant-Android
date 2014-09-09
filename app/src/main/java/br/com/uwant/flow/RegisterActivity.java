@@ -41,6 +41,7 @@ import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.RegisterModel;
 import br.com.uwant.models.cloud.models.RegisterPictureModel;
 import br.com.uwant.models.cloud.models.SocialRegisterModel;
+import br.com.uwant.models.databases.UserDatabase;
 import br.com.uwant.models.watchers.DateWatcher;
 import br.com.uwant.utils.DateUtil;
 import br.com.uwant.utils.KeyboardUtil;
@@ -271,13 +272,21 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             return;
         }
 
-        easterEager(birthday);
+        Date date = null;
+        try {
+            date = DateUtil.parse(birthday, DateUtil.DATE_PATTERN);
+            easterEager(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            date = new Date();
+        }
 
         User user = new User();
         user.setLogin(login);
         user.setName(name);
         user.setMail(mail);
         user.setGender(mGender);
+        user.setBirthday(date);
 
         RegisterModel model = new RegisterModel();
         model.setUser(user);
@@ -293,18 +302,13 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         Requester.executeAsync(model, this);
     }
 
-    private void easterEager(String birthday) {
-        try {
-            Date date = DateUtil.parse(birthday, DateUtil.DATE_PATTERN);
-            Calendar c = Calendar.getInstance();
-            c.setTime(date);
+    private void easterEager(Date birthday) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(birthday);
 
-            int year = c.get(Calendar.YEAR);
-            if (year <= 1950) {
-                Toast.makeText(this, R.string.text_ancient_easter_eager, Toast.LENGTH_LONG).show();
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
+        int year = c.get(Calendar.YEAR);
+        if (year <= 1950) {
+            Toast.makeText(this, R.string.text_ancient_easter_eager, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -351,9 +355,16 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     }
 
     @Override
-    public void onExecute(User result) {
+    public void onExecute(final User result) {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
+        }
+
+        String token = result.getToken();
+        if (token != null) {
+            UserDatabase db = new UserDatabase(this);
+            db.removeAll();
+            db.create(result);
         }
 
         if (this.mPicturePath != null && this.mPicturePath.exists()) {
@@ -363,7 +374,26 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
             RegisterPictureModel model = new RegisterPictureModel();
             model.setUser(result);
-            Requester.executeAsync(model);
+            Requester.executeAsync(model, new IRequest.OnRequestListener<Multimedia>() {
+
+                @Override
+                public void onPreExecute() {
+
+                }
+
+                @Override
+                public void onExecute(Multimedia picture) {
+                    result.setPicture(picture);
+                    UserDatabase db = new UserDatabase(getApplicationContext());
+                    db.update(result);
+                }
+
+                @Override
+                public void onError(RequestError error) {
+
+                }
+
+            });
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -372,6 +402,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                setResult(RESULT_OK);
                 finish();
             }
 

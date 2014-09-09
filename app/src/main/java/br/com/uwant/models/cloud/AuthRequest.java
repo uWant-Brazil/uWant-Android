@@ -4,9 +4,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.text.ParseException;
+import java.util.Date;
+
 import br.com.uwant.models.classes.Multimedia;
+import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.models.AuthModel;
+import br.com.uwant.utils.DateUtil;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
@@ -59,6 +64,24 @@ public class AuthRequest extends AbstractRequest<User> implements IRequest<AuthM
                 if (jsonUser.has(Requester.ParameterKey.NAME)) {
                     String name = jsonUser.get(Requester.ParameterKey.NAME).getAsString();
                     user.setName(name);
+                }
+
+                if (jsonUser.has(Requester.ParameterKey.BIRTHDAY)) {
+                    String birthdayStr = jsonUser.get(Requester.ParameterKey.NAME).getAsString();
+                    Date birthday = null;
+                    try {
+                        birthday = DateUtil.parse(birthdayStr, DateUtil.DATE_PATTERN);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        birthday = new Date();
+                    }
+                    user.setBirthday(birthday);
+                }
+
+                if (jsonUser.has(Requester.ParameterKey.GENDER)) {
+                    String genderStr = jsonUser.get(Requester.ParameterKey.GENDER).getAsString();
+                    Person.Gender gender = Person.Gender.valueOf(genderStr);
+                    user.setGender(gender);
                 }
 
                 if (jsonUser.has(Requester.ParameterKey.PICTURE)) {
