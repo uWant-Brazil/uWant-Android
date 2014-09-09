@@ -1,7 +1,10 @@
 package br.com.uwant.utils;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
@@ -11,15 +14,19 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.uwant.R;
+import br.com.uwant.models.adapters.WishListAdapter;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Product;
+import br.com.uwant.models.classes.WishList;
 
 public abstract class WishListUtil {
 
@@ -40,8 +47,8 @@ public abstract class WishListUtil {
         for (Product product : products) {
             Multimedia multimedia = product.getPicture();
             if (multimedia != null) {
-                String url = multimedia.getUrl();
-                if (url != null && !url.isEmpty()) {
+                Bitmap bitmap = multimedia.getBitmap();
+                if (bitmap != null) {
                     productsWithPictures.add(product);
                 }
             }
@@ -50,13 +57,10 @@ public abstract class WishListUtil {
         if (productsWithPictures.size() == 0)
             return;
 
-        int sizePerFour = productsWithPictures.size() > 4 ? 4 : productsWithPictures.size();
         List<Integer> indexes = new ArrayList<Integer>(productsWithPictures.size() + 5);
 
         int x = 2;
         int y = 2;
-        gridLayout.setColumnCount(2);
-        gridLayout.setRowCount(2);
 
         for (int i = 0;i < products.size();i++) {
             indexes.add(i);
@@ -73,33 +77,79 @@ public abstract class WishListUtil {
 
                 Product product = products.get(index);
                 Multimedia multimedia = product.getPicture();
-                String url = multimedia.getUrl();
 
                 int id;
-                switch (i) {
-                    case 0:
-                       id = R.id.adapter_wishlist_imageView1;
-                        break;
-
-                    case 1:
-                        id = R.id.adapter_wishlist_imageView2;
-                        break;
-
-                    case 2:
+                if (i == 0) {
+                    if (j == 0) {
+                        id = R.id.adapter_wishlist_imageView1;
+                    } else {
+                       id = R.id.adapter_wishlist_imageView2;
+                    }
+                } else {
+                    if (j == 0) {
                         id = R.id.adapter_wishlist_imageView3;
-                        break;
-
-                    default:
+                    } else {
                         id = R.id.adapter_wishlist_imageView4;
-                        break;
+                    }
                 }
 
                 final ImageView imageView = (ImageView) gridLayout.findViewById(id);
-
-                ImageLoader imageLoader = ImageLoader.getInstance();
-                Bitmap bitmap = imageLoader.loadImageSync(url, OPTIONS);
-                imageView.setImageBitmap(bitmap);
+                imageView.setImageBitmap(multimedia.getBitmap());
             }
+        }
+    }
+
+    public static void loadPicturesFromProducts(Resources resources, WishListAdapter adapter, WishList wishList) {
+        if (wishList.getProducts() != null) {
+            for (Product product : wishList.getProducts()) {
+                Multimedia picture = product.getPicture();
+                if (picture != null) {
+                    AsyncPicture task = new AsyncPicture(resources, adapter);
+                    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, product);
+                }
+            }
+        }
+    }
+
+    private static class AsyncPicture extends AsyncTask<Product, Void, Bitmap> {
+
+        private final int mWidth;
+        private final int mHeight;
+        private WishListAdapter mAdapter;
+        private Product mProduct;
+        private Resources mResources;
+
+        public AsyncPicture(Resources resources, WishListAdapter adapter) {
+            this.mResources = resources;
+            this.mAdapter = adapter;
+
+            mWidth = (int) (65 * resources.getDisplayMetrics().density);
+            mHeight = (int) (80 * resources.getDisplayMetrics().density);
+        }
+
+        @Override
+        protected Bitmap doInBackground(Product... products) {
+            this.mProduct = products[0];
+            Multimedia multimedia = this.mProduct.getPicture();
+            String url = multimedia.getUrl();
+
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            Bitmap bitmap = imageLoader.loadImageSync(url, new ImageSize(mWidth, mHeight), OPTIONS);
+
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            Multimedia multimedia = mProduct.getPicture();
+            if (bitmap != null) {
+                multimedia.setBitmap(bitmap);
+            } else {
+                multimedia.setBitmap(BitmapFactory.decodeResource(this.mResources, R.drawable.ic_perfil_semfoto));
+            }
+
+            mAdapter.notifyDataSetChanged();
         }
     }
 

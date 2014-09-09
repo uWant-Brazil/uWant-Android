@@ -31,6 +31,7 @@ import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.WishListDeleteModel;
 import br.com.uwant.models.cloud.models.WishListModel;
 import br.com.uwant.models.cloud.models.WishListProductsModel;
+import br.com.uwant.utils.WishListUtil;
 
 public class WishListFragment extends Fragment implements IRequest.OnRequestListener<List<WishList>>,
         AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
@@ -145,6 +146,8 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
                         if (index <= 2 || index % 3 == 0) {
                             mAdapter.notifyDataSetChanged();
                         }
+
+                        WishListUtil.loadPicturesFromProducts(getResources(), mAdapter, wl);
                     }
 
                     @Override

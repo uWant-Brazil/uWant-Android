@@ -64,6 +64,7 @@ public class WishListAdapter extends BaseAdapter implements Filterable {
         TextView hTextViewTitle = (TextView) view.findViewById(R.id.adapter_wishlist_textView_title);
         GridLayout hGridLayoutPictures = (GridLayout) view.findViewById(R.id.adapter_wishlist_gridlayout_pictures);
         ProgressBar hProgressBar = (ProgressBar) view.findViewById(R.id.adapter_wishlist_progressBar);
+        ImageView hImageViewProducts = (ImageView) view.findViewById(R.id.adapter_wishlist_imageView_products);
         ImageView hImageViewPopUp = (ImageView) view.findViewById(R.id.adapter_wishlist_imageView_popup);
         hImageViewPopUp.setOnClickListener(this.mListener);
         hImageViewPopUp.setTag(i);
@@ -74,12 +75,17 @@ public class WishListAdapter extends BaseAdapter implements Filterable {
         List<Product> products = wishList.getProducts();
 
         hTextViewTitle.setText(title);
-        if (id == WishList.EMPTY_ID || products == null || products.size() == 0) {
-            //holder.hImageViewProducts.setImageResource(R.drawable.ic_perfil_semfoto);
-            // FIXME ...
+        if ((id == WishList.EMPTY_ID) && hImageViewProducts.getVisibility() != View.VISIBLE) {
+           hImageViewProducts.setVisibility(View.VISIBLE);
         } else if (products != null && products.size() > 0) {
             WishListUtil.renderProducts(this.mContext, products, hGridLayoutPictures);
-            hProgressBar.setVisibility(View.GONE);
+
+            if (hProgressBar.getVisibility() == View.VISIBLE) {
+                hProgressBar.setVisibility(View.GONE);
+            }
+            if (hImageViewProducts.getVisibility() == View.VISIBLE) {
+                hImageViewProducts.setVisibility(View.GONE);
+            }
         }
 
         return view;
