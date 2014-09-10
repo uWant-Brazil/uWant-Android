@@ -26,11 +26,13 @@ import br.com.uwant.R;
 import br.com.uwant.flow.fragments.FriendsCircleFragment;
 import br.com.uwant.flow.fragments.WishListFragment;
 import br.com.uwant.models.classes.Multimedia;
+import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.utils.PictureUtil;
 
 public class PerfilActivity extends ActionBarActivity {
 
+    private Person mPerson;
     private static String[] TABS;
 
     private PerfilPagerAdapter mAdapter;
@@ -103,9 +105,14 @@ public class PerfilActivity extends ActionBarActivity {
             actionBar.addTab(tab);
         }
 
-        User user = User.getInstance();
-        String name = user.getName();
-        Multimedia multimedia = user.getPicture();
+        if (getIntent().hasExtra(Person.EXTRA)) {
+            mPerson = (Person) getIntent().getSerializableExtra(Person.EXTRA);
+        } else {
+            mPerson = User.getInstance();
+        }
+
+        String name = mPerson.getName();
+        Multimedia multimedia = mPerson.getPicture();
 
         final TextView textViewName = (TextView) findViewById(R.id.perfil_textView_name);
         textViewName.setText(name);
@@ -202,11 +209,11 @@ public class PerfilActivity extends ActionBarActivity {
             if (fragment == null) {
                 switch (i) {
                     case 0:
-                        fragment = new WishListFragment();
+                        fragment = WishListFragment.newInstance(mPerson);
                         break;
 
                     case 1:
-                        fragment = new FriendsCircleFragment();
+                        fragment = FriendsCircleFragment.newInstance(mPerson);
                         break;
 
                     default:

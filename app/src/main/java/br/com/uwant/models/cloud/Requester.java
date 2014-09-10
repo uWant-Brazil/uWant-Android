@@ -61,6 +61,8 @@ public abstract class Requester {
         public static final String MULTIMEDIA_PRODUCT = "multimediaProduct";
         public static final String MULTIMEDIA_USER_PICTURE = "multimediaUserPicture";
         public static final String MULTIMEDIA = "multimedia";
+        public static final String USER_ID = "userId";
+        public static final String WISHLIST_ID = "wishlistId";
     }
 
     /**

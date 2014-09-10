@@ -23,11 +23,14 @@ import java.util.List;
 import br.com.uwant.R;
 import br.com.uwant.flow.WishListActivity;
 import br.com.uwant.models.adapters.WishListAdapter;
+import br.com.uwant.models.classes.Action;
+import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.Product;
 import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
+import br.com.uwant.models.cloud.models.FeedsModel;
 import br.com.uwant.models.cloud.models.WishListDeleteModel;
 import br.com.uwant.models.cloud.models.WishListModel;
 import br.com.uwant.models.cloud.models.WishListProductsModel;
@@ -37,11 +40,11 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
         AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private static final int EMPTY_WISH_LIST_COUNT = 4;
-    private static final WishListModel MODEL = new WishListModel();
 
     private List<WishList> mWishLists;
     private WishList mWishListSelected;
     private WishListAdapter mAdapter;
+    private Person mPerson;
 
     private GridView mGridView;
     private ProgressFragmentDialog mProgressDialog;
@@ -75,7 +78,7 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mWishLists = new ArrayList<WishList>(5);
-        mAdapter = new WishListAdapter(getActivity(), mWishLists, this);
+        mAdapter = new WishListAdapter(getActivity(), mWishLists, this, this.mPerson);
     }
 
     @Override
@@ -103,7 +106,9 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
     }
 
     private void updateWishList() {
-        Requester.executeAsync(MODEL, this);
+        WishListModel model = new WishListModel();
+        model.setPerson(this.mPerson);
+        Requester.executeAsync(model, this);
     }
 
     @Override
@@ -169,8 +174,16 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        // TODO O que acontece ao clicar?
-//        WishList wishList = this.mWishLists.get(i);
+        WishList wishListSelected = mAdapter.getItem(i);
+        if (wishListSelected != null) {
+            FeedsFragment f = FeedsFragment.newInstance(wishListSelected);
+            getFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top, R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
+                    .replace(android.R.id.content, f, FeedsFragment.TAG)
+                    .addToBackStack(FeedsFragment.TAG)
+                    .commit();
+        }
     }
 
     @Override
@@ -274,4 +287,17 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
         // TODO ...
     }
 
+    public static Fragment newInstance(Person person) {
+        WishListFragment f = new WishListFragment();
+        f.setPerson(person);
+        return f;
+    }
+
+    public void setPerson(Person person) {
+        this.mPerson = person;
+    }
+
+    public Person getPerson() {
+        return mPerson;
+    }
 }

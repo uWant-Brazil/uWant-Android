@@ -36,8 +36,8 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
         AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private static final int RQ_ADD_CONTACTS = 1230;
-    private static final FriendsCircleModel MODEL = new FriendsCircleModel();
 
+    private Person mPerson;
     private List<Person> mFriends;
     private Person mPersonSelected;
     private FriendsCircleAdapter mAdapter;
@@ -96,7 +96,7 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mFriends = new ArrayList<Person>(50);
-        this.mAdapter = new FriendsCircleAdapter(getActivity(), this.mFriends, this);
+        this.mAdapter = new FriendsCircleAdapter(getActivity(), this.mFriends, this, this.mPerson);
     }
 
     @Override
@@ -122,7 +122,9 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
     }
 
     private void updateFriends() {
-        Requester.executeAsync(MODEL, this);
+        FriendsCircleModel model = new FriendsCircleModel();
+        model.setPerson(this.mPerson);
+        Requester.executeAsync(model, this);
     }
 
     @Override
@@ -237,4 +239,13 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
         Requester.executeAsync(model, this.mListenerExcludeBlock);
     }
 
+    private void setPerson(Person person) {
+        this.mPerson = person;
+    }
+
+    public static Fragment newInstance(Person person) {
+        FriendsCircleFragment f = new FriendsCircleFragment();
+        f.setPerson(person);
+        return f;
+    }
 }

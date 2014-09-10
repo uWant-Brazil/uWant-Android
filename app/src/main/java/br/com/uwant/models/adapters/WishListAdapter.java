@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.uwant.R;
+import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.Product;
+import br.com.uwant.models.classes.User;
 import br.com.uwant.models.classes.WishList;
 import br.com.uwant.utils.WishListUtil;
 
@@ -24,14 +26,16 @@ public class WishListAdapter extends BaseAdapter implements Filterable {
 
     private final Context mContext;
     private final List<WishList> mWishLists;
+    private boolean itsMe;
     private List<WishList> mFilteredWishLists;
     private Filter mFilter;
-    private View.OnClickListener mListener;
+    private View.OnClickListener mPopUpListener;
 
-    public WishListAdapter(Context context, List<WishList> wishLists, View.OnClickListener listener) {
+    public WishListAdapter(Context context, List<WishList> wishLists, View.OnClickListener listener, Person whoAmI) {
         this.mContext = context;
         this.mWishLists = wishLists;
-        this.mListener = listener;
+        this.mPopUpListener = listener;
+        this.itsMe = (whoAmI instanceof User);
     }
 
     @Override
@@ -66,8 +70,19 @@ public class WishListAdapter extends BaseAdapter implements Filterable {
         ProgressBar hProgressBar = (ProgressBar) view.findViewById(R.id.adapter_wishlist_progressBar);
         ImageView hImageViewProducts = (ImageView) view.findViewById(R.id.adapter_wishlist_imageView_products);
         ImageView hImageViewPopUp = (ImageView) view.findViewById(R.id.adapter_wishlist_imageView_popup);
-        hImageViewPopUp.setOnClickListener(this.mListener);
-        hImageViewPopUp.setTag(i);
+
+        if (itsMe) {
+            if (hImageViewPopUp.getVisibility() != View.VISIBLE) {
+                hImageViewPopUp.setVisibility(View.VISIBLE);
+            }
+
+            hImageViewPopUp.setOnClickListener(this.mPopUpListener);
+            hImageViewPopUp.setTag(i);
+        } else {
+            if (hImageViewPopUp.getVisibility() == View.VISIBLE) {
+                hImageViewPopUp.setVisibility(View.GONE);
+            }
+        }
 
         WishList wishList = getItem(i);
         long id = wishList.getId();

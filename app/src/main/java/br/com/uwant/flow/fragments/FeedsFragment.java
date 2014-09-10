@@ -19,6 +19,7 @@ import br.com.uwant.R;
 import br.com.uwant.models.adapters.FeedsAdapter;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Person;
+import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
@@ -36,7 +37,6 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     public static final String TAG = "feedsFragment";
     private static final int DEFAULT_START_INDEX = 0;
     private static final int DEFAULT_END_INDEX = 20;
-    private static final FeedsModel MODEL = new FeedsModel();
 
     private Action mActionSelected;
     private List<Action> mActions;
@@ -152,6 +152,8 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         }
 
     };
+    private WishList mWishList;
+    private Person mPerson;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -184,10 +186,13 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         mActions.clear();
         mFeedsAdapter.notifyDataSetChanged();
 
-        MODEL.setStartIndex(DEFAULT_START_INDEX);
-        MODEL.setEndIndex(DEFAULT_END_INDEX);
+        FeedsModel model = new FeedsModel();
+        model.setWishList(this.mWishList);
+        model.setPerson(this.mPerson);
+        model.setStartIndex(DEFAULT_START_INDEX);
+        model.setEndIndex(DEFAULT_END_INDEX);
 
-        Requester.executeAsync(MODEL, this);
+        Requester.executeAsync(model, this);
     }
 
     @Override
@@ -330,4 +335,24 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         Requester.executeAsync(model, this.mListenerReport);
     }
 
+    public static FeedsFragment newInstance(WishList wishList) {
+        FeedsFragment f = new FeedsFragment();
+        f.setWishList(wishList);
+        return f;
+    }
+
+
+    public static FeedsFragment newInstance(Person person) {
+        FeedsFragment f = new FeedsFragment();
+        f.setPerson(person);
+        return f;
+    }
+
+    public void setWishList(WishList wishList) {
+        this.mWishList = wishList;
+    }
+
+    public void setPerson(Person person) {
+        this.mPerson = person;
+    }
 }

@@ -16,25 +16,28 @@ import java.util.List;
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.FriendsCircleFragment;
 import br.com.uwant.models.classes.Person;
+import br.com.uwant.models.classes.User;
 
 public class FriendsCircleAdapter extends BaseAdapter implements Filterable {
 
     private final Context mContext;
     private final List<Person> mFriends;
-    private final View.OnClickListener mListener;
+    private final View.OnClickListener mPopUpListener;
+    private boolean itsMe;
     private List<Person> mFilteredFriends;
     private Filter mFilter;
 
-    public FriendsCircleAdapter(Context context, List<Person> friends, View.OnClickListener listener) {
+    public FriendsCircleAdapter(Context context, List<Person> friends, View.OnClickListener listener, Person whoAmI) {
         this.mContext = context;
         this.mFriends = friends;
-        this.mListener = listener;
+        this.mPopUpListener = listener;
+        this.itsMe = (whoAmI instanceof User);
     }
 
     public FriendsCircleAdapter(Context context, List<Person> friends) {
         this.mContext = context;
         this.mFriends = friends;
-        this.mListener = new FriendsCircleFragment();
+        this.mPopUpListener = new FriendsCircleFragment();
     }
 
     @Override
@@ -66,13 +69,22 @@ public class FriendsCircleAdapter extends BaseAdapter implements Filterable {
             view = LayoutInflater.from(this.mContext).inflate(R.layout.adapter_friends_circle, viewGroup, false);
             holder.hTextViewName = (TextView) view.findViewById(R.id.friendsCircle_adapter_textView_name);
             holder.hImageViewPopUp = (ImageView) view.findViewById(R.id.friendsCircle_adapter_imageView_popUp);
-            holder.hImageViewPopUp.setOnClickListener(this.mListener);
+            holder.hImageViewPopUp.setOnClickListener(this.mPopUpListener);
             view.setTag(holder);
         } else {
             holder = (ViewHolder)view.getTag();
         }
 
-        holder.hImageViewPopUp.setTag(i);
+        if (this.itsMe) {
+            if (holder.hImageViewPopUp.getVisibility() != View.VISIBLE) {
+                holder.hImageViewPopUp.setVisibility(View.VISIBLE);
+            }
+            holder.hImageViewPopUp.setTag(i);
+        } else {
+            if (holder.hImageViewPopUp.getVisibility() == View.VISIBLE) {
+                holder.hImageViewPopUp.setVisibility(View.GONE);
+            }
+        }
 
         Person person = getItem(i);
         String name = person.getName();
