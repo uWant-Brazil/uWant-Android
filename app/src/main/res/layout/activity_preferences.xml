@@ -9,4 +9,9 @@
         android:summary="@string/text_configurations_account_summary"
         android:title="@string/text_configurations_account_title" />
 
+    <Preference
+        android:key="buttonFacebook"
+        android:summary="@string/text_configurations_facebook_summary"
+        android:title="@string/text_configurations_facebook_title" />
+
 </PreferenceScreen>

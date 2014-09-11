@@ -2,6 +2,9 @@ package br.com.uwant.flow;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -11,6 +14,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
@@ -27,6 +32,8 @@ import android.widget.Toast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +49,6 @@ import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.FriendsCircleModel;
 import br.com.uwant.models.cloud.models.LogoffModel;
 import br.com.uwant.models.cloud.models.UserSearchModel;
 import br.com.uwant.models.databases.UserDatabase;
@@ -50,8 +56,6 @@ import br.com.uwant.utils.GoogleCloudMessageUtil;
 import br.com.uwant.utils.PictureUtil;
 
 public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
-
-    private static final int REQUEST_CONFIGURATIONS = 0x9872;
 
     private FeedsFragment mFeedsFragment;
 
@@ -68,6 +72,23 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GoogleCloudMessageUtil.registerAsync(this);
+
+        try {
+
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+
+            for (Signature signature : info.signatures)
+            {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e("name not found", e.toString());
+        } catch (NoSuchAlgorithmException e) {
+            Log.e("no such an algorithm", e.toString());
+        }
 
         setContentView(R.layout.activity_main);
 

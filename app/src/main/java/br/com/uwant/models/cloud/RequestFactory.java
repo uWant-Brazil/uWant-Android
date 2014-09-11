@@ -116,6 +116,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new WishListProductsRequest();
                 break;
 
+            case SOCIAL_LINK:
+                request = new SocialLinkRequest();
+                break;
+
             default:
                 request = null;
                 break;

@@ -61,5 +61,8 @@
     <string name="text_add_wishes">Adicionar desejos</string>
     <string name="text_wishlist_created">A sua lista de desejos foi criada com sucesso.</string>
     <string name="text_ancient_easter_eager">Um ancião foi detectado, parabéns mestre!</string>
+    <string name="text_exclude_account_success">Sua conta acaba de ser desativada do uWant.</string>
+    <string name="text_configurations_facebook_title">Vincular/Desvincular o Facebook</string>
+    <string name="text_configurations_facebook_summary">Você pode vincular ou desvincular sua conta do Facebook a qualquer momento.</string>
 
 </resources>

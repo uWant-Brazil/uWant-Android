@@ -28,20 +28,98 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.model.GraphUser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 import br.com.uwant.R;
+import br.com.uwant.models.classes.SocialProvider;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.ExcludeAccountModel;
+import br.com.uwant.models.cloud.models.SocialLinkModel;
 
 public class ConfigurationsActivity extends PreferenceActivity {
 
-    public static final int RESULT_EXCLUDE = -9854;
+    private static final String CONST_HAS_HEADERS = "hasHeaders";
+    private static final String CONST_LOAD_HEADERS_FROM_RESOURCE = "loadHeadersFromResource";
+    private static final String ID_BUTTON_EXCLUDE = "buttonExclude";
+    private static final String ID_BUTTON_FACEBOOK = "buttonFacebook";
+    private static final List<String> FACEBOOK_PERMISSIONS = Arrays.asList("public_profile", "email", "user_birthday", "user_friends");
+
+    final Session.StatusCallback callback = new Session.StatusCallback() {
+
+        @Override
+        public void call(final Session session, SessionState state, Exception exception) {
+            if (session.isOpened()) {
+                // FIXME Compatibility
+                //mProgressDialog = ProgressFragmentDialog.show(getFragmentManager());
+
+                com.facebook.Request.newMeRequest(session, new com.facebook.Request.GraphUserCallback() {
+
+                    @Override
+                    public void onCompleted(final GraphUser graphUser, com.facebook.Response response) {
+                        if (graphUser != null) {
+                            //final String id = graphUser.getId();
+
+                            final String login = graphUser.getUsername();
+                            //final String name = graphUser.getName();
+                            //final String birthday = graphUser.getBirthday();
+                            final String mail = (String) graphUser.getProperty("email");
+
+                            final SocialLinkModel model = new SocialLinkModel();
+                            model.setLogin(login == null ? mail : login);
+                            model.setProvider(SocialProvider.FACEBOOK);
+                            model.setToken(session.getAccessToken());
+
+                            Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
+
+                                @Override
+                                public void onPreExecute() {
+                                    //if (mProgressDialog == null) {
+                                    //    mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
+                                    //}
+                                }
+
+                                @Override
+                                public void onExecute(Boolean linked) {
+                                    if (linked) {
+                                        if (mProgressDialog != null) {
+                                            mProgressDialog.dismiss();
+                                        }
+
+                                        Toast.makeText(ConfigurationsActivity.this, "Sua conta foi vinculada com sucesso.", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(ConfigurationsActivity.this, "Sua conta foi desvinculada com sucesso.", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(RequestError error) {
+                                    if (mProgressDialog != null) {
+                                        mProgressDialog.dismiss();
+                                    }
+
+                                    Toast.makeText(ConfigurationsActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+
+                            });
+                        }
+                    }
+
+                }).executeAsync();
+            }
+        }
+
+    };
 
     private ProgressDialog mProgressDialog;
     private Method mHeaders = null;
@@ -49,9 +127,16 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Session session = Session.getActiveSession();
+
+        if (session == null && savedInstanceState != null) {
+            session = Session.restoreSession(this, null, callback, savedInstanceState);
+            Session.setActiveSession(session);
+        }
+
         try {
-            mHeaders = getClass().getMethod("loadHeadersFromResource", int.class, List.class );
-            mHasHeaders = getClass().getMethod("hasHeaders");
+            mHeaders = getClass().getMethod(CONST_LOAD_HEADERS_FROM_RESOURCE, int.class, List.class );
+            mHasHeaders = getClass().getMethod(CONST_HAS_HEADERS);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -69,7 +154,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
     private void mapEarlierThenV11() {
         addPreferencesFromResource(R.layout.activity_preferences);
 
-        Preference button = findPreference("buttonExclude");
+        Preference button = findPreference(ID_BUTTON_EXCLUDE);
         button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             @Override
@@ -92,13 +177,17 @@ public class ConfigurationsActivity extends PreferenceActivity {
                     public void onExecute(Boolean result) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(ConfigurationsActivity.this)
                                 .setTitle(R.string.app_name)
-                                .setMessage("Sua conta acaba de ser desativada do uWant.")
+                                .setMessage(R.string.text_exclude_account_success)
                                 .setNeutralButton(R.string.text_ok, new DialogInterface.OnClickListener() {
 
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        setResult(RESULT_EXCLUDE);
-                                        finish();
+                                        Intent intent = new Intent(ConfigurationsActivity.this, AuthenticationActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                        startActivity(intent);
                                     }
 
                                 });
@@ -121,6 +210,36 @@ public class ConfigurationsActivity extends PreferenceActivity {
             }
 
         });
+
+        Preference preferenceFacebook = findPreference(ID_BUTTON_FACEBOOK);
+        preferenceFacebook.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                executeFacebook();
+                return true;
+            }
+
+        });
+    }
+
+    private void executeFacebook() {
+        Session session = Session.getActiveSession();
+        if (session != null) {
+            if (!session.isOpened() && !session.isClosed()) {
+                if (session.getPermissions().containsAll(FACEBOOK_PERMISSIONS)) {
+                    session.openForRead(new Session.OpenRequest(this)
+                            .setPermissions(FACEBOOK_PERMISSIONS)
+                            .setCallback(callback));
+                } else {
+                    session.requestNewReadPermissions(new Session.NewPermissionsRequest(this, FACEBOOK_PERMISSIONS));
+                }
+            } else {
+                Session.openActiveSession(this, true, FACEBOOK_PERMISSIONS, callback);
+            }
+        } else {
+            Session.openActiveSession(this, true, FACEBOOK_PERMISSIONS, callback);
+        }
     }
 
     @Override
@@ -165,16 +284,100 @@ public class ConfigurationsActivity extends PreferenceActivity {
         return false;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Session session = Session.getActiveSession();
+        if (session != null) {
+            session.onActivityResult(this, requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Session session = Session.getActiveSession();
+        if (session != null) {
+            session.saveSession(session, outState);
+        }
+    }
+
     public static class ConfigurationsFragment extends PreferenceFragment {
 
         private ProgressDialog mProgressDialog;
+
+        final Session.StatusCallback callback = new Session.StatusCallback() {
+
+            @Override
+            public void call(final Session session, SessionState state, Exception exception) {
+                if (session.isOpened()) {
+                    // FIXME Compatibility
+                    //mProgressDialog = ProgressFragmentDialog.show(getFragmentManager());
+
+                    com.facebook.Request.newMeRequest(session, new com.facebook.Request.GraphUserCallback() {
+
+                        @Override
+                        public void onCompleted(final GraphUser graphUser, com.facebook.Response response) {
+                            if (graphUser != null) {
+                                //final String id = graphUser.getId();
+
+                                final String login = graphUser.getUsername();
+                                //final String name = graphUser.getName();
+                                //final String birthday = graphUser.getBirthday();
+                                final String mail = (String) graphUser.getProperty("email");
+
+                                final SocialLinkModel model = new SocialLinkModel();
+                                model.setLogin(login == null ? mail : login);
+                                model.setProvider(SocialProvider.FACEBOOK);
+                                model.setToken(session.getAccessToken());
+
+                                Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
+
+                                    @Override
+                                    public void onPreExecute() {
+                                        //if (mProgressDialog == null) {
+                                        //    mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
+                                        //}
+                                    }
+
+                                    @Override
+                                    public void onExecute(Boolean linked) {
+                                        if (linked) {
+                                            if (mProgressDialog != null) {
+                                                mProgressDialog.dismiss();
+                                            }
+
+                                            Toast.makeText(getActivity(), "Sua conta foi vinculada com sucesso.", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(getActivity(), "Sua conta foi desvinculada com sucesso.", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(RequestError error) {
+                                        if (mProgressDialog != null) {
+                                            mProgressDialog.dismiss();
+                                        }
+
+                                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+
+                                });
+                            }
+                        }
+
+                    }).executeAsync();
+                }
+            }
+
+        };
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.layout.activity_preferences);
 
-            Preference preference = findPreference("buttonExclude");
+            Preference preference = findPreference(ID_BUTTON_EXCLUDE);
             preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
                 @Override
@@ -239,6 +442,35 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
             });
 
+            Preference preferenceFacebook = findPreference(ID_BUTTON_FACEBOOK);
+            preferenceFacebook.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    executeFacebook();
+                    return true;
+                }
+
+            });
+        }
+
+        private void executeFacebook() {
+            Session session = Session.getActiveSession();
+            if (session != null) {
+                if (!session.isOpened() && !session.isClosed()) {
+                    if (session.getPermissions().containsAll(FACEBOOK_PERMISSIONS)) {
+                        session.openForRead(new Session.OpenRequest(getActivity())
+                                .setPermissions(FACEBOOK_PERMISSIONS)
+                                .setCallback(callback));
+                    } else {
+                        session.requestNewReadPermissions(new Session.NewPermissionsRequest(getActivity(), FACEBOOK_PERMISSIONS));
+                    }
+                } else {
+                    Session.openActiveSession(getActivity(), true, FACEBOOK_PERMISSIONS, callback);
+                }
+            } else {
+                Session.openActiveSession(getActivity(), true, FACEBOOK_PERMISSIONS, callback);
+            }
         }
 
     }
