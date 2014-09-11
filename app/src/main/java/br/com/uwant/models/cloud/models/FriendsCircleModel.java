@@ -20,7 +20,7 @@ public class FriendsCircleModel extends AbstractJSONRequestModel {
         JsonObject json = null;
         if (!(person instanceof User)) {
             json = new JsonObject();
-            json.addProperty(Requester.ParameterKey.USER_ID, person.getId());
+            json.addProperty(Requester.ParameterKey.ID, person.getId());
         }
         return json;
     }

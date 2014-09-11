@@ -16,8 +16,10 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -196,29 +198,32 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent it = null;
         Adapter adapter = parent.getAdapter();
-        if (adapter instanceof FriendsCircleAdapter) {
-            FriendsCircleAdapter fca = (FriendsCircleAdapter) adapter;
-            Person person = fca.getItem(position);
+        if (adapter instanceof HeaderViewListAdapter) {
+            HeaderViewListAdapter hAdapter = (HeaderViewListAdapter) adapter;
+            ListAdapter listAdapter = hAdapter.getWrappedAdapter();
+            if (listAdapter instanceof FriendsCircleAdapter) {
+                Person person = (Person) hAdapter.getItem(position);
 
-            it = new Intent(this, PerfilActivity.class);
-            it.putExtra(Person.EXTRA, person);
-        } else {
-            switch (position) {
-                case 3:
-                    it = new Intent(this, ConfigurationsActivity.class);
-                    break;
+                it = new Intent(this, PerfilActivity.class);
+                it.putExtra(Person.EXTRA, person);
+            } else {
+                switch (position) {
+                    case 3:
+                        it = new Intent(this, ConfigurationsActivity.class);
+                        break;
 
-                case 4:
-                    it = new Intent(this, AboutActivity.class);
-                    break;
+                    case 4:
+                        it = new Intent(this, AboutActivity.class);
+                        break;
 
-                case 5:
-                    askForLogoff();
-                    // Deixar sem break para que a intent seja nula!
+                    case 5:
+                        askForLogoff();
+                        // Deixar sem break para que a intent seja nula!
 
-                default:
-                    it = null;
-                    break;
+                    default:
+                        it = null;
+                        break;
+                }
             }
         }
 

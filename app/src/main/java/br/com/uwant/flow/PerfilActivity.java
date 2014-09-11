@@ -50,6 +50,12 @@ public class PerfilActivity extends ActionBarActivity {
 
         TABS = getResources().getStringArray(R.array.options_perfil);
 
+        if (getIntent().hasExtra(Person.EXTRA)) {
+            mPerson = (Person) getIntent().getSerializableExtra(Person.EXTRA);
+        } else {
+            mPerson = User.getInstance();
+        }
+
         setContentView(R.layout.activity_perfil);
 
         mImageViewPicture = (ImageView) findViewById(R.id.perfil_imageView_picture);
@@ -103,12 +109,6 @@ public class PerfilActivity extends ActionBarActivity {
             tab.setTag(tabName);
             tab.setTabListener(tabListener);
             actionBar.addTab(tab);
-        }
-
-        if (getIntent().hasExtra(Person.EXTRA)) {
-            mPerson = (Person) getIntent().getSerializableExtra(Person.EXTRA);
-        } else {
-            mPerson = User.getInstance();
         }
 
         String name = mPerson.getName();
