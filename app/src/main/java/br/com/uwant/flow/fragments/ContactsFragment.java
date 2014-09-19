@@ -21,7 +21,7 @@ import br.com.uwant.R;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.views.CheckableLinearLayout;
 
-public abstract class ContactsFragment extends Fragment implements AdapterView.OnItemClickListener {
+public abstract class ContactsFragment extends Fragment implements AdapterView.OnItemClickListener, Runnable {
 
     protected List<Person> mPersons = new ArrayList<Person>(100);
     protected GridView mGridView;
@@ -65,6 +65,8 @@ public abstract class ContactsFragment extends Fragment implements AdapterView.O
     private void loadAsync() {
         final BaseAdapter baseAdapter = getAdapter();
         if (baseAdapter != null) {
+            mGridView.setAdapter(baseAdapter);
+
             if (this.mPersons != null && this.mPersons.size() == 0) {
                 this.mTask = new AsyncTask<Void, Void, Void>() {
 
@@ -91,7 +93,6 @@ public abstract class ContactsFragment extends Fragment implements AdapterView.O
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
                         if (mPersons.size() > 0) {
-                            mGridView.setAdapter(baseAdapter);
                             baseAdapter.notifyDataSetChanged();
                             mIsLoading = false;
                         } else {
@@ -116,16 +117,12 @@ public abstract class ContactsFragment extends Fragment implements AdapterView.O
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if (view instanceof CheckableLinearLayout) {
-            CheckableLinearLayout cll = (CheckableLinearLayout) view;
-            cll.toggle();
-
-            if (i == 0) {
+        if (i == 0) {
+            if (view instanceof CheckableLinearLayout) {
+                CheckableLinearLayout cll = (CheckableLinearLayout) view;
                 for (int j = 0;j < adapterView.getAdapter().getCount();j++) {
                     this.mGridView.setItemChecked(j, cll.isChecked());
                 }
-            } else {
-                this.mGridView.setItemChecked(i, cll.isChecked());
             }
         }
     }
@@ -162,4 +159,9 @@ public abstract class ContactsFragment extends Fragment implements AdapterView.O
         return contacts;
     }
 
+    @Override
+    public void run() {
+        BaseAdapter adapter = getAdapter();
+        adapter.notifyDataSetChanged();
+    }
 }

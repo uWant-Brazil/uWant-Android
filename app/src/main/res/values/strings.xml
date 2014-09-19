@@ -66,5 +66,6 @@
     <string name="text_configurations_facebook_summary">You can add or remove your Facebook account from uWant anitime you want.</string>
     <string name="text_see_perfil">Open perfil</string>
     <string name="text_add_friend">Add friend</string>
+    <string name="text_invite_all_friends">Convidar todos os amigos abaixo</string>
 
 </resources>

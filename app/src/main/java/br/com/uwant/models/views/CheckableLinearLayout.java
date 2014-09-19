@@ -2,6 +2,7 @@ package br.com.uwant.models.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Checkable;
 import android.widget.LinearLayout;
@@ -10,46 +11,46 @@ import br.com.uwant.R;
 
 public class CheckableLinearLayout extends LinearLayout implements Checkable {
 
-    private boolean checked;
     private CheckBox checkBox;
 
     public CheckableLinearLayout(Context context) {
         super(context);
-        configure();
     }
 
     public CheckableLinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        configure();
     }
 
     public CheckableLinearLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        configure();
-    }
-
-    private void configure() {
-        this.checkBox = (CheckBox) findViewById(R.id.checkablelinearlayou_checkbox);
     }
 
     @Override
-    public void setChecked(boolean b) {
-        if (this.checkBox == null) {
-            configure();
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; ++i) {
+            View v = getChildAt(i);
+            if (v instanceof CheckBox) {
+                checkBox = (CheckBox) v;
+            }
         }
-
-        this.checked = b;
-        this.checkBox.setChecked(this.checked);
     }
 
-    @Override
     public boolean isChecked() {
-        return checked;
+        return checkBox != null ? checkBox.isChecked() : false;
     }
 
-    @Override
+    public void setChecked(boolean checked) {
+        if (checkBox != null) {
+            checkBox.setChecked(checked);
+        }
+    }
+
     public void toggle() {
-        setChecked(!checked);
+        if (checkBox != null) {
+            checkBox.toggle();
+        }
     }
 
 }

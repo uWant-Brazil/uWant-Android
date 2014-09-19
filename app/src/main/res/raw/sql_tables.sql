@@ -21,12 +21,12 @@ CREATE TABLE wishlist_products (
     ,nickname varchar(255)
     ,picture_url varchar(255)
     ,last_update varchar(255) not null
-    ,_id_wishlist integer not null
+    ,id_wishlist integer not null
 );
 
 CREATE TABLE product_manufacturers (
     _id integer primary key
     ,name varchar(255) not null
     ,last_update varchar(255) not null
-    ,_id_product integer not null
+    ,id_product integer not null
 );

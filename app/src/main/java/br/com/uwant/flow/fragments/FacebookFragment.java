@@ -1,6 +1,8 @@
 package br.com.uwant.flow.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.BaseAdapter;
 
 import java.util.List;
@@ -13,9 +15,9 @@ public class FacebookFragment extends ContactsFragment {
     private ContactsAdapter mAdapter;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.mAdapter = new ContactsAdapter(getActivity(), this.mPersons);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        this.mAdapter = new ContactsAdapter(getActivity(), this.mGridView, this.mPersons);
     }
 
     @Override

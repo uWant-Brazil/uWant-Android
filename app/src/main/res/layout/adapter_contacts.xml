@@ -52,7 +52,7 @@
     </LinearLayout>
 
     <CheckBox
-        android:enabled="false"
+        android:focusable="false"
         android:layout_margin="10dp"
         android:id="@+id/checkablelinearlayou_checkbox"
         android:layout_width="wrap_content"

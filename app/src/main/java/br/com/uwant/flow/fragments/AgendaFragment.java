@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.BaseAdapter;
 
 import br.com.uwant.models.adapters.ContactsAdapter;
@@ -19,9 +21,9 @@ public class AgendaFragment extends ContactsFragment {
     private ContactsAdapter mAdapter;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.mAdapter = new ContactsAdapter(getActivity(), this.mPersons);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        this.mAdapter = new ContactsAdapter(getActivity(), this.mGridView, this.mPersons);
     }
 
     @Override
@@ -53,11 +55,6 @@ public class AgendaFragment extends ContactsFragment {
                             }
 
                             mPersons.add(person);
-
-                            if (++count == 50) {
-                                count = 0;
-                                mAdapter.notifyDataSetChanged();
-                            }
                         }
                         cursorCommons.moveToNext();
                     }

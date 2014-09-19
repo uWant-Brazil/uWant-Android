@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
@@ -27,6 +29,7 @@ import java.util.Set;
 import br.com.uwant.R;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
+import br.com.uwant.models.views.CheckableLinearLayout;
 import br.com.uwant.utils.PictureUtil;
 
 public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
@@ -36,10 +39,12 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
     private List<String> sectionsArray;
     private String[] sections;
     private List<Person> mPersons;
+    private GridView mGridView;
 
-    public ContactsAdapter(Context context, List<Person> persons) {
+    public ContactsAdapter(Context context, GridView listView, List<Person> persons) {
         this.mContext = context;
         this.mPersons = persons;
+        this.mGridView = listView;
 
         getAlphabeticIndex(persons);
     }
@@ -89,16 +94,24 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
         final ImageView hImageViewPictureCircle = (ImageView) view.findViewById(R.id.contacts_adapter_imageView_pictureCircle);
         final TextView hTextViewName = (TextView) view.findViewById(R.id.contacts_adapter_textView_name);
         final TextView hTextViewMail = (TextView) view.findViewById(R.id.contacts_adapter_textView_mail);
+        final CheckBox hCheckBox = (CheckBox) view.findViewById(R.id.checkablelinearlayou_checkbox);
 
         hImageViewPictureCircle.setVisibility(View.INVISIBLE);
 
         if (i == 0) {
             hTextViewMail.setVisibility(View.GONE);
-            hImageViewPicture.setVisibility(View.INVISIBLE);
-            hTextViewName.setText("Convidar todos os amigos abaixo");
+            hImageViewPicture.setVisibility(View.GONE);
+            hCheckBox.setVisibility(View.GONE);
+            hTextViewName.setText(R.string.text_invite_all_friends);
         } else {
             hTextViewMail.setVisibility(View.VISIBLE);
             hImageViewPicture.setVisibility(View.VISIBLE);
+            hCheckBox.setVisibility(View.VISIBLE);
+
+            boolean isChecked = mGridView.isItemChecked(i);
+            CheckableLinearLayout cll = (CheckableLinearLayout) view;
+            cll.setChecked(isChecked);
+            hCheckBox.setChecked(isChecked);
 
             Person person = getItem(i);
             String name = person.getName();
