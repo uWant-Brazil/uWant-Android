@@ -42,7 +42,7 @@
             <ImageView
                 android:layout_width="76dp"
                 android:layout_height="76dp"
-                android:src="@drawable/ic_comfoto"
+                android:src="@drawable/ic_comfoto_perfil"
                 android:visibility="invisible"
                 android:id="@+id/drawer_imageView_pictureDetail"
                 android:layout_gravity="center_horizontal" />

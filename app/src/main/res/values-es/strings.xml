@@ -64,5 +64,6 @@
     <string name="text_see_perfil">Ver perfil</string>
     <string name="text_add_friend">Adicionar amigo</string>
     <string name="text_invite_all_friends">Convidar todos os amigos abaixo</string>
+    <string name="text_contacts_introduction">Você já está cadastrado, agora convide seus amigos para compartilhar desejos!</string>
 
 </resources>

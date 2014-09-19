@@ -38,5 +38,9 @@ public class User extends Person implements Serializable {
         instance.setName(user.getName());
         instance.setGender(user.getGender());
         instance.setBirthday(user.getBirthday());
+        instance.setFacebookToken(user.getFacebookToken());
+        instance.setPicture(user.getPicture());
+        instance.setMail(user.getMail());
+        instance.setId(user.getId());
     }
 }
