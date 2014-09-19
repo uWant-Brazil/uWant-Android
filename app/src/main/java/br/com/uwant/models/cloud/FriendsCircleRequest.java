@@ -64,6 +64,7 @@ public class FriendsCircleRequest extends AbstractRequest<List<Person>> implemen
                                 String name = jsonFriendObj.get(Requester.ParameterKey.NAME).getAsString();
 
                                 Person person = new Person(id, login, name);
+                                person.setFriendshipLevel(Person.FriendshipLevel.MUTUAL);
 
                                 if (jsonFriendObj.has(Requester.ParameterKey.PICTURE)) {
                                     JsonElement jsonElementPicture = jsonFriendObj.get(Requester.ParameterKey.PICTURE);
@@ -108,6 +109,7 @@ public class FriendsCircleRequest extends AbstractRequest<List<Person>> implemen
             String login = "person_" + i;
             String name = "Person#" + i;
             Person person = new Person(i, login, name);
+            person.setFriendshipLevel(Person.FriendshipLevel.MUTUAL);
 
             if (i % 3 == 0) {
                 Multimedia picture = new Multimedia();

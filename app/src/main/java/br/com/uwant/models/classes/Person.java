@@ -16,13 +16,19 @@ public class Person implements Serializable {
         FEMALE, MALE;
     }
 
+    public enum FriendshipLevel {
+        MUTUAL, WAITING_ME, WAITING_YOU, NONE;
+    }
+
     private long id;
+    private boolean friend;
     private String name;
     private String login;
     private String mail;
     private Date birthday;
     private Gender gender;
     private Multimedia picture;
+    private FriendshipLevel friendshipLevel;
 
     public Person() {
     }
@@ -52,7 +58,6 @@ public class Person implements Serializable {
                 e.printStackTrace();
             }
         }
-
 
         this.name = name;
         this.mail = mail;
@@ -112,5 +117,17 @@ public class Person implements Serializable {
 
     public void setMail(String mail) {
         this.mail = mail;
+    }
+
+    public boolean isFriend() {
+        return friendshipLevel == FriendshipLevel.MUTUAL;
+    }
+
+    public FriendshipLevel getFriendshipLevel() {
+        return friendshipLevel;
+    }
+
+    public void setFriendshipLevel(FriendshipLevel friendshipLevel) {
+        this.friendshipLevel = friendshipLevel;
     }
 }

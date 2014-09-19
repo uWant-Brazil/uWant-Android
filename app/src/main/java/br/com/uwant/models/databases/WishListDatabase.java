@@ -13,23 +13,21 @@ import java.util.List;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
+import br.com.uwant.models.classes.WishList;
 import br.com.uwant.utils.DateUtil;
 
-public class UserDatabase extends BaseDatabase<User> {
+public class WishListDatabase extends BaseDatabase<WishList> {
 
-    private static final String TABLE = "users";
+    private static final String TABLE = "wishlists";
     private static final String SQL_CREATE = String.format("CREATE TABLE %s (" +
-            "%s varchar(255) primary key" +
+            "%s int primary key" +
             ",%s varchar(255) not null" +
             ",%s varchar(255) not null" +
-            ",%s integer not null" +
             ",%s varchar(255) not null" +
-            ",%s varchar(255)" +
-            ",%s varchar(255)" +
             ");"
-            , TABLE, TOKEN, NAME, LOGIN, GENDER, BIRTHDAY, PICTURE_URL, FACEBOOK_TOKEN);
+            , TABLE, ID, TITLE, DESCRIPTION, LAST_UPDATE);
 
-    public UserDatabase(Context context) {
+    public WishListDatabase(Context context) {
         super(context);
     }
 
@@ -50,78 +48,57 @@ public class UserDatabase extends BaseDatabase<User> {
     }
 
     @Override
-    public ContentValues getValues(User data) {
+    public ContentValues getValues(WishList data) {
         ContentValues cv = new ContentValues();
-        cv.put(TOKEN, data.getToken());
-        cv.put(NAME, data.getName());
-        cv.put(LOGIN, data.getLogin());
-        cv.put(BIRTHDAY, DateUtil.format(data.getBirthday(), DateUtil.DATE_PATTERN));
-        cv.put(GENDER, data.getGender().ordinal());
-
-        Multimedia picture = data.getPicture();
-        if (picture != null) {
-            String url = picture.getUrl();
-            if (url != null && !url.isEmpty()) {
-                cv.put(PICTURE_URL, picture.getUrl());
-            }
-        }
-
-        if (data.getFacebookToken() != null) {
-            cv.put(FACEBOOK_TOKEN, data.getFacebookToken());
-        }
+        cv.put(ID, data.getId());
+        cv.put(TITLE, data.getTitle());
+        cv.put(DESCRIPTION, data.getDescription());
+        cv.put(LAST_UPDATE, DateUtil.format(new Date(), DateUtil.DATE_HOUR_PATTERN));
 
         return cv;
     }
 
     @Override
-    public User getFromCursor(Cursor cursor) {
-        String token = cursor.getString(cursor.getColumnIndex(TOKEN));
-        String name = cursor.getString(cursor.getColumnIndex(NAME));
-        String login = cursor.getString(cursor.getColumnIndex(LOGIN));
-        String birthdayStr = cursor.getString(cursor.getColumnIndex(BIRTHDAY));
-        int genderOrdinal = cursor.getInt(cursor.getColumnIndex(GENDER));
+    public WishList getFromCursor(Cursor cursor) {
+        long id = cursor.getLong(cursor.getColumnIndex(ID));
+        String title = cursor.getString(cursor.getColumnIndex(TITLE));
+        String description = cursor.getString(cursor.getColumnIndex(DESCRIPTION));
 
-        Person.Gender gender = Person.Gender.values()[genderOrdinal];
-        Date birthday = null;
-        try {
-            birthday = DateUtil.parse(birthdayStr, DateUtil.DATE_PATTERN);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        WishList wishList = new WishList();
+        wishList.setId(id);
+        wishList.setTitle(title);
+        wishList.setDescription(description);
 
-        User user = User.getInstance();
-        user.setToken(token);
-        user.setName(name);
-        user.setLogin(login);
-        user.setBirthday(birthday);
-        user.setGender(gender);
-
-        return user;
+        return wishList;
     }
 
     @Override
-    public long create(User data) {
+    public long create(WishList data) {
         SQLiteDatabase db = getWritableDatabase();
         long id = db.insert(TABLE, null, getValues(data));
         db.close();
+
+        WishListProductsDatabase wlpdb = new WishListProductsDatabase(this.mContext);
+        wlpdb.createAll(data.getProducts());
+
         return id;
     }
 
     @Override
-    public long[] createAll(List<User> data) {
+    public long[] createAll(List<WishList> data) {
         long[] ids = null;
         if (data != null && data.size() > 0) {
             int i = 0;
             ids = new long[data.size()];
-            for (User user : data) {
-                ids[i++] = create(user);
+            for (WishList wishList : data) {
+                ids[i++] = create(wishList);
             }
         }
         return ids;
     }
 
     @Override
-    public long createOrUpdate(User data) {
+    public long createOrUpdate(WishList data) {
         if (exist(data)) {
             update(data);
         } else {
@@ -131,37 +108,37 @@ public class UserDatabase extends BaseDatabase<User> {
     }
 
     @Override
-    public long[] createOrUpdate(List<User> data) {
+    public long[] createOrUpdate(List<WishList> data) {
         long[] ids = null;
         if (data != null && data.size() > 0) {
             int i = 0;
             ids = new long[data.size()];
-            for (User user : data) {
-                ids[i++] = createOrUpdate(user);
+            for (WishList wishList : data) {
+                ids[i++] = createOrUpdate(wishList);
             }
         }
         return ids;
     }
 
     @Override
-    public void remove(User data) {
+    public void remove(WishList data) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE, String.format("%s%s", TOKEN, QUERY), new String[] { data.getToken() });
+        db.delete(TABLE, String.format("%s%s", ID, QUERY), new String[] { String.valueOf(data.getId()) });
         db.close();
     }
 
     @Override
-    public void update(User data) {
+    public void update(WishList data) {
         SQLiteDatabase db = getWritableDatabase();
-        db.update(TABLE, getValues(data), String.format("%s=?", TOKEN), new String[] { data.getToken() });
+        db.update(TABLE, getValues(data), String.format("%s%s", ID, QUERY), new String[] { String.valueOf(data.getId()) });
         db.close();
     }
 
     @Override
-    public void updateAll(List<User> data) {
+    public void updateAll(List<WishList> data) {
         if (data != null && data.size() > 0) {
-            for (User user : data) {
-                update(user);
+            for (WishList wishList : data) {
+                update(wishList);
             }
         }
     }
@@ -174,49 +151,49 @@ public class UserDatabase extends BaseDatabase<User> {
     }
 
     @Override
-    public User select(String[] columns, String[] columnArgs) {
-        User user = null;
+    public WishList select(String[] columns, String[] columnArgs) {
+        WishList wishList = null;
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE, null, joinColumns(columns), columnArgs, null, null, null);
 
         if (cursor != null && cursor.getCount() == 1) {
             cursor.moveToFirst();
-            user = getFromCursor(cursor);
+            wishList = getFromCursor(cursor);
             cursor.close();
         }
         db.close();
 
-        return user;
+        return wishList;
     }
 
     @Override
-    public List<User> selectAll(String[] columns, String[] columnArgs) {
-        List<User> companies = null;
+    public List<WishList> selectAll(String[] columns, String[] columnArgs) {
+        List<WishList> wishLists = null;
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE, null, joinColumns(columns), columnArgs, null, null, null);
 
         if (cursor != null && cursor.getCount() > 0) {
-            companies = new ArrayList<User>(cursor.getCount() + 5);
+            wishLists = new ArrayList<WishList>(cursor.getCount() + 5);
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                companies.add(getFromCursor(cursor));
+                wishLists.add(getFromCursor(cursor));
                 cursor.moveToNext();
             }
             cursor.close();
         }
         db.close();
 
-        return companies;
+        return wishLists;
     }
 
     @Override
-    public List<User> selectAll() {
+    public List<WishList> selectAll() {
         return selectAll(null, null);
     }
 
     @Override
-    public boolean exist(User data) {
-        return exist(new String[] { TOKEN }, new String[] { data.getToken() });
+    public boolean exist(WishList data) {
+        return exist(new String[] { ID }, new String[] { String.valueOf(data.getId()) });
     }
 
     @Override
@@ -226,7 +203,7 @@ public class UserDatabase extends BaseDatabase<User> {
 
     @Override
     public boolean existAnything() {
-        List<User> all = selectAll(null, null);
+        List<WishList> all = selectAll(null, null);
         return (all != null && all.size() > 0);
     }
 }

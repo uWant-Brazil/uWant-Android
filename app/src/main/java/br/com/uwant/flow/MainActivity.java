@@ -53,6 +53,7 @@ import br.com.uwant.models.cloud.models.LogoffModel;
 import br.com.uwant.models.cloud.models.UserSearchModel;
 import br.com.uwant.models.databases.UserDatabase;
 import br.com.uwant.utils.GoogleCloudMessageUtil;
+import br.com.uwant.utils.KeyboardUtil;
 import br.com.uwant.utils.PictureUtil;
 
 public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -145,6 +146,30 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
+        mDrawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+
+            @Override
+            public void onDrawerSlide(View view, float v) {
+                KeyboardUtil.hide(mEditTextSearch);
+            }
+
+            @Override
+            public void onDrawerOpened(View view) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View view) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int i) {
+
+            }
+
+        });
+
         mEditTextSearch.addTextChangedListener(new TextWatcher() {
 
             private boolean mIsCanceled;
@@ -193,6 +218,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                     UserSearchModel model = new UserSearchModel();
                     model.setQuery(s.toString());
                     Requester.executeAsync(model, this.searchListener);
+
+                    mEditTextSearch.requestFocus();
                 }
             }
 
@@ -217,6 +244,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        KeyboardUtil.hide(this.mEditTextSearch);
+
         Intent it = null;
         Adapter adapter = parent.getAdapter();
         if (adapter instanceof HeaderViewListAdapter) {
@@ -329,6 +358,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
     @Override
     public void onClick(View view) {
+        KeyboardUtil.hide(this.mEditTextSearch);
+
         switch (view.getId()) {
             case R.id.drawer_linearLayout_perfil:
                 Intent it = new Intent(this, PerfilActivity.class);
@@ -337,6 +368,15 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+            mDrawerLayout.closeDrawer(mDrawerList);
+        } else {
+            super.onBackPressed();
         }
     }
 }

@@ -53,7 +53,7 @@
             android:id="@+id/wishList_switch_share"
             android:thumb="@drawable/uwant_switch_inner_holo_light"
             android:track="@drawable/uwant_switch_track_holo_light"
-            android:checked="true"
+            android:checked="false"
             android:textColor="@color/GRAY_TEXT"
             android:hint="Compartilhar Facebook"
             android:textSize="18sp" />
@@ -111,7 +111,7 @@
             android:id="@+id/wishList_imageButton_picture"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_post_camera" />
+            android:src="@drawable/wishlist_picture_selector" />
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -119,7 +119,7 @@
             android:id="@+id/wishList_imageButton_gallery"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_post_galeria" />
+            android:src="@drawable/wishlist_gallery_selector" />
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -127,7 +127,7 @@
             android:id="@+id/wishList_imageButton_link"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_post_link" />
+            android:src="@drawable/wishlist_link_selector" />
     </LinearLayout>
 
 </LinearLayout>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/group_friend">
+        <item android:id="@+id/menu_add_friend"
+            android:title="@string/text_add_friend" />
+
+        <item android:id="@+id/menu_perfil"
+            android:title="@string/text_see_perfil" />
+    </group>
+
+</menu>

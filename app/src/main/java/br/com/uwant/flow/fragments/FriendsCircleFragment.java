@@ -22,6 +22,7 @@ import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.ContactsActivity;
+import br.com.uwant.flow.PerfilActivity;
 import br.com.uwant.models.adapters.FriendsCircleAdapter;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
@@ -33,7 +34,7 @@ import br.com.uwant.models.cloud.models.ExcludeFriendModel;
 import br.com.uwant.models.cloud.models.FriendsCircleModel;
 
 public class FriendsCircleFragment extends Fragment implements IRequest.OnRequestListener<List<Person>>,
-        AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
+        AdapterView.OnItemClickListener, SearchView.OnQueryTextListener {
 
     private static final int RQ_ADD_CONTACTS = 1230;
 
@@ -44,59 +45,11 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
 
     private ListView mListView;
 
-    private IRequest.OnRequestListener<Boolean> mListenerReport = new IRequest.OnRequestListener<Boolean>() {
-
-        private ProgressFragmentDialog mProgressDialog;
-
-        @Override
-        public void onPreExecute() {
-            mProgressDialog = ProgressFragmentDialog.show(getFragmentManager());
-        }
-
-        @Override
-        public void onExecute(Boolean result) {
-            if (mProgressDialog != null) {
-                mProgressDialog.dismiss();
-            }
-
-            Toast.makeText(getActivity(), "A atividade foi reportada com sucesso.", Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        public void onError(RequestError error) {
-            if (mProgressDialog != null) {
-                mProgressDialog.dismiss();
-            }
-
-            Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-    };
-
-    private IRequest.OnRequestListener<Boolean> mListenerExcludeBlock = new IRequest.OnRequestListener<Boolean>() {
-
-        @Override
-        public void onPreExecute() {
-
-        }
-
-        @Override
-        public void onExecute(Boolean result) {
-            updateFriends();
-        }
-
-        @Override
-        public void onError(RequestError error) {
-            Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-    };
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mFriends = new ArrayList<Person>(50);
-        this.mAdapter = new FriendsCircleAdapter(getActivity(), this.mFriends, this, this.mPerson);
+        this.mAdapter = new FriendsCircleAdapter(this, this.mFriends, this.mPerson);
     }
 
     @Override
@@ -121,7 +74,7 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
         updateFriends();
     }
 
-    private void updateFriends() {
+    public void updateFriends() {
         FriendsCircleModel model = new FriendsCircleModel();
         model.setPerson(this.mPerson);
         Requester.executeAsync(model, this);
@@ -158,7 +111,11 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
             intent.putExtra(User.EXTRA_ADD_CONTACTS, true);
             startActivityForResult(intent, RQ_ADD_CONTACTS);
         } else {
-            // TODO Abrir o perfil do usuário clicado... Qual a diferença?
+            Person person = mAdapter.getItem(i - 1);
+
+            Intent it = new Intent(getActivity(), PerfilActivity.class);
+            it.putExtra(Person.EXTRA, person);
+            startActivity(it);
         }
     }
 
@@ -178,65 +135,6 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void onClick(View view) {
-        Integer position = (Integer) view.getTag();
-        Person person = null;
-        if (position != null)
-            person = mAdapter.getItem(position);
-
-        switch (view.getId()) {
-            case R.id.friendsCircle_adapter_imageView_popUp:
-                openPopUp(view, person);
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    private void openPopUp(View v, Person person) {
-        this.mPersonSelected = person;
-
-        PopupMenu popup = new PopupMenu(getActivity(), v);
-        popup.setOnMenuItemClickListener(this);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.friends_circle_actions, popup.getMenu());
-        popup.show();
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        if (this.mPersonSelected != null) {
-            switch (item.getGroupId()) {
-                case R.id.group_friend:
-                    switch (item.getItemId()) {
-                        case R.id.menu_activities:
-                            cancelActivities();
-                            break;
-
-                        case R.id.menu_exclude:
-                            excludeFriend();
-                            break;
-                    }
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    private void excludeFriend() {
-        ExcludeFriendModel model = new ExcludeFriendModel();
-        model.setPerson(this.mPersonSelected);
-        Requester.executeAsync(model, this.mListenerExcludeBlock);
-    }
-
-    private void cancelActivities() {
-        BlockFriendModel model = new BlockFriendModel();
-        model.setPerson(this.mPersonSelected);
-        Requester.executeAsync(model, this.mListenerExcludeBlock);
     }
 
     private void setPerson(Person person) {

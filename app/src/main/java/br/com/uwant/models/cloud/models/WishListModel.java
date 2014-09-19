@@ -18,11 +18,15 @@ public class WishListModel extends AbstractJSONRequestModel {
     @Override
     protected JsonObject toJson() {
         JsonObject json = null;
-        if (!(person instanceof User)) {
+        if (!isMyself()) {
             json = new JsonObject();
             json.addProperty(Requester.ParameterKey.ID, person.getId());
         }
         return json;
+    }
+
+    private boolean isMyself() {
+        return (person instanceof User);
     }
 
     @Override

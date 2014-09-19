@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -49,9 +50,10 @@ import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.WishListCreateModel;
 import br.com.uwant.models.cloud.models.WishListProductPictureModel;
 import br.com.uwant.utils.PictureUtil;
+import br.com.uwant.utils.UserUtil;
 
 public class WishListActivity extends ActionBarActivity implements View.OnClickListener,
-        IRequest.OnRequestListener<List<Product>> {
+        IRequest.OnRequestListener<List<Product>>, CompoundButton.OnCheckedChangeListener {
 
     private static final int REQUEST_CAMERA = 984;
     private static final int REQUEST_GALLERY = 989;
@@ -85,6 +87,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
         mEditTextWishList = (EditText) findViewById(R.id.wishList_editText_list);
 
         mSwitchView = (Switch) findViewById(R.id.wishList_switch_share);
+        mSwitchView.setOnCheckedChangeListener(this);
 
         final ImageButton buttonCamera = (ImageButton) findViewById(R.id.wishList_imageButton_picture);
         buttonCamera.setOnClickListener(this);
@@ -368,4 +371,29 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
         Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onCheckedChanged(final CompoundButton compoundButton, boolean checked) {
+        if (compoundButton == mSwitchView && checked) {
+            if (!UserUtil.hasFacebook(this)) {
+                DialogInterface.OnClickListener lp = new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+
+                };
+                DialogInterface.OnClickListener ln = new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        compoundButton.setChecked(false);
+                    }
+
+                };
+
+                AlertFragmentDialog afd = AlertFragmentDialog.create(getString(R.string.text_attention), "Você ainda não vinculou nenhuma conta do Facebook. Deseja realizar isto agora?", getString(R.string.text_yes, lp, getString(R.string.text_no), ln));
+                afd.show(getSupportFragmentManager(), "SwitchFacebookDialog");
+            }
+        }
+    }
 }

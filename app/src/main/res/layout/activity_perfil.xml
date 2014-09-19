@@ -58,8 +58,8 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/perfil_imageView_settings"
-                    android:src="@drawable/abc_ic_cab_done_holo_light" />
+                    android:id="@+id/perfil_imageView_feed"
+                    android:src="@drawable/ic_feed_usuario" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

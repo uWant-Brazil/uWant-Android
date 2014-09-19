@@ -1,5 +1,7 @@
 package br.com.uwant.models.cloud;
 
+import android.content.Context;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -8,6 +10,7 @@ import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.models.SocialLinkModel;
 import br.com.uwant.models.cloud.models.SocialRegisterModel;
+import br.com.uwant.models.databases.UserDatabase;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
@@ -19,8 +22,19 @@ public class SocialLinkRequest extends AbstractRequest<Boolean> implements IRequ
      */
     private static final String ROUTE = "/mobile/social/link";
 
+    private SocialLinkModel mModel;
+
+    public SocialLinkRequest() {
+        super();
+    }
+
+    public SocialLinkRequest(Context context) {
+        super(context);
+    }
+
     @Override
     public void executeAsync(SocialLinkModel data, OnRequestListener listener) {
+        this.mModel = data;
         execute(data, listener);
     }
 
@@ -42,6 +56,12 @@ public class SocialLinkRequest extends AbstractRequest<Boolean> implements IRequ
             JsonObject jsonObject = jsonElement.getAsJsonObject();
 
             if (jsonObject.has(Requester.ParameterKey.LINKED)) {
+                User user = User.getInstance();
+                user.setFacebookToken(mModel.getToken());
+
+                UserDatabase udb = new UserDatabase(getContext());
+                udb.update(user);
+
                 return jsonObject.get(Requester.ParameterKey.LINKED).getAsBoolean();
             }
         }

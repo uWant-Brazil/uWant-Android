@@ -15,6 +15,7 @@ import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,7 +31,7 @@ import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.utils.PictureUtil;
 
-public class PerfilActivity extends ActionBarActivity {
+public class PerfilActivity extends ActionBarActivity implements View.OnClickListener {
 
     private Person mPerson;
     private static String[] TABS;
@@ -45,7 +46,7 @@ public class PerfilActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         TABS = getResources().getStringArray(R.array.options_perfil);
@@ -57,6 +58,9 @@ public class PerfilActivity extends ActionBarActivity {
         }
 
         setContentView(R.layout.activity_perfil);
+
+        final ImageView imageFeed = (ImageView) findViewById(R.id.perfil_imageView_feed);
+        imageFeed.setOnClickListener(this);
 
         mImageViewPicture = (ImageView) findViewById(R.id.perfil_imageView_picture);
         mImageViewPictureDetail = (ImageView) findViewById(R.id.perfil_imageView_pictureDetail);
@@ -176,6 +180,10 @@ public class PerfilActivity extends ActionBarActivity {
             case R.id.menu_perfil_search:
                 return true;
 
+            case android.R.id.home:
+                finish();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -184,8 +192,18 @@ public class PerfilActivity extends ActionBarActivity {
     private void setupSearchView() {
         mSearchView.setIconifiedByDefault(false);
         mSearchView.setSubmitButtonEnabled(false);
+        mSearchView.setIconified(false);
         mSearchView.setOnQueryTextListener(mCurrentFragment);
         mSearchView.setQueryHint(getString(R.string.text_hint_perfil_search));
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.perfil_imageView_feed:
+                // TODO Visualizar o feed do usuário que está aberto (this.mPerson).
+                break;
+        }
     }
 
     private class PerfilPagerAdapter extends FragmentStatePagerAdapter {

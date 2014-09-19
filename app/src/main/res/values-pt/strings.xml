@@ -61,5 +61,7 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_exclude_account_success">Sua conta acaba de ser desativada do uWant.</string>
     <string name="text_configurations_facebook_title">Vincular/Desvincular o Facebook</string>
     <string name="text_configurations_facebook_summary">Você pode vincular ou desvincular sua conta do Facebook a qualquer momento.</string>
+    <string name="text_see_perfil">Ver perfil</string>
+    <string name="text_add_friend">Adicionar amigo</string>
 
 </resources>

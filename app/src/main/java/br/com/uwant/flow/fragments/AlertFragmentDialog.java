@@ -111,19 +111,7 @@ public class AlertFragmentDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if (mContentView == null) {
-            mContentView = LayoutInflater.from(getActivity()).inflate(DEFAULT_VIEW_ID, null);
-
-            mContentPanel = mContentView.findViewById(R.id.contentPanel);
-            mCustomPanel = (FrameLayout) mContentView.findViewById(R.id.customPanel);
-            mTitleView = (TextView) mContentView.findViewById(R.id.alertTitle);
-            mMessageView = (TextView) mContentView.findViewById(R.id.message);
-
-            mTitleView.setTextColor(getResources().getColor(R.color.BLACK));
-
-            final ImageView imageViewIcon = (ImageView) mContentView.findViewById(R.id.icon);
-            imageViewIcon.setVisibility(View.GONE);
-        }
+        setContentView();
 
         mTitleView.setText(mTitle);
 
@@ -156,6 +144,22 @@ public class AlertFragmentDialog extends DialogFragment {
         }
 
         return builder.create();
+    }
+
+    private void setContentView() {
+        if (mContentView == null) {
+            mContentView = LayoutInflater.from(getActivity()).inflate(DEFAULT_VIEW_ID, null);
+
+            mContentPanel = mContentView.findViewById(R.id.contentPanel);
+            mCustomPanel = (FrameLayout) mContentView.findViewById(R.id.customPanel);
+            mTitleView = (TextView) mContentView.findViewById(R.id.alertTitle);
+            mMessageView = (TextView) mContentView.findViewById(R.id.message);
+
+            mTitleView.setTextColor(getResources().getColor(R.color.BLACK));
+
+            final ImageView imageViewIcon = (ImageView) mContentView.findViewById(R.id.icon);
+            imageViewIcon.setVisibility(View.GONE);
+        }
     }
 
     private void setTitle(String title) {

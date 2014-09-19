@@ -6,6 +6,7 @@ import java.util.Comparator;
 public class Product implements Serializable{
 
     private long id;
+    private long wishListId;
     private String name;
     private String nickName;
     private Manufacturer manufacturer;
@@ -61,5 +62,13 @@ public class Product implements Serializable{
 
     public void setFake(boolean fake) {
         this.fake = fake;
+    }
+
+    public long getWishListId() {
+        return wishListId;
+    }
+
+    public void setWishListId(long wishListId) {
+        this.wishListId = wishListId;
     }
 }

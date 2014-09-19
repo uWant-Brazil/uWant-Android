@@ -9,6 +9,7 @@ public class User extends Person implements Serializable {
     private static final User INSTANCE = new User();
 
     private String token;
+    private String facebookToken;
 
     public static User getInstance() {
         return INSTANCE;
@@ -20,6 +21,14 @@ public class User extends Person implements Serializable {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getFacebookToken() {
+        return facebookToken;
+    }
+
+    public void setFacebookToken(String facebookToken) {
+        this.facebookToken = facebookToken;
     }
 
     public static void newInstance(User user) {

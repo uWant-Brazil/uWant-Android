@@ -26,6 +26,7 @@ import br.com.uwant.models.adapters.WishListAdapter;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.Product;
+import br.com.uwant.models.classes.User;
 import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
@@ -108,7 +109,11 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
     private void updateWishList() {
         WishListModel model = new WishListModel();
         model.setPerson(this.mPerson);
-        Requester.executeAsync(model, this);
+        if (isMyself()) {
+            Requester.executeAsync(getActivity(), model, this);
+        } else {
+            Requester.executeAsync(model, this);
+        }
     }
 
     @Override
@@ -136,9 +141,7 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
                 final int index = i;
                 final WishList wl = result.get(i);
 
-                WishListProductsModel model = new WishListProductsModel();
-                model.setWishList(wl);
-                Requester.executeAsync(model, new IRequest.OnRequestListener<List<Product>>() {
+                IRequest.OnRequestListener<List<Product>> listener = new IRequest.OnRequestListener<List<Product>>() {
 
                     @Override
                     public void onPreExecute() {
@@ -160,7 +163,15 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
 
                     }
 
-                });
+                };
+
+                WishListProductsModel model = new WishListProductsModel();
+                model.setWishList(wl);
+                if (isMyself()) {
+                    Requester.executeAsync(getActivity(), model, listener);
+                } else {
+                    Requester.executeAsync(model, listener);
+                }
             }
         }
 
@@ -299,5 +310,9 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
 
     public Person getPerson() {
         return mPerson;
+    }
+
+    private boolean isMyself() {
+        return (this.mPerson instanceof User);
     }
 }

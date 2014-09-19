@@ -6,6 +6,8 @@ import com.google.gson.JsonParser;
 
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.models.RegisterModel;
+import br.com.uwant.models.cloud.models.SocialRegisterModel;
+import br.com.uwant.models.databases.UserDatabase;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
@@ -52,6 +54,12 @@ public class RegisterRequest extends AbstractRequest<User> implements IRequest<R
                     user.setId(id);
                 }
             }
+        }
+
+        SocialRegisterModel socialModel = mModel.getSocialModel();
+        if (socialModel != null) {
+            String facebookToken = socialModel.getToken();
+            user.setFacebookToken(facebookToken);
         }
 
         return user;

@@ -19,6 +19,13 @@ public abstract class BaseDatabase<K> extends SQLiteOpenHelper implements IDatab
     public static final String GENDER = "gender";
     public static final String BIRTHDAY = "birthday";
     public static final String PICTURE_URL = "picture_url";
+    public static final String TITLE = "title";
+    public static final String DESCRIPTION = "description";
+    public static final String LAST_UPDATE = "last_update";
+    public static final String NICKNAME = "nickname";
+    public static final String ID_WISHLIST = "id_wishlist";
+    public static final String ID_PRODUCT = "id_product";
+    public static final String FACEBOOK_TOKEN = "facebook_token";
 
     protected Context mContext;
 

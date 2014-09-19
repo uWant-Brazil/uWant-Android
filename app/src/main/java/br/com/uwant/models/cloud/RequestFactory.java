@@ -1,11 +1,13 @@
 package br.com.uwant.models.cloud;
 
+import android.content.Context;
+
 import br.com.uwant.models.AbstractFactory;
 
 /**
  * Factory responsável pela criação das requisições.
  */
-class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
+class RequestFactory extends AbstractFactory<IRequest.Type, Context, IRequest> {
 
     private static final RequestFactory INSTANCE = new RequestFactory();
 
@@ -120,10 +122,38 @@ class RequestFactory extends AbstractFactory<IRequest.Type, IRequest> {
                 request = new SocialLinkRequest();
                 break;
 
+            case ADD_FRIEND:
+                request = new FriendAddRequest();
+                break;
+
             default:
                 request = null;
                 break;
         }
+        return request;
+    }
+
+    @Override
+    public IRequest get(IRequest.Type id, Context parameter) {
+        IRequest request;
+
+        switch (id) {
+            case WISH_LIST:
+                request = new WishListRequest(parameter);
+                break;
+
+            case WISH_LIST_PRODUCTS:
+                request = new WishListProductsRequest(parameter);
+                break;
+
+            case SOCIAL_LINK:
+                request = new SocialLinkRequest(parameter);
+                break;
+
+            default:
+                request = get(id);
+        }
+
         return request;
     }
 

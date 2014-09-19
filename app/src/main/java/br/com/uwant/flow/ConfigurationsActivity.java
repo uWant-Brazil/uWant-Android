@@ -84,18 +84,19 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
                                 @Override
                                 public void onPreExecute() {
-                                    //if (mProgressDialog == null) {
-                                    //    mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
-                                    //}
                                 }
 
                                 @Override
                                 public void onExecute(Boolean linked) {
-                                    if (linked) {
-                                        if (mProgressDialog != null) {
+                                    try {
+                                        if (mProgressDialog != null && mProgressDialog.isShowing()) {
                                             mProgressDialog.dismiss();
                                         }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
 
+                                    if (linked) {
                                         Toast.makeText(ConfigurationsActivity.this, "Sua conta foi vinculada com sucesso.", Toast.LENGTH_LONG).show();
                                     } else {
                                         Toast.makeText(ConfigurationsActivity.this, "Sua conta foi desvinculada com sucesso.", Toast.LENGTH_LONG).show();
@@ -104,8 +105,12 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
                                 @Override
                                 public void onError(RequestError error) {
-                                    if (mProgressDialog != null) {
-                                        mProgressDialog.dismiss();
+                                    try {
+                                        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                                            mProgressDialog.dismiss();
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
 
                                     Toast.makeText(ConfigurationsActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
@@ -149,6 +154,10 @@ public class ConfigurationsActivity extends PreferenceActivity {
         if (!isNewV11Prefs()) {
             mapEarlierThenV11();
         }
+
+        if (getIntent().getBooleanExtra("executeFacebook", false)) {
+            executeFacebook();
+        }
     }
 
     private void mapEarlierThenV11() {
@@ -170,11 +179,21 @@ public class ConfigurationsActivity extends PreferenceActivity {
                                     getString(R.string.text_wait),
                                     true,
                                     false);
+                        } else {
+                            mProgressDialog.show();
                         }
                     }
 
                     @Override
                     public void onExecute(Boolean result) {
+                        try {
+                            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                                mProgressDialog.dismiss();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                         AlertDialog.Builder builder = new AlertDialog.Builder(ConfigurationsActivity.this)
                                 .setTitle(R.string.app_name)
                                 .setMessage(R.string.text_exclude_account_success)
@@ -224,6 +243,16 @@ public class ConfigurationsActivity extends PreferenceActivity {
     }
 
     private void executeFacebook() {
+        if (mProgressDialog == null) {
+            mProgressDialog = ProgressDialog.show(this,
+                    getString(R.string.app_name),
+                    getString(R.string.text_wait),
+                    true,
+                    false);
+        } else {
+            mProgressDialog.show();
+        }
+
         Session session = Session.getActiveSession();
         if (session != null) {
             if (!session.isOpened() && !session.isClosed()) {
@@ -311,9 +340,6 @@ public class ConfigurationsActivity extends PreferenceActivity {
             @Override
             public void call(final Session session, SessionState state, Exception exception) {
                 if (session.isOpened()) {
-                    // FIXME Compatibility
-                    //mProgressDialog = ProgressFragmentDialog.show(getFragmentManager());
-
                     com.facebook.Request.newMeRequest(session, new com.facebook.Request.GraphUserCallback() {
 
                         @Override
@@ -335,16 +361,17 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
                                     @Override
                                     public void onPreExecute() {
-                                        //if (mProgressDialog == null) {
-                                        //    mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
-                                        //}
                                     }
 
                                     @Override
                                     public void onExecute(Boolean linked) {
                                         if (linked) {
-                                            if (mProgressDialog != null) {
-                                                mProgressDialog.dismiss();
+                                            try {
+                                                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                                                    mProgressDialog.dismiss();
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
                                             }
 
                                             Toast.makeText(getActivity(), "Sua conta foi vinculada com sucesso.", Toast.LENGTH_LONG).show();
@@ -355,14 +382,26 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
                                     @Override
                                     public void onError(RequestError error) {
-                                        if (mProgressDialog != null) {
-                                            mProgressDialog.dismiss();
+                                        try {
+                                            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                                                mProgressDialog.dismiss();
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
 
                                         Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
                                     }
 
                                 });
+                            } else {
+                                try {
+                                    if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                                        mProgressDialog.dismiss();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
 
@@ -455,6 +494,16 @@ public class ConfigurationsActivity extends PreferenceActivity {
         }
 
         private void executeFacebook() {
+            if (mProgressDialog == null) {
+                mProgressDialog = ProgressDialog.show(getActivity(),
+                        getString(R.string.app_name),
+                        getString(R.string.text_wait),
+                        true,
+                        false);
+            } else {
+                mProgressDialog.show();
+            }
+
             Session session = Session.getActiveSession();
             if (session != null) {
                 if (!session.isOpened() && !session.isClosed()) {

@@ -1,5 +1,6 @@
 package br.com.uwant.models.cloud;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.google.gson.JsonElement;
@@ -43,12 +44,24 @@ public abstract class AbstractRequest<K> {
     /**
      * Padrão das URLs de requisição.
      */
-    public static final String URL_COMMON = "http://192.168.1.7:9000/v1";
+    public static final String URL_COMMON = "http://192.168.25.21:9000/v1";
 
     /**
      * Header responsável por conter o token de autenticação para requisições.
      */
     private static final String HEADER_AUTHENTICATION_TOKEN = "Authentication";
+
+    /**
+     * Contexto da activity em execução durante a requisição.
+     */
+    private Context mContext;
+
+    protected AbstractRequest() {
+    }
+
+    protected AbstractRequest(Context context) {
+        this.mContext = context;
+    }
 
     /**
      * Método responsável por iniciar a requisição (Ainda não está assíncrono).
@@ -57,6 +70,7 @@ public abstract class AbstractRequest<K> {
      */
     protected void execute(AbstractRequestModel model, IRequest.OnRequestListener listener) {
         if (DebugUtil.DEBUG_WITHOUT_REQUEST) {
+            listener.onPreExecute();
             listener.onExecute(debugParse());
         } else if (model instanceof AbstractMultipartDataModel) {
             AbstractMultipartDataModel mdma = (AbstractMultipartDataModel) model;
@@ -93,6 +107,10 @@ public abstract class AbstractRequest<K> {
      * @return
      */
     protected abstract K debugParse();
+
+    public Context getContext() {
+        return mContext;
+    }
 
     /**
      * Classe que realizará as chamadas ao WS de forma assíncrona.

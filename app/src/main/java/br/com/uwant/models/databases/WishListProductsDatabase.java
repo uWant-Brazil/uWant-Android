@@ -12,24 +12,25 @@ import java.util.List;
 
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
+import br.com.uwant.models.classes.Product;
 import br.com.uwant.models.classes.User;
+import br.com.uwant.models.classes.WishList;
 import br.com.uwant.utils.DateUtil;
 
-public class UserDatabase extends BaseDatabase<User> {
+public class WishListProductsDatabase extends BaseDatabase<Product> {
 
-    private static final String TABLE = "users";
+    private static final String TABLE = "wishlist_products";
     private static final String SQL_CREATE = String.format("CREATE TABLE %s (" +
-            "%s varchar(255) primary key" +
+            "%s integer primary key" +
             ",%s varchar(255) not null" +
+            ",%s varchar(255)" +
+            ",%s varchar(255)" +
             ",%s varchar(255) not null" +
             ",%s integer not null" +
-            ",%s varchar(255) not null" +
-            ",%s varchar(255)" +
-            ",%s varchar(255)" +
             ");"
-            , TABLE, TOKEN, NAME, LOGIN, GENDER, BIRTHDAY, PICTURE_URL, FACEBOOK_TOKEN);
+            , TABLE, ID, NAME, NICKNAME, PICTURE_URL, LAST_UPDATE, ID_WISHLIST);
 
-    public UserDatabase(Context context) {
+    public WishListProductsDatabase(Context context) {
         super(context);
     }
 
@@ -50,13 +51,13 @@ public class UserDatabase extends BaseDatabase<User> {
     }
 
     @Override
-    public ContentValues getValues(User data) {
+    public ContentValues getValues(Product data) {
         ContentValues cv = new ContentValues();
-        cv.put(TOKEN, data.getToken());
+        cv.put(ID, data.getId());
         cv.put(NAME, data.getName());
-        cv.put(LOGIN, data.getLogin());
-        cv.put(BIRTHDAY, DateUtil.format(data.getBirthday(), DateUtil.DATE_PATTERN));
-        cv.put(GENDER, data.getGender().ordinal());
+        cv.put(NICKNAME, data.getNickName());
+        cv.put(LAST_UPDATE, DateUtil.format(new Date(), DateUtil.DATE_HOUR_PATTERN));
+        cv.put(ID_WISHLIST, data.getWishListId());
 
         Multimedia picture = data.getPicture();
         if (picture != null) {
@@ -66,62 +67,57 @@ public class UserDatabase extends BaseDatabase<User> {
             }
         }
 
-        if (data.getFacebookToken() != null) {
-            cv.put(FACEBOOK_TOKEN, data.getFacebookToken());
-        }
-
         return cv;
     }
 
     @Override
-    public User getFromCursor(Cursor cursor) {
-        String token = cursor.getString(cursor.getColumnIndex(TOKEN));
+    public Product getFromCursor(Cursor cursor) {
+        long id = cursor.getLong(cursor.getColumnIndex(ID));
         String name = cursor.getString(cursor.getColumnIndex(NAME));
-        String login = cursor.getString(cursor.getColumnIndex(LOGIN));
-        String birthdayStr = cursor.getString(cursor.getColumnIndex(BIRTHDAY));
-        int genderOrdinal = cursor.getInt(cursor.getColumnIndex(GENDER));
+        String nickname = cursor.getString(cursor.getColumnIndex(NICKNAME));
+        String pictureUrl = cursor.getString(cursor.getColumnIndex(PICTURE_URL));
 
-        Person.Gender gender = Person.Gender.values()[genderOrdinal];
-        Date birthday = null;
-        try {
-            birthday = DateUtil.parse(birthdayStr, DateUtil.DATE_PATTERN);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        Product product = new Product();
+        product.setId(id);
+        product.setName(name);
+        product.setNickName(nickname);
+
+        if (pictureUrl != null) {
+            Multimedia multimedia = new Multimedia();
+            multimedia.setUrl(pictureUrl);
+            product.setPicture(multimedia);
         }
 
-        User user = User.getInstance();
-        user.setToken(token);
-        user.setName(name);
-        user.setLogin(login);
-        user.setBirthday(birthday);
-        user.setGender(gender);
-
-        return user;
+        return product;
     }
 
     @Override
-    public long create(User data) {
+    public long create(Product data) {
         SQLiteDatabase db = getWritableDatabase();
         long id = db.insert(TABLE, null, getValues(data));
         db.close();
+
+        ProductManufacturerDatabase pmdb = new ProductManufacturerDatabase(this.mContext);
+        pmdb.create(data.getManufacturer());
+
         return id;
     }
 
     @Override
-    public long[] createAll(List<User> data) {
+    public long[] createAll(List<Product> data) {
         long[] ids = null;
         if (data != null && data.size() > 0) {
             int i = 0;
             ids = new long[data.size()];
-            for (User user : data) {
-                ids[i++] = create(user);
+            for (Product product : data) {
+                ids[i++] = create(product);
             }
         }
         return ids;
     }
 
     @Override
-    public long createOrUpdate(User data) {
+    public long createOrUpdate(Product data) {
         if (exist(data)) {
             update(data);
         } else {
@@ -131,37 +127,37 @@ public class UserDatabase extends BaseDatabase<User> {
     }
 
     @Override
-    public long[] createOrUpdate(List<User> data) {
+    public long[] createOrUpdate(List<Product> data) {
         long[] ids = null;
         if (data != null && data.size() > 0) {
             int i = 0;
             ids = new long[data.size()];
-            for (User user : data) {
-                ids[i++] = createOrUpdate(user);
+            for (Product product : data) {
+                ids[i++] = createOrUpdate(product);
             }
         }
         return ids;
     }
 
     @Override
-    public void remove(User data) {
+    public void remove(Product data) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE, String.format("%s%s", TOKEN, QUERY), new String[] { data.getToken() });
+        db.delete(TABLE, String.format("%s%s", ID, QUERY), new String[] { String.valueOf(data.getId()) });
         db.close();
     }
 
     @Override
-    public void update(User data) {
+    public void update(Product data) {
         SQLiteDatabase db = getWritableDatabase();
-        db.update(TABLE, getValues(data), String.format("%s=?", TOKEN), new String[] { data.getToken() });
+        db.update(TABLE, getValues(data), String.format("%s%s", ID, QUERY), new String[] { String.valueOf(data.getId()) });
         db.close();
     }
 
     @Override
-    public void updateAll(List<User> data) {
+    public void updateAll(List<Product> data) {
         if (data != null && data.size() > 0) {
-            for (User user : data) {
-                update(user);
+            for (Product product : data) {
+                update(product);
             }
         }
     }
@@ -174,49 +170,49 @@ public class UserDatabase extends BaseDatabase<User> {
     }
 
     @Override
-    public User select(String[] columns, String[] columnArgs) {
-        User user = null;
+    public Product select(String[] columns, String[] columnArgs) {
+        Product product = null;
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE, null, joinColumns(columns), columnArgs, null, null, null);
 
         if (cursor != null && cursor.getCount() == 1) {
             cursor.moveToFirst();
-            user = getFromCursor(cursor);
+            product = getFromCursor(cursor);
             cursor.close();
         }
         db.close();
 
-        return user;
+        return product;
     }
 
     @Override
-    public List<User> selectAll(String[] columns, String[] columnArgs) {
-        List<User> companies = null;
+    public List<Product> selectAll(String[] columns, String[] columnArgs) {
+        List<Product> products = null;
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE, null, joinColumns(columns), columnArgs, null, null, null);
 
         if (cursor != null && cursor.getCount() > 0) {
-            companies = new ArrayList<User>(cursor.getCount() + 5);
+            products = new ArrayList<Product>(cursor.getCount() + 5);
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                companies.add(getFromCursor(cursor));
+                products.add(getFromCursor(cursor));
                 cursor.moveToNext();
             }
             cursor.close();
         }
         db.close();
 
-        return companies;
+        return products;
     }
 
     @Override
-    public List<User> selectAll() {
+    public List<Product> selectAll() {
         return selectAll(null, null);
     }
 
     @Override
-    public boolean exist(User data) {
-        return exist(new String[] { TOKEN }, new String[] { data.getToken() });
+    public boolean exist(Product data) {
+        return exist(new String[] { ID }, new String[] { String.valueOf(data.getId()) });
     }
 
     @Override
@@ -226,7 +222,7 @@ public class UserDatabase extends BaseDatabase<User> {
 
     @Override
     public boolean existAnything() {
-        List<User> all = selectAll(null, null);
+        List<Product> all = selectAll(null, null);
         return (all != null && all.size() > 0);
     }
 }

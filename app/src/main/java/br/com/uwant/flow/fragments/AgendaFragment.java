@@ -14,14 +14,7 @@ import br.com.uwant.models.classes.Person;
 
 public class AgendaFragment extends ContactsFragment {
 
-    private static final String[] PROJECTION = {
-            ContactsContract.Contacts._ID,
-            ContactsContract.Contacts.DISPLAY_NAME,
-            ContactsContract.Contacts.LOOKUP_KEY,
-            ContactsContract.Contacts.PHOTO_URI,
-            ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
-
-    };
+    private static final String FORMAT = "%s=%s AND %s='%s'";
 
     private ContactsAdapter mAdapter;
 
@@ -38,6 +31,7 @@ public class AgendaFragment extends ContactsFragment {
 
         if (cursor != null) {
             cursor.moveToFirst();
+            int count = 0;
             while (!cursor.isAfterLast() && !isCancelled()) {
                 String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 Cursor cursorCommons = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, String.format("%s = ?", ContactsContract.CommonDataKinds.Email.CONTACT_ID), new String[]{ id }, null);
@@ -59,6 +53,11 @@ public class AgendaFragment extends ContactsFragment {
                             }
 
                             mPersons.add(person);
+
+                            if (++count == 50) {
+                                count = 0;
+                                mAdapter.notifyDataSetChanged();
+                            }
                         }
                         cursorCommons.moveToNext();
                     }
@@ -75,16 +74,16 @@ public class AgendaFragment extends ContactsFragment {
             Cursor cur = getActivity().getContentResolver().query(
                     ContactsContract.Data.CONTENT_URI,
                     null,
-                    String.format("%s=%s AND %s='%s'", ContactsContract.Data.CONTACT_ID, id, ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE), null,
+                    String.format(FORMAT, ContactsContract.Data.CONTACT_ID, id, ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE), null,
                     null);
             if (cur != null) {
                 if (!cur.moveToFirst()) {
-                    return null; // no photo
+                    return null;
                 }
 
                 cur.close();
             } else {
-                return null; // error in cursor process
+                return null;
             }
         } catch (Exception e) {
             e.printStackTrace();

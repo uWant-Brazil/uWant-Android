@@ -39,4 +39,7 @@ public class SocialLinkModel extends AbstractJSONRequestModel {
         return IRequest.Type.SOCIAL_LINK;
     }
 
+    public String getToken() {
+        return token;
+    }
 }

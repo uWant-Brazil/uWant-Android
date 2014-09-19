@@ -271,7 +271,8 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         if (!isShared) {
             int count = action.getSharesCount();
             if (count > 0) {
-                action.setUWantsCount(++count);
+                action.setSharesCount(++count);
+                action.setuShare(true);
                 mFeedsAdapter.notifyDataSetChanged();
             }
         }
@@ -280,7 +281,7 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     private void toggleWant(Action action) {
         boolean isWanted = action.isuWant();
         int count = action.getUWantsCount();
-        if (count > 0) {
+        if (!isWanted || count > 0) { // Equivalente a [!isWanted || (count > 0 && isWanted)]
             action.setUWantsCount(isWanted ? --count : ++count);
             action.setuWant(!isWanted);
             mFeedsAdapter.notifyDataSetChanged();

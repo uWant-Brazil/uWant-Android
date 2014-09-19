@@ -1,5 +1,7 @@
 package br.com.uwant.models.cloud;
 
+import android.content.Context;
+
 /**
  * Classe utilitária responsável por realizar e configurar toda a chamada ao WS.
  * Esta classe deve ser executada a partir de classes que irão realizar as chamadas da requisição,
@@ -64,6 +66,7 @@ public abstract class Requester {
         public static final String USER_ID = "userId";
         public static final String WISHLIST_ID = "wishlistId";
         public static final String LINKED = "linked";
+        public static final String FRIENDSHIP_LEVEL = "friendshipLevel";
     }
 
     /**
@@ -77,11 +80,7 @@ public abstract class Requester {
         IRequest request = factory.get(model.getRequestType());
 
         if (request != null) {
-            //if (model == null || request.getDataClass() == model.getClass()) {
                 request.executeAsync(model, listener);
-            //} else {
-              //  throw new RuntimeException("A classe enviada como data é diferente da necessária para a requisição.");
-            //}
         } else {
             throw new RuntimeException("A requisição está nula. Verifique se você mapeou corretamente em RequestFactory.class!");
         }
@@ -95,6 +94,35 @@ public abstract class Requester {
      */
     public static void executeAsync(AbstractRequestModel model) {
         executeAsync(model, null);
+    }
+
+    /**
+     * Método responsável pelo processo de integração.
+     * Apenas a partir dele é possível realizar a requisição por conta do encapsulamento.
+     * @param context - Contexto da Activity
+     * @param model - RequestModel com os parâmetros.
+     * @param listener - OnRequestListener para os eventos da requisição.
+     */
+    public static void executeAsync(Context context, AbstractRequestModel model, IRequest.OnRequestListener listener) {
+        RequestFactory factory = RequestFactory.getInstance();
+        IRequest request = factory.get(model.getRequestType(), context);
+
+        if (request != null) {
+            request.executeAsync(model, listener);
+        } else {
+            throw new RuntimeException("A requisição está nula. Verifique se você mapeou corretamente em RequestFactory.class!");
+        }
+    }
+
+    /**
+     * Método responsável pelo processo de integração.
+     * Apenas a partir dele é possível realizar a requisição por conta do encapsulamento, além disso,
+     * nenhum lister necessita ser passado para saber os passos da requisição.
+     * @param context - Contexto da Activity
+     * @param model - RequestModel com os parâmetros.
+     */
+    public static void executeAsync(Context context, AbstractRequestModel model) {
+        executeAsync(context, model, null);
     }
 
 }

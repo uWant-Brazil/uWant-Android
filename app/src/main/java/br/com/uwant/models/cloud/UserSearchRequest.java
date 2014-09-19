@@ -54,33 +54,40 @@ public class UserSearchRequest extends AbstractRequest<List<Person>> implements 
                     for (int i = 0;i < arrayFriends.size();i++) {
                         JsonElement jsonFriend = arrayFriends.get(i);
                         if (jsonFriend.isJsonObject()) {
-                            JsonObject jsonFriendObj = jsonFriend.getAsJsonObject();
+                            JsonObject jsonFriendAntObj = jsonFriend.getAsJsonObject();
+                            if (jsonFriendAntObj.has(Requester.ParameterKey.USER)
+                                    && jsonFriendAntObj.has(Requester.ParameterKey.FRIENDSHIP_LEVEL)) {
+                                int friendshipLevelOrdinal = jsonFriendAntObj.get(Requester.ParameterKey.FRIENDSHIP_LEVEL).getAsInt();
+                                Person.FriendshipLevel friendshipLevel = Person.FriendshipLevel.values()[friendshipLevelOrdinal];
 
-                            if (jsonFriendObj.has(Requester.ParameterKey.LOGIN)
-                                    && jsonFriendObj.has(Requester.ParameterKey.NAME)
-                                    && jsonFriendObj.has(Requester.ParameterKey.ID)) {
-                                long id = jsonFriendObj.get(Requester.ParameterKey.ID).getAsLong();
-                                String login = jsonFriendObj.get(Requester.ParameterKey.LOGIN).getAsString();
-                                String name = jsonFriendObj.get(Requester.ParameterKey.NAME).getAsString();
+                                JsonObject jsonFriendObj = jsonFriendAntObj.get(Requester.ParameterKey.USER).getAsJsonObject();
+                                if (jsonFriendObj.has(Requester.ParameterKey.LOGIN)
+                                        && jsonFriendObj.has(Requester.ParameterKey.NAME)
+                                        && jsonFriendObj.has(Requester.ParameterKey.ID)) {
+                                    long id = jsonFriendObj.get(Requester.ParameterKey.ID).getAsLong();
+                                    String login = jsonFriendObj.get(Requester.ParameterKey.LOGIN).getAsString();
+                                    String name = jsonFriendObj.get(Requester.ParameterKey.NAME).getAsString();
 
-                                Person person = new Person(id, login, name);
+                                    Person person = new Person(id, login, name);
+                                    person.setFriendshipLevel(friendshipLevel);
 
-                                if (jsonFriendObj.has(Requester.ParameterKey.PICTURE)) {
-                                    JsonElement jsonElementPicture = jsonFriendObj.get(Requester.ParameterKey.PICTURE);
-                                    if (!jsonElementPicture.isJsonNull()) {
-                                        JsonObject jsonPicture = jsonElementPicture.getAsJsonObject();
-                                        if (jsonPicture.has(Requester.ParameterKey.URL)) {
-                                            String url = jsonPicture.get(Requester.ParameterKey.URL).getAsString();
+                                    if (jsonFriendObj.has(Requester.ParameterKey.PICTURE)) {
+                                        JsonElement jsonElementPicture = jsonFriendObj.get(Requester.ParameterKey.PICTURE);
+                                        if (!jsonElementPicture.isJsonNull()) {
+                                            JsonObject jsonPicture = jsonElementPicture.getAsJsonObject();
+                                            if (jsonPicture.has(Requester.ParameterKey.URL)) {
+                                                String url = jsonPicture.get(Requester.ParameterKey.URL).getAsString();
 
-                                            Multimedia picture = new Multimedia();
-                                            picture.setUrl(url);
+                                                Multimedia picture = new Multimedia();
+                                                picture.setUrl(url);
 
-                                            person.setPicture(picture);
+                                                person.setPicture(picture);
+                                            }
                                         }
                                     }
-                                }
 
-                                persons.add(person);
+                                    persons.add(person);
+                                }
                             }
                         }
                     }

@@ -1,5 +1,7 @@
 package br.com.uwant.models.cloud;
 
+import android.content.Context;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -12,6 +14,8 @@ import br.com.uwant.models.classes.Manufacturer;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Product;
 import br.com.uwant.models.cloud.models.WishListProductsModel;
+import br.com.uwant.models.databases.ProductManufacturerDatabase;
+import br.com.uwant.models.databases.WishListProductsDatabase;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
@@ -23,8 +27,19 @@ public class WishListProductsRequest extends AbstractRequest<List<Product>> impl
      */
     private static final String ROUTE = "/mobile/wishlist/product/list";
 
+    private WishListProductsModel mModel;
+
+    public WishListProductsRequest() {
+        super();
+    }
+
+    public WishListProductsRequest(Context context) {
+        super(context);
+    }
+
     @Override
     public void executeAsync(WishListProductsModel data, OnRequestListener listener) {
+        this.mModel = data;
         execute(data, listener);
     }
 
@@ -49,6 +64,9 @@ public class WishListProductsRequest extends AbstractRequest<List<Product>> impl
             if (jsonObject.has(Requester.ParameterKey.PRODUCTS)) {
                 JsonElement jsonObjElement = jsonObject.get(Requester.ParameterKey.PRODUCTS);
                 if (jsonObjElement.isJsonArray()) {
+                    WishListProductsDatabase wlpdb = new WishListProductsDatabase(getContext());
+                    ProductManufacturerDatabase pmdb = new ProductManufacturerDatabase(getContext());
+
                     JsonArray arrayProducts = jsonObjElement.getAsJsonArray();
                     for (int i = 0;i < arrayProducts.size();i++) {
                         JsonObject jsonProduct = arrayProducts.get(i).getAsJsonObject();
@@ -61,6 +79,7 @@ public class WishListProductsRequest extends AbstractRequest<List<Product>> impl
                             Product product = new Product();
                             product.setId(id);
                             product.setName(name);
+                            product.setWishListId(mModel.getWishList().getId());
 
                             if (jsonProduct.has(Requester.ParameterKey.NICK_NAME)) {
                                 JsonElement jsonNickElem = jsonProduct.get(Requester.ParameterKey.NICK_NAME);
@@ -84,6 +103,8 @@ public class WishListProductsRequest extends AbstractRequest<List<Product>> impl
                                 }
                             }
 
+                            wlpdb.createOrUpdate(product);
+
                             if (jsonProduct.has(Requester.ParameterKey.MANUFACTURER)) {
                                 JsonElement jsonManuElem = jsonProduct.get(Requester.ParameterKey.MANUFACTURER);
                                 if (!jsonManuElem.isJsonNull() && jsonManuElem.isJsonObject()) {
@@ -95,8 +116,11 @@ public class WishListProductsRequest extends AbstractRequest<List<Product>> impl
 
                                         Manufacturer manufacturer = new Manufacturer();
                                         manufacturer.setId(manufacturerId);
+                                        manufacturer.setProductId(product.getId());
                                         manufacturer.setName(manufacturerName);
                                         product.setManufacturer(manufacturer);
+
+                                        pmdb.createOrUpdate(manufacturer);
                                     }
                                 }
                             }

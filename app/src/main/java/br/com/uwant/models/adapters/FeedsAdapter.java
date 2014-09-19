@@ -24,13 +24,16 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -61,6 +64,8 @@ public class FeedsAdapter extends BaseAdapter {
     private static float DEFAULT_RADIUS;
     private static Drawable UWANT_DRAWABLE;
     private static Drawable UWANT_DRAWABLE_ACTIVE;
+    private static Drawable USHARE_DRAWABLE;
+    private static Drawable USHARE_DRAWABLE_ACTIVE;
 
     private final Context mContext;
     private final List<Action> mActions;
@@ -84,6 +89,8 @@ public class FeedsAdapter extends BaseAdapter {
         DEFAULT_RADIUS = res.getDimension(R.dimen.cardview_default_radius);
         UWANT_DRAWABLE = res.getDrawable(R.drawable.ic_feed_wantar);
         UWANT_DRAWABLE_ACTIVE = res.getDrawable(R.drawable.ic_feed_wantar_on);
+        USHARE_DRAWABLE = res.getDrawable(R.drawable.ic_feed_compartilhar);
+        USHARE_DRAWABLE_ACTIVE = res.getDrawable(R.drawable.ic_feed_compartilhar); // TODO selected...
     }
 
     @Override
@@ -106,24 +113,32 @@ public class FeedsAdapter extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
+            LinearLayout linearLayout = new LinearLayout(this.mContext);
+            linearLayout.setGravity(Gravity.CENTER);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0, 0, 0, 15);
+
             CardView cardView = new CardView(this.mContext);
+            cardView.setLayoutParams(params);
             cardView.setRadius(DEFAULT_RADIUS);
+            linearLayout.addView(cardView);
 
             View contentView = LayoutInflater.from(this.mContext).inflate(R.layout.adapter_feeds, cardView, false);
             cardView.addView(contentView);
-            convertView = cardView;
 
-            holder.hImageViewPicture = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_picture);
-            holder.hImageViewPictureDetail = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_pictureDetail);
-            holder.hImageViewProduct = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_product);
-            holder.hImageButtonMenu = (ImageButton) convertView.findViewById(R.id.adapter_feeds_imageButton);
-            holder.hTextViewSystemMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_systemMessage);
-            holder.hTextViewUserMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_userMessage);
-            holder.hTextViewWhen = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_when);
-            holder.hButtonUWants = (Button) convertView.findViewById(R.id.adapter_feeds_button_uwants);
-            holder.hButtonComments = (Button) convertView.findViewById(R.id.adapter_feeds_button_comments);
-            holder.hButtonShares = (Button) convertView.findViewById(R.id.adapter_feeds_button_shares);
+            holder.hImageViewPicture = (ImageView) contentView.findViewById(R.id.adapter_feeds_imageView_picture);
+            holder.hImageViewPictureDetail = (ImageView) contentView.findViewById(R.id.adapter_feeds_imageView_pictureDetail);
+            holder.hImageViewProduct = (ImageView) contentView.findViewById(R.id.adapter_feeds_imageView_product);
+            holder.hImageButtonMenu = (ImageButton) contentView.findViewById(R.id.adapter_feeds_imageButton);
+            holder.hTextViewSystemMessage = (TextView) contentView.findViewById(R.id.adapter_feeds_textView_systemMessage);
+            holder.hTextViewUserMessage = (TextView) contentView.findViewById(R.id.adapter_feeds_textView_userMessage);
+            holder.hTextViewWhen = (TextView) contentView.findViewById(R.id.adapter_feeds_textView_when);
+            holder.hButtonUWants = (Button) contentView.findViewById(R.id.adapter_feeds_button_uwants);
+            holder.hButtonComments = (Button) contentView.findViewById(R.id.adapter_feeds_button_comments);
+            holder.hButtonShares = (Button) contentView.findViewById(R.id.adapter_feeds_button_shares);
 
+            convertView = linearLayout;
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -140,6 +155,7 @@ public class FeedsAdapter extends BaseAdapter {
         int commentsCount = action.getCommentsCount();
         int sharesCount = action.getSharesCount();
         boolean uWant = action.isuWant();
+        boolean uShare = action.isuShare();
 
         populatePicture(holder.hImageViewPicture, holder.hImageViewPictureDetail, from.getPicture());
 
@@ -167,7 +183,15 @@ public class FeedsAdapter extends BaseAdapter {
             drawableLeftUWant = UWANT_DRAWABLE;
         }
 
+        Drawable drawableLeftUShare;
+        if (uShare) {
+            drawableLeftUShare = USHARE_DRAWABLE_ACTIVE;
+        } else {
+            drawableLeftUShare = USHARE_DRAWABLE;
+        }
+
         holder.hButtonUWants.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUWant, null, null, null);
+        holder.hButtonShares.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUShare, null, null, null);
 
         return convertView;
     }
