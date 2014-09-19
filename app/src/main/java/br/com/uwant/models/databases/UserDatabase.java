@@ -18,24 +18,9 @@ import br.com.uwant.utils.DateUtil;
 public class UserDatabase extends BaseDatabase<User> {
 
     private static final String TABLE = "users";
-    private static final String SQL_CREATE = String.format("CREATE TABLE %s (" +
-            "%s varchar(255) primary key" +
-            ",%s varchar(255) not null" +
-            ",%s varchar(255) not null" +
-            ",%s integer not null" +
-            ",%s varchar(255) not null" +
-            ",%s varchar(255)" +
-            ",%s varchar(255)" +
-            ");"
-            , TABLE, TOKEN, NAME, LOGIN, GENDER, BIRTHDAY, PICTURE_URL, FACEBOOK_TOKEN);
 
     public UserDatabase(Context context) {
         super(context);
-    }
-
-    @Override
-    protected String getCreateSQL() {
-        return SQL_CREATE;
     }
 
     @Override

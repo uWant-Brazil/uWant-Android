@@ -43,42 +43,15 @@ public class FriendsCircleAdapter extends BaseAdapter implements Filterable,
     private Filter mFilter;
     private Person mPersonSelected;
 
-    private IRequest.OnRequestListener<Boolean> mListenerReport = new IRequest.OnRequestListener<Boolean>() {
-
-        private ProgressFragmentDialog mProgressDialog;
-
-        @Override
-        public void onPreExecute() {
-            mProgressDialog = ProgressFragmentDialog.show(FriendsCircleAdapter.this.mFragment.getFragmentManager());
-        }
-
-        @Override
-        public void onExecute(Boolean result) {
-            if (mProgressDialog != null) {
-                mProgressDialog.dismiss();
-            }
-
-            Toast.makeText(FriendsCircleAdapter.this.mContext, "A atividade foi reportada com sucesso.", Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        public void onError(RequestError error) {
-            if (mProgressDialog != null) {
-                mProgressDialog.dismiss();
-            }
-
-            Toast.makeText(FriendsCircleAdapter.this.mContext, error.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-    };
-
     private IRequest.OnRequestListener<Boolean> mListenerAddExcludeBlock = new IRequest.OnRequestListener<Boolean>() {
 
         private ProgressFragmentDialog mProgressDialog;
 
         @Override
         public void onPreExecute() {
-            mProgressDialog = ProgressFragmentDialog.show(FriendsCircleAdapter.this.mFragment.getFragmentManager());
+            if (FriendsCircleAdapter.this.mFragment != null) {
+                mProgressDialog = ProgressFragmentDialog.show(FriendsCircleAdapter.this.mFragment.getFragmentManager());
+            }
         }
 
         @Override
@@ -87,7 +60,11 @@ public class FriendsCircleAdapter extends BaseAdapter implements Filterable,
                 mProgressDialog.dismiss();
             }
 
-            FriendsCircleAdapter.this.mFragment.updateFriends();
+            if (FriendsCircleAdapter.this.mFragment != null) {
+                FriendsCircleAdapter.this.mFragment.updateFriends();
+            }
+
+            Toast.makeText(FriendsCircleAdapter.this.mContext, "Operação realizada com sucesso!", Toast.LENGTH_LONG).show();
         }
 
         @Override

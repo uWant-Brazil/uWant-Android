@@ -4,6 +4,13 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import br.com.uwant.R;
+
 public abstract class BaseDatabase<K> extends SQLiteOpenHelper implements IDatabase<K> {
 
     private static final int VERSION = 1;
@@ -36,9 +43,16 @@ public abstract class BaseDatabase<K> extends SQLiteOpenHelper implements IDatab
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = getCreateSQL();
-        if (sql != null && !sql.isEmpty()) {
-            db.execSQL(sql);
+        try {
+            String sqls = getCreateSQL();
+            if (sqls != null && !sqls.isEmpty()) {
+                String[] spplited = sqls.split(";");
+                for (String sql : spplited) {
+                    db.execSQL(sql);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -66,7 +80,20 @@ public abstract class BaseDatabase<K> extends SQLiteOpenHelper implements IDatab
         return builder.toString();
     }
 
-    protected abstract String getCreateSQL();
+    private String getCreateSQL() throws IOException {
+        StringBuilder buf = new StringBuilder();
+        InputStream json= this.mContext.getResources().openRawResource(R.raw.sql_tables);
+        BufferedReader in = new BufferedReader(new InputStreamReader(json, "UTF-8"));
+        String str;
+
+        while ((str = in.readLine()) != null) {
+            buf.append(str);
+        }
+        in.close();
+
+        return buf.toString();
+    }
+
     protected abstract String getUpgradeSQL(int oldVersion, int newVersion);
 
 }

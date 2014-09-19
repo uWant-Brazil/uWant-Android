@@ -20,23 +20,9 @@ import br.com.uwant.utils.DateUtil;
 public class WishListProductsDatabase extends BaseDatabase<Product> {
 
     private static final String TABLE = "wishlist_products";
-    private static final String SQL_CREATE = String.format("CREATE TABLE %s (" +
-            "%s integer primary key" +
-            ",%s varchar(255) not null" +
-            ",%s varchar(255)" +
-            ",%s varchar(255)" +
-            ",%s varchar(255) not null" +
-            ",%s integer not null" +
-            ");"
-            , TABLE, ID, NAME, NICKNAME, PICTURE_URL, LAST_UPDATE, ID_WISHLIST);
 
     public WishListProductsDatabase(Context context) {
         super(context);
-    }
-
-    @Override
-    protected String getCreateSQL() {
-        return SQL_CREATE;
     }
 
     @Override

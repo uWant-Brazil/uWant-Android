@@ -374,7 +374,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
     @Override
     public void onCheckedChanged(final CompoundButton compoundButton, boolean checked) {
         if (compoundButton == mSwitchView && checked) {
-            if (!UserUtil.hasFacebook(this)) {
+            if (!UserUtil.hasFacebook()) {
                 DialogInterface.OnClickListener lp = new DialogInterface.OnClickListener() {
 
                     @Override

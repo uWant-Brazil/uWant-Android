@@ -16,7 +16,7 @@ public abstract class DebugUtil {
      * Variável responsável por ativar o modo debug para não envio de requisições
      * realizando o processo do retorno do WS localmente.
      */
-    public static final boolean DEBUG_WITHOUT_REQUEST = true;
+    public static final boolean DEBUG_WITHOUT_REQUEST = false;
 
     /**
      * Tag padrão para exibição do log no LogCat.

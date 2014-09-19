@@ -17,21 +17,9 @@ import br.com.uwant.utils.DateUtil;
 public class ProductManufacturerDatabase extends BaseDatabase<Manufacturer> {
 
     private static final String TABLE = "product_manufacturers";
-    private static final String SQL_CREATE = String.format("CREATE TABLE %s (" +
-            "%s integer primary key" +
-            ",%s varchar(255) not null" +
-            ",%s varchar(255) not null" +
-            ",%s integer not null" +
-            ");"
-            , TABLE, ID, NAME, LAST_UPDATE, ID_PRODUCT);
 
     public ProductManufacturerDatabase(Context context) {
         super(context);
-    }
-
-    @Override
-    protected String getCreateSQL() {
-        return SQL_CREATE;
     }
 
     @Override
@@ -70,6 +58,9 @@ public class ProductManufacturerDatabase extends BaseDatabase<Manufacturer> {
 
     @Override
     public long create(Manufacturer data) {
+        if (data == null)
+            return -1;
+
         SQLiteDatabase db = getWritableDatabase();
         long id = db.insert(TABLE, null, getValues(data));
         db.close();

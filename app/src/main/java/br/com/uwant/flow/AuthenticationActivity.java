@@ -175,6 +175,14 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
     };
 
     private void successLogin(List<Person> persons) {
+        User user = User.getInstance();
+        String token = user.getToken();
+        if (token != null) {
+            UserDatabase db = new UserDatabase(this);
+            db.removeAll();
+            db.create(user);
+        }
+
         Toast.makeText(this, R.string.text_welcome, Toast.LENGTH_SHORT).show();
 
         Intent it = new Intent(this, ContactsActivity.class);
@@ -415,13 +423,6 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
     public void onExecute(User result) {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
-        }
-
-        String token = result.getToken();
-        if (token != null) {
-            UserDatabase db = new UserDatabase(this);
-            db.removeAll();
-            db.create(result);
         }
 
         successLogin();
