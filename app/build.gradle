@@ -1,4 +1,19 @@
+buildscript {
+    repositories {
+        maven { url 'http://download.crashlytics.com/maven' }
+    }
+
+    dependencies {
+        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+    }
+}
 apply plugin: 'com.android.application'
+apply plugin: 'crashlytics'
+
+repositories {
+    maven { url 'http://download.crashlytics.com/maven' }
+}
+
 
 android {
     compileSdkVersion 19
@@ -35,4 +50,5 @@ dependencies {
     compile 'com.google.code.gson:gson:+'
     compile 'org.lucasr.twowayview:twowayview:+'
     compile project(':facebook')
+    compile 'com.crashlytics.android:crashlytics:1.+'
 }

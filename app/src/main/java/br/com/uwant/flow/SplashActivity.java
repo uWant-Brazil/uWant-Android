@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.ImageView;
 
+import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -26,6 +27,7 @@ public class SplashActivity extends Activity implements Runnable {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Crashlytics.start(this);
         super.onCreate(savedInstanceState);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
                 .diskCacheExtraOptions(480, 800, null)
