@@ -158,7 +158,7 @@ public class WishListProductsDatabase extends BaseDatabase<Product> {
     @Override
     public Product select(String[] columns, String[] columnArgs) {
         Product product = null;
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE, null, joinColumns(columns), columnArgs, null, null, null);
 
         if (cursor != null && cursor.getCount() == 1) {
@@ -174,7 +174,7 @@ public class WishListProductsDatabase extends BaseDatabase<Product> {
     @Override
     public List<Product> selectAll(String[] columns, String[] columnArgs) {
         List<Product> products = null;
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE, null, joinColumns(columns), columnArgs, null, null, null);
 
         if (cursor != null && cursor.getCount() > 0) {

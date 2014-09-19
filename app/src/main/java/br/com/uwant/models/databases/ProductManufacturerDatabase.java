@@ -136,7 +136,7 @@ public class ProductManufacturerDatabase extends BaseDatabase<Manufacturer> {
     @Override
     public Manufacturer select(String[] columns, String[] columnArgs) {
         Manufacturer manufacturer = null;
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE, null, joinColumns(columns), columnArgs, null, null, null);
 
         if (cursor != null && cursor.getCount() == 1) {
@@ -152,7 +152,7 @@ public class ProductManufacturerDatabase extends BaseDatabase<Manufacturer> {
     @Override
     public List<Manufacturer> selectAll(String[] columns, String[] columnArgs) {
         List<Manufacturer> manufacturers = null;
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE, null, joinColumns(columns), columnArgs, null, null, null);
 
         if (cursor != null && cursor.getCount() > 0) {

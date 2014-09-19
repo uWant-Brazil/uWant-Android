@@ -161,7 +161,7 @@ public class UserDatabase extends BaseDatabase<User> {
     @Override
     public User select(String[] columns, String[] columnArgs) {
         User user = null;
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE, null, joinColumns(columns), columnArgs, null, null, null);
 
         if (cursor != null && cursor.getCount() == 1) {
@@ -177,7 +177,7 @@ public class UserDatabase extends BaseDatabase<User> {
     @Override
     public List<User> selectAll(String[] columns, String[] columnArgs) {
         List<User> companies = null;
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE, null, joinColumns(columns), columnArgs, null, null, null);
 
         if (cursor != null && cursor.getCount() > 0) {

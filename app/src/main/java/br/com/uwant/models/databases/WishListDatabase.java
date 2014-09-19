@@ -141,7 +141,7 @@ public class WishListDatabase extends BaseDatabase<WishList> {
     @Override
     public WishList select(String[] columns, String[] columnArgs) {
         WishList wishList = null;
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE, null, joinColumns(columns), columnArgs, null, null, null);
 
         if (cursor != null && cursor.getCount() == 1) {
@@ -157,7 +157,7 @@ public class WishListDatabase extends BaseDatabase<WishList> {
     @Override
     public List<WishList> selectAll(String[] columns, String[] columnArgs) {
         List<WishList> wishLists = null;
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE, null, joinColumns(columns), columnArgs, null, null, null);
 
         if (cursor != null && cursor.getCount() > 0) {
