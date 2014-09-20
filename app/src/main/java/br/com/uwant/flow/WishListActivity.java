@@ -410,7 +410,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
                         .setSmallIcon(R.drawable.ic_action_uwant)
                         .setContentTitle(getString(R.string.app_name))
                         .setProgress(totalAmount, 0, false)
-                        .setContentText("Enviando fotos...");
+                        .setContentText(getString(R.string.text_sending_pictures));
 
         NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
