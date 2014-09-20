@@ -74,23 +74,6 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         GoogleCloudMessageUtil.registerAsync(this);
 
-        try {
-
-            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
-
-            for (Signature signature : info.signatures)
-            {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e("name not found", e.toString());
-        } catch (NoSuchAlgorithmException e) {
-            Log.e("no such an algorithm", e.toString());
-        }
-
         setContentView(R.layout.activity_main);
 
         mFeedsFragment = new FeedsFragment();
