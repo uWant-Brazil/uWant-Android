@@ -15,6 +15,7 @@
 
         <FrameLayout
             android:layout_marginBottom="10dp"
+            android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
@@ -24,13 +25,13 @@
                 android:layout_width="76dp"
                 android:layout_height="76dp"
                 android:id="@+id/adapter_feeds_imageView_picture"
-                android:src="@drawable/ic_semfoto"
+                android:src="@drawable/ic_contatos_semfoto"
                 android:layout_gravity="center_horizontal" />
 
             <ImageView
                 android:layout_width="76dp"
                 android:layout_height="76dp"
-                android:src="@drawable/ic_comfoto"
+                android:src="@drawable/ic_contatos_comfoto"
                 android:visibility="invisible"
                 android:id="@+id/adapter_feeds_imageView_pictureDetail"
                 android:layout_gravity="center_horizontal" />

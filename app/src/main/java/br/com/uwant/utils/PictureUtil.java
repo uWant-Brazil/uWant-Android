@@ -53,8 +53,8 @@ public abstract class PictureUtil {
         return Bitmap.createScaledBitmap(bitmap, imageViewPicture.getWidth(), imageViewPicture.getHeight(), false);
     }
 
-    public static Bitmap scale(Bitmap bitmap) {
-        return Bitmap.createScaledBitmap(bitmap, 300, 300, false);
+    public static Bitmap scale(Bitmap bitmap, int width, int height) {
+        return Bitmap.createScaledBitmap(bitmap, width, height, false);
     }
 
     public static Bitmap cropToFit(Bitmap srcBmp) {
