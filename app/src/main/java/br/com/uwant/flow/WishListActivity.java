@@ -1,5 +1,6 @@
 package br.com.uwant.flow;
 
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
@@ -32,7 +34,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,16 +48,18 @@ import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
+import br.com.uwant.models.cloud.helpers.UWFileBodyListener;
 import br.com.uwant.models.cloud.models.WishListCreateModel;
 import br.com.uwant.models.cloud.models.WishListProductPictureModel;
 import br.com.uwant.utils.PictureUtil;
 import br.com.uwant.utils.UserUtil;
 
 public class WishListActivity extends ActionBarActivity implements View.OnClickListener,
-        IRequest.OnRequestListener<List<Product>>, CompoundButton.OnCheckedChangeListener {
+        IRequest.OnRequestListener<List<Product>>, CompoundButton.OnCheckedChangeListener, UWFileBodyListener {
 
     private static final int REQUEST_CAMERA = 984;
     private static final int REQUEST_GALLERY = 989;
+    private static final int NOTIFICATION_ID = 0x200;
 
     private List<Product> mProducts;
     private WishListProductAdapter mAdapter;
@@ -70,6 +73,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
     private ProgressFragmentDialog mProgressDialog;
     private TwoWayView mTwoWayView;
     private AlertFragmentDialog mAlertLink;
+    private NotificationCompat.Builder mBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -340,6 +344,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
                 for (Product product : result) {
                     WishListProductPictureModel model = new WishListProductPictureModel();
                     model.setProduct(product);
+                    model.setListener(WishListActivity.this);
                     Requester.executeAsync(model);
                 }
             }
@@ -396,4 +401,32 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
             }
         }
     }
+
+    @Override
+    public void preWrite(int totalAmount) {
+        mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setAutoCancel(false)
+                        .setSmallIcon(R.drawable.ic_action_uwant)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setProgress(totalAmount, 0, false)
+                        .setContentText("Enviando fotos...");
+
+        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
+    }
+
+    @Override
+    public void written(int totalBytes, int amountOfBytes) {
+        mBuilder.setProgress(totalBytes, amountOfBytes, false);
+
+        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (totalBytes > amountOfBytes) {
+            mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
+        } else {
+            mNotifyMgr.cancel(NOTIFICATION_ID);
+            mBuilder = null;
+        }
+    }
+
 }
