@@ -14,8 +14,6 @@ import br.com.uwant.models.classes.Manufacturer;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Product;
 import br.com.uwant.models.cloud.models.WishListProductsModel;
-import br.com.uwant.models.databases.ProductManufacturerDatabase;
-import br.com.uwant.models.databases.WishListProductsDatabase;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
@@ -64,9 +62,6 @@ public class WishListProductsRequest extends AbstractRequest<List<Product>> impl
             if (jsonObject.has(Requester.ParameterKey.PRODUCTS)) {
                 JsonElement jsonObjElement = jsonObject.get(Requester.ParameterKey.PRODUCTS);
                 if (jsonObjElement.isJsonArray()) {
-                    WishListProductsDatabase wlpdb = new WishListProductsDatabase(getContext());
-                    ProductManufacturerDatabase pmdb = new ProductManufacturerDatabase(getContext());
-
                     JsonArray arrayProducts = jsonObjElement.getAsJsonArray();
                     for (int i = 0;i < arrayProducts.size();i++) {
                         JsonObject jsonProduct = arrayProducts.get(i).getAsJsonObject();
@@ -103,7 +98,7 @@ public class WishListProductsRequest extends AbstractRequest<List<Product>> impl
                                 }
                             }
 
-                            wlpdb.createOrUpdate(product);
+//                            wlpdb.createOrUpdate(product);
 
                             if (jsonProduct.has(Requester.ParameterKey.MANUFACTURER)) {
                                 JsonElement jsonManuElem = jsonProduct.get(Requester.ParameterKey.MANUFACTURER);
@@ -119,8 +114,6 @@ public class WishListProductsRequest extends AbstractRequest<List<Product>> impl
                                         manufacturer.setProductId(product.getId());
                                         manufacturer.setName(manufacturerName);
                                         product.setManufacturer(manufacturer);
-
-                                        pmdb.createOrUpdate(manufacturer);
                                     }
                                 }
                             }
