@@ -90,6 +90,7 @@ public class UserDatabase extends BaseDatabase<User> {
         user.setBirthday(birthday);
         user.setGender(gender);
         user.setPicture(picture);
+        user.setFacebookToken(facebookToken);
 
         return user;
     }
