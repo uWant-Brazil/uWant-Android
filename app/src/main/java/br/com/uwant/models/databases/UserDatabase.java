@@ -88,7 +88,7 @@ public class UserDatabase extends BaseDatabase<User> {
     public long create(User data) {
         SQLiteDatabase db = getWritableDatabase();
         long id = db.insert(TABLE, null, getValues(data));
-        db.close();
+        
         return id;
     }
 
@@ -132,14 +132,14 @@ public class UserDatabase extends BaseDatabase<User> {
     public void remove(User data) {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE, String.format("%s%s", TOKEN, QUERY), new String[] { data.getToken() });
-        db.close();
+        
     }
 
     @Override
     public void update(User data) {
         SQLiteDatabase db = getWritableDatabase();
         db.update(TABLE, getValues(data), String.format("%s=?", TOKEN), new String[] { data.getToken() });
-        db.close();
+        
     }
 
     @Override
@@ -155,7 +155,7 @@ public class UserDatabase extends BaseDatabase<User> {
     public void removeAll() {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE, null, null);
-        db.close();
+        
     }
 
     @Override
@@ -169,7 +169,7 @@ public class UserDatabase extends BaseDatabase<User> {
             user = getFromCursor(cursor);
             cursor.close();
         }
-        db.close();
+        
 
         return user;
     }
@@ -189,7 +189,7 @@ public class UserDatabase extends BaseDatabase<User> {
             }
             cursor.close();
         }
-        db.close();
+        
 
         return companies;
     }

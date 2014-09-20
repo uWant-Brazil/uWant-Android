@@ -64,7 +64,6 @@ public class WishListDatabase extends BaseDatabase<WishList> {
     public long create(WishList data) {
         SQLiteDatabase db = getWritableDatabase();
         long id = db.insert(TABLE, null, getValues(data));
-        db.close();
 
         WishListProductsDatabase wlpdb = new WishListProductsDatabase(this.mContext);
         wlpdb.createAll(data.getProducts());
@@ -112,14 +111,14 @@ public class WishListDatabase extends BaseDatabase<WishList> {
     public void remove(WishList data) {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE, String.format("%s%s", ID, QUERY), new String[] { String.valueOf(data.getId()) });
-        db.close();
+        
     }
 
     @Override
     public void update(WishList data) {
         SQLiteDatabase db = getWritableDatabase();
         db.update(TABLE, getValues(data), String.format("%s%s", ID, QUERY), new String[] { String.valueOf(data.getId()) });
-        db.close();
+        
     }
 
     @Override
@@ -135,7 +134,7 @@ public class WishListDatabase extends BaseDatabase<WishList> {
     public void removeAll() {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE, null, null);
-        db.close();
+        
     }
 
     @Override
@@ -149,7 +148,7 @@ public class WishListDatabase extends BaseDatabase<WishList> {
             wishList = getFromCursor(cursor);
             cursor.close();
         }
-        db.close();
+        
 
         return wishList;
     }
@@ -169,7 +168,7 @@ public class WishListDatabase extends BaseDatabase<WishList> {
             }
             cursor.close();
         }
-        db.close();
+        
 
         return wishLists;
     }

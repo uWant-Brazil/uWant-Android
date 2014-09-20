@@ -63,7 +63,7 @@ public class ProductManufacturerDatabase extends BaseDatabase<Manufacturer> {
 
         SQLiteDatabase db = getWritableDatabase();
         long id = db.insert(TABLE, null, getValues(data));
-        db.close();
+        
         return id;
     }
 
@@ -107,14 +107,14 @@ public class ProductManufacturerDatabase extends BaseDatabase<Manufacturer> {
     public void remove(Manufacturer data) {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE, String.format("%s%s", ID, QUERY), new String[] { String.valueOf(data.getId()) });
-        db.close();
+        
     }
 
     @Override
     public void update(Manufacturer data) {
         SQLiteDatabase db = getWritableDatabase();
         db.update(TABLE, getValues(data), String.format("%s%s", ID, QUERY), new String[] { String.valueOf(data.getId()) });
-        db.close();
+        
     }
 
     @Override
@@ -130,7 +130,7 @@ public class ProductManufacturerDatabase extends BaseDatabase<Manufacturer> {
     public void removeAll() {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE, null, null);
-        db.close();
+        
     }
 
     @Override
@@ -144,7 +144,7 @@ public class ProductManufacturerDatabase extends BaseDatabase<Manufacturer> {
             manufacturer = getFromCursor(cursor);
             cursor.close();
         }
-        db.close();
+        
 
         return manufacturer;
     }
@@ -164,7 +164,7 @@ public class ProductManufacturerDatabase extends BaseDatabase<Manufacturer> {
             }
             cursor.close();
         }
-        db.close();
+        
 
         return manufacturers;
     }

@@ -74,7 +74,7 @@ public class WishListRequest extends AbstractRequest<List<WishList>> implements 
                             WishList wishList = new WishList(id, title, description);
                             wishLists.add(wishList);
 
-                            wldb.createOrUpdate(wishList);
+                            //wldb.createOrUpdate(wishList);
                         }
                     }
                 }

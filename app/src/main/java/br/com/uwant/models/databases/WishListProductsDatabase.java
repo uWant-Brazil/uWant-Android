@@ -81,7 +81,7 @@ public class WishListProductsDatabase extends BaseDatabase<Product> {
     public long create(Product data) {
         SQLiteDatabase db = getWritableDatabase();
         long id = db.insert(TABLE, null, getValues(data));
-        db.close();
+        
 
         ProductManufacturerDatabase pmdb = new ProductManufacturerDatabase(this.mContext);
         pmdb.create(data.getManufacturer());
@@ -129,14 +129,14 @@ public class WishListProductsDatabase extends BaseDatabase<Product> {
     public void remove(Product data) {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE, String.format("%s%s", ID, QUERY), new String[] { String.valueOf(data.getId()) });
-        db.close();
+        
     }
 
     @Override
     public void update(Product data) {
         SQLiteDatabase db = getWritableDatabase();
         db.update(TABLE, getValues(data), String.format("%s%s", ID, QUERY), new String[] { String.valueOf(data.getId()) });
-        db.close();
+        
     }
 
     @Override
@@ -152,7 +152,7 @@ public class WishListProductsDatabase extends BaseDatabase<Product> {
     public void removeAll() {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE, null, null);
-        db.close();
+        
     }
 
     @Override
@@ -166,7 +166,7 @@ public class WishListProductsDatabase extends BaseDatabase<Product> {
             product = getFromCursor(cursor);
             cursor.close();
         }
-        db.close();
+        
 
         return product;
     }
@@ -186,7 +186,7 @@ public class WishListProductsDatabase extends BaseDatabase<Product> {
             }
             cursor.close();
         }
-        db.close();
+        
 
         return products;
     }
