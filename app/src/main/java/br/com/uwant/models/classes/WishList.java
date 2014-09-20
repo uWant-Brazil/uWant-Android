@@ -8,6 +8,9 @@ import java.util.List;
  */
 public class WishList implements Serializable {
 
+
+    public static final String EXTRA = "extra_wishList";
+
     public static final long EMPTY_ID = 0x456271;
     public static final long EMPTY_DEFAULT_ID = 0x456123;
 

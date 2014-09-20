@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 public class Product implements Serializable{
 
-    private long id;
+    private long id = 0;
     private long wishListId;
     private String name;
     private String nickName;

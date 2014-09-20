@@ -1,15 +1,12 @@
 package br.com.uwant.models.classes;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
-
 import java.io.Serializable;
 
 public class Multimedia implements Serializable {
 
     private String url;
-    private Uri uri;
-    private Bitmap bitmap;
+    private Object uri;
+    private Object bitmap;
 
     public Multimedia() {
     }
@@ -22,19 +19,19 @@ public class Multimedia implements Serializable {
         this.url = url;
     }
 
-    public Uri getUri() {
+    public Object getUri() {
         return uri;
     }
 
-    public void setUri(Uri uri) {
+    public void setUri(Object uri) {
         this.uri = uri;
     }
 
-    public void setBitmap(Bitmap bitmap) {
+    public void setBitmap(Object bitmap) {
         this.bitmap = bitmap;
     }
 
-    public Bitmap getBitmap() {
+    public Object getBitmap() {
         return bitmap;
     }
 }

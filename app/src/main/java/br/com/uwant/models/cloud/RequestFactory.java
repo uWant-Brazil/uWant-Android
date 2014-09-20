@@ -126,6 +126,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, Context, IRequest> {
                 request = new FriendAddRequest();
                 break;
 
+            case UPDATE_WISH_LIST:
+                request = new WishListUpdateRequest();
+                break;
+
             default:
                 request = null;
                 break;

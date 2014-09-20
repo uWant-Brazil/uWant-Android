@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
@@ -26,6 +27,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.internal.ca;
+
 import org.lucasr.twowayview.TwoWayView;
 
 import java.io.ByteArrayOutputStream;
@@ -34,7 +37,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
@@ -42,6 +49,7 @@ import br.com.uwant.flow.fragments.ProgressFragmentDialog;
 import br.com.uwant.models.adapters.WishListProductAdapter;
 import br.com.uwant.models.classes.Manufacturer;
 import br.com.uwant.models.classes.Multimedia;
+import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.Product;
 import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
@@ -49,14 +57,20 @@ import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.WishListCreateModel;
 import br.com.uwant.models.cloud.models.WishListProductPictureModel;
+import br.com.uwant.models.cloud.models.WishListUpdateModel;
 import br.com.uwant.utils.PictureUtil;
 import br.com.uwant.utils.UserUtil;
+
+import static br.com.uwant.flow.WishListActivity.EXTRA_MODE.CREATE;
 
 public class WishListActivity extends ActionBarActivity implements View.OnClickListener,
         IRequest.OnRequestListener<List<Product>>, CompoundButton.OnCheckedChangeListener {
 
     private static final int REQUEST_CAMERA = 984;
     private static final int REQUEST_GALLERY = 989;
+    private WishList mWishListExtra;
+
+    public static enum EXTRA_MODE{CREATE, EDIT, DELETE}
 
     private List<Product> mProducts;
     private WishListProductAdapter mAdapter;
@@ -77,9 +91,6 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        mProducts = new ArrayList<Product>(10);
-        mAdapter = new WishListProductAdapter(this, mProducts);
-
         setContentView(R.layout.activity_wishlist);
 
         mEditTextStore = (EditText) findViewById(R.id.wishList_editText_store);
@@ -95,11 +106,34 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
         buttonGallery.setOnClickListener(this);
         final ImageButton buttonLink = (ImageButton) findViewById(R.id.wishList_imageButton_link);
         buttonLink.setOnClickListener(this);
+        boolean isExtra = getIntent().hasExtra(WishList.EXTRA);
+
+        try {
+            if (isExtra) {
+                mWishListExtra = (WishList) getIntent().getSerializableExtra(WishList.EXTRA);
+                mEditTextStore.setText(
+                        mWishListExtra.getProducts() != null && mWishListExtra.getProducts().size() >= 0 ?
+                                mWishListExtra.getProducts().get(0).getManufacturer().getName() : " ");
+                mEditTextComment.setText(mWishListExtra.getDescription());
+                mEditTextWishList.setText(mWishListExtra.getTitle());
+                mProducts = mWishListExtra.getProducts();
+                mAdapter = new WishListProductAdapter(this, mProducts);
+                mEditTextWishList.setTag(mWishListExtra);
+            } else {
+                mProducts = new ArrayList<Product>(10);
+                mAdapter = new WishListProductAdapter(this, mProducts);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         mTwoWayView = (TwoWayView) findViewById(R.id.wishList_twoWayView);
         mTwoWayView.setAdapter(mAdapter);
         mTwoWayView.setOrientation(TwoWayView.Orientation.HORIZONTAL);
         mTwoWayView.setItemMargin(10);
+
+        if (isExtra)
+            fillProduct();
     }
 
     @Override
@@ -134,28 +168,43 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
                 && !wishListName.isEmpty()
                 && !mProducts.isEmpty()) {
             WishList wishList = (WishList) mEditTextWishList.getTag();
-            if (wishList == null) {
-                // Criar lista de desejos
-                for (Product product : this.mProducts) {
+            List<Product> produtosInseridos = null;
+
+            // Criar lista de desejos
+            for (Product product : this.mProducts) {
+                if (product.getId() == 0) {
                     Manufacturer manufacturer = new Manufacturer();
                     manufacturer.setName(store);
                     product.setManufacturer(manufacturer);
                     product.setName("Product#" + mProducts.indexOf(product));
                     product.setNickName("Product#" + mProducts.indexOf(product));
+
+                    if (produtosInseridos == null)
+                        produtosInseridos = new ArrayList<Product>();
+
+                    produtosInseridos.add(product);
                 }
 
-                wishList = new WishList();
-                wishList.setTitle(wishListName);
-                wishList.setDescription(comment);
+            }
 
+            WishList wishListNew = new WishList();
+            wishListNew.setTitle(wishListName);
+            wishListNew.setDescription(comment);
+
+            if (wishList == null) {
                 WishListCreateModel model = new WishListCreateModel();
-                model.setWishList(wishList);
+                model.setWishList(wishListNew);
                 model.setProducts(this.mProducts);
                 Requester.executeAsync(model, this);
             } else {
-                // Atualizar produtos da lista de desejos
-                // O comentário virá a mensagem(EXTRA) para o feed na atualização...
+                HashMap<WishListUpdateModel.Type, List<Product>> produtosEdit = new HashMap<WishListUpdateModel.Type, List<Product>>();
+                produtosEdit.put(WishListUpdateModel.Type.INSERT, produtosInseridos);
 
+                wishListNew.setId(wishList.getId());
+                WishListUpdateModel model = new WishListUpdateModel();
+                model.setWishList(wishListNew);
+                model.setmUpdateProducts(produtosEdit);
+                Requester.executeAsync(model, this);
             }
         } else {
             Toast.makeText(this, R.string.text_field_all_fields_correctly, Toast.LENGTH_LONG).show();
@@ -225,6 +274,24 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
         Product product = new Product();
         product.setPicture(multimedia);
         this.mProducts.add(product);
+        this.mAdapter.notifyDataSetChanged();
+
+        if (!mTwoWayView.isShown()) {
+            mTwoWayView.setVisibility(View.VISIBLE);
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.wishList_linearLayout_present);
+            linearLayout.setVisibility(View.GONE);
+        }
+
+        mTwoWayView.post(new Runnable() {
+            @Override
+            public void run() {
+                mTwoWayView.setSelection(mAdapter.getCount());
+            }
+        });
+
+    }
+
+    private void fillProduct() {
         this.mAdapter.notifyDataSetChanged();
 
         if (!mTwoWayView.isShown()) {

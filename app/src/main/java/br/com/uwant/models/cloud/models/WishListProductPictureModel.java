@@ -1,5 +1,7 @@
 package br.com.uwant.models.cloud.models;
 
+import android.net.Uri;
+
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -37,7 +39,7 @@ public class WishListProductPictureModel extends AbstractMultipartDataModel {
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.addPart(Requester.ParameterKey.MULTIMEDIA_PRODUCT,
                 new StringBody(String.valueOf(productId), ContentType.APPLICATION_FORM_URLENCODED));
-        builder.addPart(Requester.ParameterKey.MULTIMEDIA, new FileBody(new File(picture.getUri().getPath()), ContentType.MULTIPART_FORM_DATA, now + "-P-" + productId + ".jpg"));
+        builder.addPart(Requester.ParameterKey.MULTIMEDIA, new FileBody(new File(((Uri)picture.getUri()).getPath()), ContentType.MULTIPART_FORM_DATA, now + "-P-" + productId + ".jpg"));
 
         return builder;
     }

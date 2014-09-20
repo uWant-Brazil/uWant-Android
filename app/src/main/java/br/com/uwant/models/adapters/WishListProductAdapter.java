@@ -99,7 +99,7 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
         holder.hButtonRemove.setTag(i);
         Product product = getItem(i);
         Multimedia picture = product.getPicture();
-        Uri uri = picture.getUri();
+        Uri uri = (Uri)picture.getUri();
         if (product.isFake()){
             holder.hImageViewProduct.setImageResource(R.drawable.ic_post_presente);
             holder.hButtonRemove.setVisibility(View.GONE);

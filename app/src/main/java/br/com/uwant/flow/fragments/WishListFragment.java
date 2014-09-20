@@ -295,7 +295,17 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
     }
 
     private void edit() {
-        // TODO ...
+        Intent it = new Intent(getActivity(), WishListActivity.class);
+        WishList wishList = this.mWishListSelected;
+
+        for (int i = 0; i < wishList.getProducts().size() ; i++) {
+            wishList.getProducts().get(i).getPicture().setBitmap(null);
+            wishList.getProducts().get(i).getPicture().setUri(null);
+        }
+
+        it.putExtra(WishList.EXTRA, wishList);
+        it.putExtra("MODE" , WishListActivity.EXTRA_MODE.EDIT.ordinal());
+        startActivity(it);
     }
 
     public static Fragment newInstance(Person person) {

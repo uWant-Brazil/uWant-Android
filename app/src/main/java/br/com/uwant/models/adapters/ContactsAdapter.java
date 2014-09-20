@@ -118,7 +118,7 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
             String mail = person.getMail();
             Multimedia multimedia = person.getPicture();
             if (multimedia != null) {
-                Uri uri = multimedia.getUri();
+                Uri uri = (Uri)multimedia.getUri();
                 if (uri != null) {
                     Picasso.with(this.mContext)
                             .load(uri)

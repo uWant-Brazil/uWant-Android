@@ -198,7 +198,7 @@ public class FeedsAdapter extends BaseAdapter {
 
     private void populatePicture(final ImageView hImageViewPicture, final ImageView hImageViewPictureDetail, Multimedia multimedia) {
         if (multimedia != null) {
-            Uri uri = multimedia.getUri();
+            Uri uri = (Uri)multimedia.getUri();
             if (uri != null) {
                 ImageLoader imageLoader = ImageLoader.getInstance();
                 imageLoader.loadImage(uri.toString(), this.mOptions, new ImageLoadingListener() {
