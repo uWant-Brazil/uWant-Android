@@ -194,6 +194,8 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     }
 
     private void updateFeeds() {
+        mGridView.setEmptyView(getView().findViewById(R.id.contacts_gridView_loading));
+
         mActions.clear();
         mFeedsAdapter.notifyDataSetChanged();
 

@@ -116,7 +116,7 @@ public class FeedsAdapter extends BaseAdapter {
             LinearLayout linearLayout = new LinearLayout(this.mContext);
             linearLayout.setGravity(Gravity.CENTER);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 0, 0, 15);
 
             CardView cardView = new CardView(this.mContext);
