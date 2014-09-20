@@ -74,12 +74,22 @@ public class UserDatabase extends BaseDatabase<User> {
             e.printStackTrace();
         }
 
+        Multimedia picture = null;
+        String url = cursor.getString(cursor.getColumnIndex(PICTURE_URL));
+        if (url != null && !url.isEmpty()) {
+            picture = new Multimedia();
+            picture.setUrl(url);
+        }
+
+        String facebookToken = cursor.getString(cursor.getColumnIndex(FACEBOOK_TOKEN));
+
         User user = User.getInstance();
         user.setToken(token);
         user.setName(name);
         user.setLogin(login);
         user.setBirthday(birthday);
         user.setGender(gender);
+        user.setPicture(picture);
 
         return user;
     }
