@@ -11,8 +11,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        android:text="Você ainda não tem notificações, pressione a imagem e adicione amigos!"
+        android:id="@+id/feed_textView_empty"
+        android:text="@string/text_feed_empty"
         android:padding="10dp"
         android:textSize="20sp"
         android:textColor="@color/GRAY_TEXT"

@@ -14,8 +14,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +38,7 @@ import br.com.uwant.models.cloud.models.ExcludeFriendModel;
 import br.com.uwant.models.cloud.models.FriendsCircleModel;
 
 public class FriendsCircleFragment extends Fragment implements IRequest.OnRequestListener<List<Person>>,
-        AdapterView.OnItemClickListener, SearchView.OnQueryTextListener {
+        AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener {
 
     private static final int RQ_ADD_CONTACTS = 1230;
 
@@ -66,6 +70,12 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
         mListView.setAdapter(mAdapter); // TODO Adapter correto...
         mListView.setOnItemClickListener(this);
         mListView.setTextFilterEnabled(true);
+
+        final TextView textView = (TextView) view.findViewById(R.id.feed_textView_empty);
+        textView.setText(R.string.text_empty_friends);
+
+        final ImageView imageViewEmpty = (ImageView) view.findViewById(R.id.feed_imageView_empty);
+        imageViewEmpty.setOnClickListener(this);
     }
 
     @Override
@@ -94,8 +104,13 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
 
     @Override
     public void onExecute(List<Person> result) {
-        mFriends.clear();
-        mFriends.addAll(result);
+        if (result != null && result.size() > 0) {
+            mFriends.clear();
+            mFriends.addAll(result);
+        } else {
+            getView().findViewById(R.id.contacts_gridView_loading).setVisibility(View.GONE);
+            mListView.setEmptyView(getView().findViewById(R.id.feed_linearLayout_empty));
+        }
         mAdapter.notifyDataSetChanged();
     }
 
@@ -145,5 +160,19 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
         FriendsCircleFragment f = new FriendsCircleFragment();
         f.setPerson(person);
         return f;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.feed_imageView_empty:
+                Intent intent = new Intent(getActivity(), ContactsActivity.class);
+                intent.putExtra(User.EXTRA_ADD_CONTACTS, true);
+                startActivityForResult(intent, RQ_ADD_CONTACTS);
+                break;
+
+            default:
+                break;
+        }
     }
 }

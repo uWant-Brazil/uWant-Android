@@ -68,5 +68,7 @@
     <string name="text_add_friend">Add friend</string>
     <string name="text_invite_all_friends">Convidar todos os amigos abaixo</string>
     <string name="text_contacts_introduction">Você já está cadastrado, agora convide seus amigos para compartilhar desejos!</string>
+    <string name="text_feed_empty">Você ainda não tem notificações, pressione a imagem e adicione amigos!</string>
+    <string name="text_empty_friends">Você ainda não tem amigos no seu círculo, pressione a imagem e adicione-os do seus contatos!</string>
 
 </resources>
