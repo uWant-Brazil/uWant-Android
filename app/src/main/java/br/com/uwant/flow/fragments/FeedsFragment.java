@@ -299,7 +299,7 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         boolean isShared = action.isuShare();
         if (!isShared) {
             int count = action.getSharesCount();
-            if (count > 0) {
+            if (count >= 0) {
                 action.setSharesCount(++count);
                 action.setuShare(true);
                 mFeedsAdapter.notifyDataSetChanged();
