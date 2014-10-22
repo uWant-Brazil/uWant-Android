@@ -67,6 +67,7 @@ public abstract class Requester {
         public static final String WISHLIST_ID = "wishlistId";
         public static final String LINKED = "linked";
         public static final String FRIENDSHIP_LEVEL = "friendshipLevel";
+        public static final String PRODUCTS_REMOVED = "productsRemoved";
     }
 
     /**

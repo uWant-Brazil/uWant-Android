@@ -12,6 +12,8 @@ public class WishListDeleteRequest extends AbstractRequest<Boolean> implements I
      */
     private static final String ROUTE = "/mobile/wishlist/delete";
 
+    private WishListDeleteModel wishListDeleteModel;
+
     @Override
     public void executeAsync(WishListDeleteModel data, OnRequestListener listener) {
         execute(data, listener);

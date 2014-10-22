@@ -25,6 +25,7 @@ import com.squareup.picasso.Target;
 import java.util.List;
 
 import br.com.uwant.R;
+import br.com.uwant.flow.WishListActivity;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Product;
 
@@ -35,6 +36,7 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
     private final DisplayImageOptions mOptions;
     private final ImageSize mTargetSize;
     private List<Product> mProducts;
+    private WishListActivity.OnProductListener onProductListener;
 
 
     public WishListProductAdapter(Context context, List<Product> products) {
@@ -50,6 +52,22 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
                 .displayer(new FadeInBitmapDisplayer(300))
                 .build();
         this.mTargetSize = new ImageSize(SIZE, SIZE);
+    }
+
+    public WishListProductAdapter(Context context, List<Product> products, WishListActivity.OnProductListener onProductListener) {
+        this.mContext = context;
+        this.mProducts = products;
+//        setFakeProduct(products);
+        this.mOptions = new DisplayImageOptions.Builder()
+                .resetViewBeforeLoading(true)
+                .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .considerExifParams(true)
+                .displayer(new FadeInBitmapDisplayer(300))
+                .build();
+        this.mTargetSize = new ImageSize(SIZE, SIZE);
+        this.onProductListener = onProductListener;
     }
 
     void setFakeProduct(List<Product> products) {
@@ -184,6 +202,11 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
     private void remove(Product product) {
         if (product != null) {
             mProducts.remove(product);
+
+            if (onProductListener != null) {
+                onProductListener.onRemove(product);
+            }
+
             notifyDataSetChanged();
         }
     }

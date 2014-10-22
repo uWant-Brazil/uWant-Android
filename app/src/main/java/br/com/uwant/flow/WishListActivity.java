@@ -41,6 +41,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 
 import br.com.uwant.R;
@@ -85,6 +87,13 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
     private TwoWayView mTwoWayView;
     private AlertFragmentDialog mAlertLink;
 
+    private List<Product> mProductDeleted = null;
+    private OnProductListener onProductListener = null;
+
+    public interface OnProductListener {
+        void onRemove(Product product);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,20 +117,31 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
         buttonLink.setOnClickListener(this);
         boolean isExtra = getIntent().hasExtra(WishList.EXTRA);
 
+        onProductListener = new OnProductListener() {
+            @Override
+            public void onRemove(Product product) {
+                if (mProductDeleted == null)
+                    mProductDeleted = new ArrayList<Product>();
+
+                mProductDeleted.add(product);
+            }
+        };
+
         try {
             if (isExtra) {
                 mWishListExtra = (WishList) getIntent().getSerializableExtra(WishList.EXTRA);
-                mEditTextStore.setText(
-                        mWishListExtra.getProducts() != null && mWishListExtra.getProducts().size() >= 0 ?
-                                mWishListExtra.getProducts().get(0).getManufacturer().getName() : " ");
+//                mEditTextStore.setText(
+//                        mWishListExtra.getProducts() != null && mWishListExtra.getProducts().size() >= 0 ?
+//                               mWishListExtra.getProducts().get(0).getManufacturer().getName() : " ");
+                mEditTextStore.setText("Fabricante Teste");
                 mEditTextComment.setText(mWishListExtra.getDescription());
                 mEditTextWishList.setText(mWishListExtra.getTitle());
                 mProducts = mWishListExtra.getProducts();
-                mAdapter = new WishListProductAdapter(this, mProducts);
+                mAdapter = new WishListProductAdapter(this, mProducts, onProductListener);
                 mEditTextWishList.setTag(mWishListExtra);
             } else {
                 mProducts = new ArrayList<Product>(10);
-                mAdapter = new WishListProductAdapter(this, mProducts);
+                mAdapter = new WishListProductAdapter(this, mProducts, onProductListener);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -199,6 +219,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
             } else {
                 HashMap<WishListUpdateModel.Type, List<Product>> produtosEdit = new HashMap<WishListUpdateModel.Type, List<Product>>();
                 produtosEdit.put(WishListUpdateModel.Type.INSERT, produtosInseridos);
+                produtosEdit.put(WishListUpdateModel.Type.DELETE, mProductDeleted);
 
                 wishListNew.setId(wishList.getId());
                 WishListUpdateModel model = new WishListUpdateModel();
@@ -292,7 +313,8 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void fillProduct() {
-        this.mAdapter.notifyDataSetChanged();
+        if (this.mAdapter != null)
+            this.mAdapter.notifyDataSetChanged();
 
         if (!mTwoWayView.isShown()) {
             mTwoWayView.setVisibility(View.VISIBLE);

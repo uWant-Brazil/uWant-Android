@@ -34,26 +34,12 @@ public class WishListUpdateModel extends AbstractJSONRequestModel {
 
     @Override
     protected JsonObject toJson() {
-        JsonArray arrayProducts = new JsonArray();
-
-//        for (Product product : this.products) {
-//            Manufacturer manufacturer = product.getManufacturer();
-//            JsonObject jsonManufacturer = new JsonObject();
-//            jsonManufacturer.addProperty(Requester.ParameterKey.NAME, manufacturer.getName());
-//
-//            JsonObject jsonProduct = new JsonObject();
-//            jsonProduct.addProperty(Requester.ParameterKey.NAME, product.getName());
-//            jsonProduct.addProperty(Requester.ParameterKey.NICK_NAME, product.getName());
-//            jsonProduct.add(Requester.ParameterKey.MANUFACTURER, jsonManufacturer);
-//
-//            arrayProducts.add(jsonProduct);
-//        }
-
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(Requester.ParameterKey.ID, this.wishList.getId());
         jsonObject.addProperty(Requester.ParameterKey.TITLE, this.wishList.getTitle());
         jsonObject.addProperty(Requester.ParameterKey.DESCRIPTION, this.wishList.getDescription());
-//        jsonObject.add(Requester.ParameterKey.PRODUCTS, arrayProducts);
+        jsonObject.add(Requester.ParameterKey.PRODUCTS, Util.listProductsToJson(Type.INSERT, mUpdateProducts.get(Type.INSERT)));
+        jsonObject.add(Requester.ParameterKey.PRODUCTS_REMOVED, Util.listProductsToJson(Type.DELETE, mUpdateProducts.get(Type.DELETE)));
         return jsonObject;
     }
 
