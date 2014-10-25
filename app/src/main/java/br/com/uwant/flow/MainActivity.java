@@ -168,7 +168,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
             @Override
             public void onDrawerClosed(View view) {
-
+                mEditTextSearch.setText("");
             }
 
             @Override
