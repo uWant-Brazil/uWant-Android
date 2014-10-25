@@ -24,6 +24,7 @@ import com.facebook.model.GraphUser;
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +44,7 @@ import br.com.uwant.models.cloud.models.AuthModel;
 import br.com.uwant.models.cloud.models.RecoveryPasswordModel;
 import br.com.uwant.models.cloud.models.SocialRegisterModel;
 import br.com.uwant.models.databases.UserDatabase;
+import br.com.uwant.utils.DateUtil;
 import br.com.uwant.utils.GoogleCloudMessageUtil;
 import br.com.uwant.utils.KeyboardUtil;
 
@@ -142,8 +144,8 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
                                         if (birthday != null) {
                                             try {
-                                                user.setBirthday(DateUtils.parseDate(birthday, new String[]{"MM/dd/yyyy"}));
-                                            } catch (DateParseException e) {
+                                                user.setBirthday(DateUtil.parse(birthday, "MM/dd/yyyy"));
+                                            } catch (ParseException e) {
                                                 e.printStackTrace();
                                             }
                                         }
@@ -310,7 +312,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
         editTextMail.setLayoutParams(params);
         editTextMail.setHint(R.string.text_fill_your_registered_mail);
-        editTextMail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        editTextMail.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
         editTextMail.setImeOptions(EditorInfo.IME_ACTION_DONE);
         editTextMail.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
