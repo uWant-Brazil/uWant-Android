@@ -281,6 +281,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         if (it != null) {
             startActivity(it);
         }
+
+        mDrawerLayout.closeDrawer(mDrawerList);
     }
 
     private void askForLogoff() {
