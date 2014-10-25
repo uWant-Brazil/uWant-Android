@@ -207,10 +207,14 @@ public class FeedsAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void populatePicture(final ImageView hImageViewPicture, final ImageView hImageViewPictureDetail, Multimedia multimedia) {
+    private void populatePicture(final ImageView hImageViewPicture, final ImageView hImageViewPictureDetail, final Multimedia multimedia) {
         if (multimedia != null) {
+            Bitmap bitmap = multimedia.getBitmap();
             String url = multimedia.getUrl();
-            if (url != null && !url.isEmpty()) {
+            if (bitmap != null) {
+                hImageViewPicture.setImageBitmap(bitmap);
+                hImageViewPictureDetail.setVisibility(View.VISIBLE);
+            } else if (url != null && !url.isEmpty()) {
                 ImageLoader imageLoader = ImageLoader.getInstance();
                 imageLoader.loadImage(url, this.mOptions, new ImageLoadingListener() {
 
@@ -232,6 +236,7 @@ public class FeedsAdapter extends BaseAdapter {
                         bitmap = PictureUtil.circle(bitmap);
                         hImageViewPicture.setImageBitmap(bitmap);
                         hImageViewPictureDetail.setVisibility(View.VISIBLE);
+                        multimedia.setBitmap(bitmap);
                     }
 
                     @Override
