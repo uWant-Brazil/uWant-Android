@@ -120,28 +120,28 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
         buttonLink.setOnClickListener(this);
         boolean isExtra = getIntent().hasExtra(WishList.EXTRA);
 
-        onProductListener = new OnProductListener() {
-            @Override
-            public void onRemove(Product product) {
-                if (mProductDeleted == null)
-                    mProductDeleted = new ArrayList<Product>();
-
-                mProductDeleted.add(product);
-            }
-        };
-
         try {
             if (isExtra) {
+                onProductListener = new OnProductListener() {
+                    @Override
+                    public void onRemove(Product product) {
+                        if (mProductDeleted == null)
+                            mProductDeleted = new ArrayList<Product>();
+
+                        mProductDeleted.add(product);
+                    }
+                };
+
                 mWishListExtra = (WishList) getIntent().getSerializableExtra(WishList.EXTRA);
-//                mEditTextStore.setText(
-//                        mWishListExtra.getProducts() != null && mWishListExtra.getProducts().size() >= 0 ?
-//                               mWishListExtra.getProducts().get(0).getManufacturer().getName() : " ");
-                mEditTextStore.setText("Fabricante Teste");
+                mEditTextStore.setText(
+                        mWishListExtra.getProducts() != null && mWishListExtra.getProducts().size() >= 0 ?
+                               mWishListExtra.getProducts().get(0).getManufacturer().getName() : " ");
                 mEditTextComment.setText(mWishListExtra.getDescription());
                 mEditTextWishList.setText(mWishListExtra.getTitle());
                 mProducts = mWishListExtra.getProducts();
                 mAdapter = new WishListProductAdapter(this, mProducts, onProductListener);
                 mEditTextWishList.setTag(mWishListExtra);
+
             } else {
                 mProducts = new ArrayList<Product>(10);
                 mAdapter = new WishListProductAdapter(this, mProducts, onProductListener);

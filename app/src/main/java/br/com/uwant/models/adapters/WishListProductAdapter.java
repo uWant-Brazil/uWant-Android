@@ -203,7 +203,7 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
         if (product != null) {
             mProducts.remove(product);
 
-            if (onProductListener != null) {
+            if (onProductListener != null && product.getId() > 0) {
                 onProductListener.onRemove(product);
             }
 
