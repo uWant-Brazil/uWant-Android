@@ -41,7 +41,7 @@ public class UserDatabase extends BaseDatabase<User> {
         cv.put(NAME, data.getName());
         cv.put(LOGIN, data.getLogin());
         cv.put(BIRTHDAY, DateUtil.format(data.getBirthday(), DateUtil.DATE_PATTERN));
-        cv.put(GENDER, data.getGender().ordinal());
+        cv.put(GENDER, (data.getGender() != null) ? data.getGender().ordinal() : null);
 
         Multimedia picture = data.getPicture();
         if (picture != null) {
@@ -64,9 +64,13 @@ public class UserDatabase extends BaseDatabase<User> {
         String name = cursor.getString(cursor.getColumnIndex(NAME));
         String login = cursor.getString(cursor.getColumnIndex(LOGIN));
         String birthdayStr = cursor.getString(cursor.getColumnIndex(BIRTHDAY));
-        int genderOrdinal = cursor.getInt(cursor.getColumnIndex(GENDER));
+        Integer genderOrdinal = cursor.getInt(cursor.getColumnIndex(GENDER));
 
-        Person.Gender gender = Person.Gender.values()[genderOrdinal];
+        Person.Gender gender = null;
+        if (genderOrdinal != null) {
+            gender = Person.Gender.values()[genderOrdinal];
+        }
+
         Date birthday = null;
         try {
             birthday = DateUtil.parse(birthdayStr, DateUtil.DATE_PATTERN);
@@ -166,7 +170,6 @@ public class UserDatabase extends BaseDatabase<User> {
     public void removeAll() {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE, null, null);
-        
     }
 
     @Override

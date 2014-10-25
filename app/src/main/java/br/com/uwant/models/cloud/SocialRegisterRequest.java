@@ -66,7 +66,7 @@ public class SocialRegisterRequest extends AbstractRequest<Boolean> implements I
                 }
 
                 if (jsonUser.has(Requester.ParameterKey.BIRTHDAY)) {
-                    String birthdayStr = jsonUser.get(Requester.ParameterKey.NAME).getAsString();
+                    String birthdayStr = jsonUser.get(Requester.ParameterKey.BIRTHDAY).getAsString();
                     Date birthday = null;
                     try {
                         birthday = DateUtil.parse(birthdayStr, DateUtil.DATE_PATTERN);
