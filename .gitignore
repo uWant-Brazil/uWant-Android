@@ -24,3 +24,6 @@ proguard/
 
 # IntelliJ Files
 .idea/
+
+# Crashlytics
+com_crashlytics_export_strings.xml
