@@ -130,6 +130,7 @@
             android:value="@string/app_id"/>
         <meta-data android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="55f47a0d5ef54166105547dc4195d8e4aac30366"/>
     </application>
 
 </manifest>

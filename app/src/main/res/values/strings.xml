@@ -68,5 +68,6 @@
     <string name="text_add_friend">Add friend</string>
     <string name="text_invite_all_friends">Convidar todos os amigos abaixo</string>
     <string name="text_contacts_introduction">Você já está cadastrado, agora convide seus amigos para compartilhar desejos!</string>
+    <string name="text_report_activity">A atividade foi reportada com sucesso.</string>
 
 </resources>

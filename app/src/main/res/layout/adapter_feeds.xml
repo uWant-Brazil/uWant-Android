@@ -14,10 +14,11 @@
         android:orientation="horizontal">
 
         <FrameLayout
-            android:layout_marginBottom="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
             android:id="@+id/frameLayout">
 
             <ImageView
@@ -37,16 +38,19 @@
 
         </FrameLayout>
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <ImageButton
-                android:layout_margin="5dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginTop="10dp"
                 android:layout_gravity="right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
                 android:src="@drawable/abc_ic_menu_moreoverflow_normal_holo_light"
                 android:id="@+id/adapter_feeds_imageButton" />
 
@@ -54,12 +58,17 @@
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:text="User Name adicionou um desejo da loja Americana.User Name adicionou um desejo da loja Americana.User Name adicionou um desejo da loja Americana."
+                android:layout_toLeftOf="@+id/adapter_feeds_imageButton"
                 android:id="@+id/adapter_feeds_textView_systemMessage"
+                android:lines="4"
+                android:maxLines="4"
+                android:ellipsize="end"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp" />
 
-        </FrameLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -82,7 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/adapter_feeds_textView_userMessage"
-            android:layout_margin="20dp"
+            android:layout_margin="5dp"
             android:gravity="center_horizontal"
             android:maxLength="140"
             android:ellipsize="end"

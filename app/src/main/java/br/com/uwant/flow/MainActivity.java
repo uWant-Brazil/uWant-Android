@@ -52,12 +52,14 @@ import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.LogoffModel;
 import br.com.uwant.models.cloud.models.UserSearchModel;
 import br.com.uwant.models.databases.UserDatabase;
+import br.com.uwant.utils.DebugUtil;
 import br.com.uwant.utils.GoogleCloudMessageUtil;
 import br.com.uwant.utils.KeyboardUtil;
 import br.com.uwant.utils.PictureUtil;
 
 public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
 
+    public static final String EXIT_DIALOG = "Exit_Dialog";
     private FeedsFragment mFeedsFragment;
 
     private DrawerLayout mDrawerLayout;
@@ -74,21 +76,20 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         GoogleCloudMessageUtil.registerAsync(this);
 
-        try {
+        if (DebugUtil.DEBUG_LOG) {
+            try {
+                PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+                for (Signature signature : info.signatures) {
+                    MessageDigest md = MessageDigest.getInstance("SHA");
+                    md.update(signature.toByteArray());
+                    DebugUtil.debug("Facebook Hash: " + Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                }
 
-            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
-
-            for (Signature signature : info.signatures)
-            {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            } catch (PackageManager.NameNotFoundException e) {
+                DebugUtil.debug("Facebook Hash: name not found - " + e.toString());
+            } catch (NoSuchAlgorithmException e) {
+                DebugUtil.debug("Facebook Hash: no such an algorithm - " + e.toString());
             }
-
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e("name not found", e.toString());
-        } catch (NoSuchAlgorithmException e) {
-            Log.e("no such an algorithm", e.toString());
         }
 
         setContentView(R.layout.activity_main);
@@ -296,7 +297,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
         };
         AlertFragmentDialog afd = AlertFragmentDialog.create(title, message, positiveText, positiveListener, negativeText, null);
-        afd.show(getSupportFragmentManager(), "Exit_Dialog");
+        afd.show(getSupportFragmentManager(), EXIT_DIALOG);
     }
 
     private void performLogoff() {

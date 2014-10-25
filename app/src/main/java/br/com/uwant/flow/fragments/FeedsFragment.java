@@ -41,8 +41,10 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     private Action mActionSelected;
     private List<Action> mActions;
     private FeedsAdapter mFeedsAdapter;
-    private GridView mGridView;
+    private WishList mWishList;
+    private Person mPerson;
 
+    private GridView mGridView;
 
     private final IRequest.OnRequestListener<Action> LISTENER_WANT = new IRequest.OnRequestListener<Action>() {
 
@@ -120,7 +122,7 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
                 mProgressDialog.dismiss();
             }
 
-            Toast.makeText(getActivity(), "A atividade foi reportada com sucesso.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), R.string.text_report_activity, Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -152,8 +154,6 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         }
 
     };
-    private WishList mWishList;
-    private Person mPerson;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -342,18 +342,8 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         return f;
     }
 
-
-    public static FeedsFragment newInstance(Person person) {
-        FeedsFragment f = new FeedsFragment();
-        f.setPerson(person);
-        return f;
-    }
-
-    public void setWishList(WishList wishList) {
+    private void setWishList(WishList wishList) {
         this.mWishList = wishList;
     }
 
-    public void setPerson(Person person) {
-        this.mPerson = person;
-    }
 }

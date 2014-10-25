@@ -62,6 +62,7 @@ public class FeedsAdapter extends BaseAdapter {
     private static final int MINUTES = R.plurals.text_feeds_minutes;
 
     private static float DEFAULT_RADIUS;
+    private static int DEFAULT_MARGIN_BOTTOM;
     private static Drawable UWANT_DRAWABLE;
     private static Drawable UWANT_DRAWABLE_ACTIVE;
     private static Drawable USHARE_DRAWABLE;
@@ -87,6 +88,7 @@ public class FeedsAdapter extends BaseAdapter {
 
         Resources res = context.getResources();
         DEFAULT_RADIUS = res.getDimension(R.dimen.cardview_default_radius);
+        DEFAULT_MARGIN_BOTTOM = (int) res.getDimension(R.dimen.cardview_default_margin_bottom);
         UWANT_DRAWABLE = res.getDrawable(R.drawable.ic_feed_wantar);
         UWANT_DRAWABLE_ACTIVE = res.getDrawable(R.drawable.ic_feed_wantar_on);
         USHARE_DRAWABLE = res.getDrawable(R.drawable.ic_feed_compartilhar);
@@ -116,8 +118,8 @@ public class FeedsAdapter extends BaseAdapter {
             LinearLayout linearLayout = new LinearLayout(this.mContext);
             linearLayout.setGravity(Gravity.CENTER);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, 0, 0, 15);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0, 0, 0, DEFAULT_MARGIN_BOTTOM);
 
             CardView cardView = new CardView(this.mContext);
             cardView.setLayoutParams(params);
