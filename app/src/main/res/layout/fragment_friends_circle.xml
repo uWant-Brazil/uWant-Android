@@ -35,4 +35,10 @@
         layout="@layout/view_loading_contacts"
         android:layout_gravity="center" />
 
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        layout="@layout/view_empty_feed"
+        android:layout_gravity="center" />
+
 </FrameLayout>

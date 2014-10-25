@@ -65,6 +65,8 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_add_friend">Adicionar amigo</string>
     <string name="text_invite_all_friends">Convidar todos os amigos abaixo</string>
     <string name="text_contacts_introduction">Você já está cadastrado, agora convide seus amigos para compartilhar desejos!</string>
+    <string name="text_feed_empty">Você ainda não tem notificações, pressione a imagem e adicione amigos!</string>
+    <string name="text_empty_friends">Você ainda não tem amigos no seu círculo, pressione a imagem e adicione-os do seus contatos!</string>
     <string name="text_report_activity">A atividade foi reportada com sucesso.</string>
     <string name="text_sending_picture">Enviando foto...</string>
     <string name="text_sending_pictures">Enviando fotos...</string>

@@ -12,7 +12,6 @@ import java.util.List;
 
 import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.models.WishListModel;
-import br.com.uwant.models.databases.WishListDatabase;
 
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
@@ -56,8 +55,6 @@ public class WishListRequest extends AbstractRequest<List<WishList>> implements 
         if (jsonElement.isJsonObject()) {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             if (jsonObject.has(Requester.ParameterKey.WISHLIST)) {
-                WishListDatabase wldb = new WishListDatabase(getContext());
-
                 JsonElement jsonWishLists = jsonObject.get(Requester.ParameterKey.WISHLIST);
                 if (jsonWishLists.isJsonArray()) {
                     JsonArray arrayWishLists = jsonWishLists.getAsJsonArray();
@@ -74,7 +71,7 @@ public class WishListRequest extends AbstractRequest<List<WishList>> implements 
                             WishList wishList = new WishList(id, title, description);
                             wishLists.add(wishList);
 
-                            wldb.createOrUpdate(wishList);
+                            //wldb.createOrUpdate(wishList);
                         }
                     }
                 }

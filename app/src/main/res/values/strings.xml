@@ -71,5 +71,7 @@
     <string name="text_report_activity">A atividade foi reportada com sucesso.</string>
     <string name="text_sending_picture">Enviando foto...</string>
     <string name="text_sending_pictures">Enviando fotos...</string>
+    <string name="text_feed_empty">Você ainda não tem notificações, pressione a imagem e adicione amigos!</string>
+    <string name="text_empty_friends">Você ainda não tem amigos no seu círculo, pressione a imagem e adicione-os do seus contatos!</string>
 
 </resources>

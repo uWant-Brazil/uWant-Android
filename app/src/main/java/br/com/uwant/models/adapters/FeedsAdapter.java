@@ -68,6 +68,8 @@ public class FeedsAdapter extends BaseAdapter {
     private static Drawable USHARE_DRAWABLE;
     private static Drawable USHARE_DRAWABLE_ACTIVE;
 
+    private final int WDP;
+    private final int HDP;
     private final Context mContext;
     private final List<Action> mActions;
     private final View.OnClickListener mClickListener;
@@ -93,6 +95,10 @@ public class FeedsAdapter extends BaseAdapter {
         UWANT_DRAWABLE_ACTIVE = res.getDrawable(R.drawable.ic_feed_wantar_on);
         USHARE_DRAWABLE = res.getDrawable(R.drawable.ic_feed_compartilhar);
         USHARE_DRAWABLE_ACTIVE = res.getDrawable(R.drawable.ic_feed_compartilhar); // TODO selected...
+
+        float dpi = context.getResources().getDisplayMetrics().density;
+        WDP = (int) (dpi * 76);
+        HDP = (int) (dpi * 76);
     }
 
     @Override
@@ -112,9 +118,16 @@ public class FeedsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        TextView hTextViewSystemMessage;
+        ImageView hImageViewPicture;
+        ImageView hImageViewPictureDetail;
+        ImageButton hImageButtonMenu;
+        TextView hTextViewUserMessage;
+        TextView hTextViewWhen;
+        Button hButtonUWants;
+        Button hButtonComments;
+        Button hButtonShares;
         if (convertView == null) {
-            holder = new ViewHolder();
             LinearLayout linearLayout = new LinearLayout(this.mContext);
             linearLayout.setGravity(Gravity.CENTER);
 
@@ -129,23 +142,19 @@ public class FeedsAdapter extends BaseAdapter {
             View contentView = LayoutInflater.from(this.mContext).inflate(R.layout.adapter_feeds, cardView, false);
             cardView.addView(contentView);
 
-            holder.hImageViewPicture = (ImageView) contentView.findViewById(R.id.adapter_feeds_imageView_picture);
-            holder.hImageViewPictureDetail = (ImageView) contentView.findViewById(R.id.adapter_feeds_imageView_pictureDetail);
-            holder.hImageViewProduct = (ImageView) contentView.findViewById(R.id.adapter_feeds_imageView_product);
-            holder.hImageButtonMenu = (ImageButton) contentView.findViewById(R.id.adapter_feeds_imageButton);
-            holder.hTextViewSystemMessage = (TextView) contentView.findViewById(R.id.adapter_feeds_textView_systemMessage);
-            holder.hTextViewUserMessage = (TextView) contentView.findViewById(R.id.adapter_feeds_textView_userMessage);
-            holder.hTextViewWhen = (TextView) contentView.findViewById(R.id.adapter_feeds_textView_when);
-            holder.hButtonUWants = (Button) contentView.findViewById(R.id.adapter_feeds_button_uwants);
-            holder.hButtonComments = (Button) contentView.findViewById(R.id.adapter_feeds_button_comments);
-            holder.hButtonShares = (Button) contentView.findViewById(R.id.adapter_feeds_button_shares);
-
             convertView = linearLayout;
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
         }
 
+        hImageViewPicture = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_picture);
+        hImageViewPictureDetail = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_pictureDetail);
+        hImageButtonMenu = (ImageButton) convertView.findViewById(R.id.adapter_feeds_imageButton);
+        hTextViewSystemMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_systemMessage);
+        hTextViewUserMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_userMessage);
+        hTextViewWhen = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_when);
+        hButtonUWants = (Button) convertView.findViewById(R.id.adapter_feeds_button_uwants);
+        hButtonComments = (Button) convertView.findViewById(R.id.adapter_feeds_button_comments);
+        hButtonShares = (Button) convertView.findViewById(R.id.adapter_feeds_button_shares);
+        
         Action action = getItem(position);
         Person from = action.getFrom();
 
@@ -159,24 +168,24 @@ public class FeedsAdapter extends BaseAdapter {
         boolean uWant = action.isuWant();
         boolean uShare = action.isuShare();
 
-        populatePicture(holder.hImageViewPicture, holder.hImageViewPictureDetail, from.getPicture());
+        populatePicture(hImageViewPicture, hImageViewPictureDetail, from.getPicture());
 
-        holder.hTextViewSystemMessage.setText(systemMessage);
-        holder.hTextViewUserMessage.setText(userMessage);
-        holder.hTextViewWhen.setText(timeAgo);
-        holder.hButtonUWants.setText(String.valueOf(uWantCount));
-        holder.hButtonComments.setText(String.valueOf(commentsCount));
-        holder.hButtonShares.setText(String.valueOf(sharesCount));
+        hTextViewSystemMessage.setText(systemMessage);
+        hTextViewUserMessage.setText(userMessage);
+        hTextViewWhen.setText(timeAgo);
+        hButtonUWants.setText(String.valueOf(uWantCount));
+        hButtonComments.setText(String.valueOf(commentsCount));
+        hButtonShares.setText(String.valueOf(sharesCount));
 
-        holder.hButtonUWants.setTag(position);
-        holder.hButtonComments.setTag(position);
-        holder.hButtonShares.setTag(position);
-        holder.hImageButtonMenu.setTag(position);
+        hButtonUWants.setTag(position);
+        hButtonComments.setTag(position);
+        hButtonShares.setTag(position);
+        hImageButtonMenu.setTag(position);
 
-        holder.hButtonUWants.setOnClickListener(this.mClickListener);
-        holder.hButtonComments.setOnClickListener(this.mClickListener);
-        holder.hButtonShares.setOnClickListener(this.mClickListener);
-        holder.hImageButtonMenu.setOnClickListener(this.mClickListener);
+        hButtonUWants.setOnClickListener(this.mClickListener);
+        hButtonComments.setOnClickListener(this.mClickListener);
+        hButtonShares.setOnClickListener(this.mClickListener);
+        hImageButtonMenu.setOnClickListener(this.mClickListener);
 
         Drawable drawableLeftUWant;
         if (uWant) {
@@ -192,34 +201,34 @@ public class FeedsAdapter extends BaseAdapter {
             drawableLeftUShare = USHARE_DRAWABLE;
         }
 
-        holder.hButtonUWants.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUWant, null, null, null);
-        holder.hButtonShares.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUShare, null, null, null);
+        hButtonUWants.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUWant, null, null, null);
+        hButtonShares.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUShare, null, null, null);
 
         return convertView;
     }
 
     private void populatePicture(final ImageView hImageViewPicture, final ImageView hImageViewPictureDetail, Multimedia multimedia) {
         if (multimedia != null) {
-            Uri uri = (Uri)multimedia.getUri();
-            if (uri != null) {
+            String url = multimedia.getUrl();
+            if (url != null && !url.isEmpty()) {
                 ImageLoader imageLoader = ImageLoader.getInstance();
-                imageLoader.loadImage(uri.toString(), this.mOptions, new ImageLoadingListener() {
+                imageLoader.loadImage(url, this.mOptions, new ImageLoadingListener() {
 
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
-                        hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
+                        hImageViewPicture.setImageResource(R.drawable.ic_contatos_semfoto);
                     }
 
                     @Override
                     public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                        hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
+                        hImageViewPicture.setImageResource(R.drawable.ic_contatos_semfoto);
                         hImageViewPictureDetail.setVisibility(View.INVISIBLE);
                     }
 
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
                         bitmap = PictureUtil.cropToFit(bitmap);
-                        bitmap = PictureUtil.scale(bitmap, hImageViewPicture);
+                        bitmap = PictureUtil.scale(bitmap, WDP, HDP);
                         bitmap = PictureUtil.circle(bitmap);
                         hImageViewPicture.setImageBitmap(bitmap);
                         hImageViewPictureDetail.setVisibility(View.VISIBLE);
@@ -227,7 +236,7 @@ public class FeedsAdapter extends BaseAdapter {
 
                     @Override
                     public void onLoadingCancelled(String imageUri, View view) {
-                        hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
+                        hImageViewPicture.setImageResource(R.drawable.ic_contatos_semfoto);
                         hImageViewPictureDetail.setVisibility(View.INVISIBLE);
                     }
 
@@ -278,19 +287,6 @@ public class FeedsAdapter extends BaseAdapter {
         }
 
         return timeAgo;
-    }
-
-    private static class ViewHolder {
-        ImageView hImageViewPicture;
-        ImageView hImageViewPictureDetail;
-        ImageView hImageViewProduct;
-        ImageButton hImageButtonMenu;
-        TextView hTextViewSystemMessage;
-        TextView hTextViewUserMessage;
-        TextView hTextViewWhen;
-        Button hButtonUWants;
-        Button hButtonComments;
-        Button hButtonShares;
     }
 
 }

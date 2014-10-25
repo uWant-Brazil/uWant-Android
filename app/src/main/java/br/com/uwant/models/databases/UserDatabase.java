@@ -74,12 +74,23 @@ public class UserDatabase extends BaseDatabase<User> {
             e.printStackTrace();
         }
 
+        Multimedia picture = null;
+        String url = cursor.getString(cursor.getColumnIndex(PICTURE_URL));
+        if (url != null && !url.isEmpty()) {
+            picture = new Multimedia();
+            picture.setUrl(url);
+        }
+
+        String facebookToken = cursor.getString(cursor.getColumnIndex(FACEBOOK_TOKEN));
+
         User user = User.getInstance();
         user.setToken(token);
         user.setName(name);
         user.setLogin(login);
         user.setBirthday(birthday);
         user.setGender(gender);
+        user.setPicture(picture);
+        user.setFacebookToken(facebookToken);
 
         return user;
     }
@@ -88,7 +99,7 @@ public class UserDatabase extends BaseDatabase<User> {
     public long create(User data) {
         SQLiteDatabase db = getWritableDatabase();
         long id = db.insert(TABLE, null, getValues(data));
-        db.close();
+        
         return id;
     }
 
@@ -132,14 +143,14 @@ public class UserDatabase extends BaseDatabase<User> {
     public void remove(User data) {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE, String.format("%s%s", TOKEN, QUERY), new String[] { data.getToken() });
-        db.close();
+        
     }
 
     @Override
     public void update(User data) {
         SQLiteDatabase db = getWritableDatabase();
         db.update(TABLE, getValues(data), String.format("%s=?", TOKEN), new String[] { data.getToken() });
-        db.close();
+        
     }
 
     @Override
@@ -155,7 +166,7 @@ public class UserDatabase extends BaseDatabase<User> {
     public void removeAll() {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE, null, null);
-        db.close();
+        
     }
 
     @Override
@@ -169,7 +180,7 @@ public class UserDatabase extends BaseDatabase<User> {
             user = getFromCursor(cursor);
             cursor.close();
         }
-        db.close();
+        
 
         return user;
     }
@@ -189,7 +200,7 @@ public class UserDatabase extends BaseDatabase<User> {
             }
             cursor.close();
         }
-        db.close();
+        
 
         return companies;
     }

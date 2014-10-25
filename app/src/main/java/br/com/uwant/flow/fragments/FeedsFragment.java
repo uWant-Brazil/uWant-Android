@@ -1,5 +1,7 @@
 package br.com.uwant.flow.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,15 +12,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.uwant.R;
+import br.com.uwant.flow.ContactsActivity;
 import br.com.uwant.models.adapters.FeedsAdapter;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Person;
+import br.com.uwant.models.classes.User;
 import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
@@ -37,14 +42,7 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     public static final String TAG = "feedsFragment";
     private static final int DEFAULT_START_INDEX = 0;
     private static final int DEFAULT_END_INDEX = 20;
-
-    private Action mActionSelected;
-    private List<Action> mActions;
-    private FeedsAdapter mFeedsAdapter;
-    private WishList mWishList;
-    private Person mPerson;
-
-    private GridView mGridView;
+    private static final int RQ_ADD_CONTACTS = 2139;
 
     private final IRequest.OnRequestListener<Action> LISTENER_WANT = new IRequest.OnRequestListener<Action>() {
 
@@ -62,7 +60,6 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         }
 
     };
-
     private final IRequest.OnRequestListener<Action> LISTENER_SHARE = new IRequest.OnRequestListener<Action>() {
 
         @Override
@@ -79,7 +76,6 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         }
 
     };
-
     private final IRequest.OnRequestListener<Action> LISTENER_COMMENTS = new IRequest.OnRequestListener<Action>() {
 
         public FeedCommentFragment mFragment;
@@ -106,8 +102,7 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         }
 
     };
-
-    private IRequest.OnRequestListener<Boolean> mListenerReport = new IRequest.OnRequestListener<Boolean>() {
+    private final IRequest.OnRequestListener<Boolean> LISTENER_REPORT = new IRequest.OnRequestListener<Boolean>() {
 
         private ProgressFragmentDialog mProgressDialog;
 
@@ -135,8 +130,12 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         }
 
     };
+    private final IRequest.OnRequestListener<Boolean> LISTENER_EXCLUDE_BLOCK = new IRequest.OnRequestListener<Boolean>() {
+    private Action mActionSelected;
+    private List<Action> mActions;
+    private FeedsAdapter mFeedsAdapter;
+    private GridView mGridView;
 
-    private IRequest.OnRequestListener<Boolean> mListenerExcludeBlock = new IRequest.OnRequestListener<Boolean>() {
 
         @Override
         public void onPreExecute() {
@@ -155,6 +154,14 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
 
     };
 
+    private List<Action> mActions;
+    private Action mActionSelected;
+    private WishList mWishList;
+    private Person mPerson;
+    private FeedsAdapter mFeedsAdapter;
+
+    private GridView mGridView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,8 +179,12 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         mFeedsAdapter = new FeedsAdapter(getActivity(), mActions, this);
 
         mGridView = (GridView) view.findViewById(R.id.main_gridView);
+        mGridView.setEmptyView(view.findViewById(R.id.contacts_gridView_loading));
         mGridView.setNumColumns(1);
         mGridView.setAdapter(mFeedsAdapter);
+
+        final ImageView imageViewEmpty = (ImageView) view.findViewById(R.id.feed_imageView_empty);
+        imageViewEmpty.setOnClickListener(this);
     }
 
     @Override
@@ -183,6 +194,8 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     }
 
     private void updateFeeds() {
+        mGridView.setEmptyView(getView().findViewById(R.id.contacts_gridView_loading));
+
         mActions.clear();
         mFeedsAdapter.notifyDataSetChanged();
 
@@ -201,10 +214,12 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onExecute(List<Action> result) {
-        if (result != null) {
+        if (result != null && result.size() > 0) {
             mActions.addAll(result);
-            mFeedsAdapter.notifyDataSetChanged();
+        } else {
+            mGridView.setEmptyView(getView().findViewById(R.id.feed_linearLayout_empty));
         }
+        mFeedsAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -244,8 +259,22 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
                 openPopUp(view, action);
                 break;
 
+            case R.id.feed_imageView_empty:
+                Intent intent = new Intent(getActivity(), ContactsActivity.class);
+                intent.putExtra(User.EXTRA_ADD_CONTACTS, true);
+                startActivityForResult(intent, RQ_ADD_CONTACTS);
+                break;
+
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RQ_ADD_CONTACTS && resultCode == Activity.RESULT_OK) {
+            Toast.makeText(getActivity(), R.string.text_perfil_friends_circle_add_contacts, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -270,7 +299,7 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         boolean isShared = action.isuShare();
         if (!isShared) {
             int count = action.getSharesCount();
-            if (count > 0) {
+            if (count >= 0) {
                 action.setSharesCount(++count);
                 action.setuShare(true);
                 mFeedsAdapter.notifyDataSetChanged();
@@ -320,20 +349,20 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         Person person = this.mActionSelected.getFrom();
         ExcludeFriendModel model = new ExcludeFriendModel();
         model.setPerson(person);
-        Requester.executeAsync(model, this.mListenerExcludeBlock);
+        Requester.executeAsync(model, this.LISTENER_EXCLUDE_BLOCK);
     }
 
     private void cancelActivities() {
         Person person = this.mActionSelected.getFrom();
         BlockFriendModel model = new BlockFriendModel();
         model.setPerson(person);
-        Requester.executeAsync(model, this.mListenerExcludeBlock);
+        Requester.executeAsync(model, this.LISTENER_EXCLUDE_BLOCK);
     }
 
     private void report() {
         ActionReportModel model = new ActionReportModel();
         model.setAction(this.mActionSelected);
-        Requester.executeAsync(model, this.mListenerReport);
+        Requester.executeAsync(model, this.LISTENER_REPORT);
     }
 
     public static FeedsFragment newInstance(WishList wishList) {
@@ -342,8 +371,17 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         return f;
     }
 
-    private void setWishList(WishList wishList) {
+    public static FeedsFragment newInstance(Person person) {
+        FeedsFragment f = new FeedsFragment();
+        f.setPerson(person);
+        return f;
+    }
+
+    public void setWishList(WishList wishList) {
         this.mWishList = wishList;
     }
 
+    public void setPerson(Person person) {
+        this.mPerson = person;
+    }
 }

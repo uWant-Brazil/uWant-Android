@@ -36,7 +36,7 @@
                 android:layout_width="76dp"
                 android:layout_height="76dp"
                 android:id="@+id/drawer_imageView_picture"
-                android:src="@drawable/ic_semfoto"
+                android:src="@drawable/ic_contatos_semfoto"
                 android:layout_gravity="center_horizontal" />
 
             <ImageView
