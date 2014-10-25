@@ -1,7 +1,12 @@
 package br.com.uwant.utils;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
+import android.widget.DatePicker;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -48,4 +53,17 @@ public abstract class DateUtil {
     public static String format(Date dateHour, String pattern) {
         return new SimpleDateFormat(pattern).format(dateHour);
     }
+
+    public static DatePicker picker(Context context, DatePickerDialog.OnDateSetListener listener) {
+        Calendar now = Calendar.getInstance();
+        int year = now.get(Calendar.YEAR);
+        int month = now.get(Calendar.MONTH);
+        int day = now.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog dpd = new DatePickerDialog(context, listener, year, month, day);
+        dpd.show();
+
+        return dpd.getDatePicker();
+    }
+
 }

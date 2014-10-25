@@ -1,6 +1,7 @@
 package br.com.uwant.flow;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,13 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.apache.http.impl.cookie.DateUtils;
 
 import java.io.File;
 import java.text.ParseException;
@@ -42,26 +42,26 @@ import br.com.uwant.models.cloud.models.RegisterModel;
 import br.com.uwant.models.cloud.models.RegisterPictureModel;
 import br.com.uwant.models.cloud.models.SocialRegisterModel;
 import br.com.uwant.models.databases.UserDatabase;
-import br.com.uwant.models.watchers.DateWatcher;
 import br.com.uwant.utils.DateUtil;
 import br.com.uwant.utils.KeyboardUtil;
 import br.com.uwant.utils.PictureUtil;
 
-public class RegisterActivity extends ActionBarActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, IRequest.OnRequestListener<User> {
+public class RegisterActivity extends ActionBarActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, IRequest.OnRequestListener<User>, DatePickerDialog.OnDateSetListener {
 
     private static final int PICTURE_REQUEST_CODE = 9898;
     private static final int GALLERY_REQUEST_CODE = 9797;
 //    private static final String URL_FACEBOOK_PICTURE = "http://graph.facebook.com/%s/picture";
     private static final String TAG_REGISTER_CANCEL_DIALOG = "RegisterCancelTag";
 
+    private Calendar mBirthday;
     private File mPicturePath;
-    private User.Gender mGender;
+    private User.Gender mGender = Person.Gender.UNKNOWN;
 
     private EditText mEditTextLogin;
     private EditText mEditTextName;
     private EditText mEditTextMail;
     private EditText mEditTextPassword;
-    private EditText mEditTextBirthday;
+    private TextView mTextViewBirthday;
     private ImageView mImageViewPicture;
     private ImageView mImageViewPictureDetail;
     private RadioGroup mRadioGroupGender;
@@ -77,19 +77,19 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
         final Button buttonRegister = (Button) findViewById(R.id.register_button_register);
         buttonRegister.setOnClickListener(this);
+        mTextViewBirthday = (TextView) findViewById(R.id.register_editText_birthday);
+        mTextViewBirthday.setOnClickListener(this);
 
         mEditTextLogin = (EditText) findViewById(R.id.register_editText_login);
         mEditTextName = (EditText) findViewById(R.id.register_editText_name);
         mEditTextMail = (EditText) findViewById(R.id.register_editText_mail);
         mEditTextPassword = (EditText) findViewById(R.id.register_editText_password);
-        mEditTextBirthday = (EditText) findViewById(R.id.register_editText_birthday);
-        mEditTextBirthday.addTextChangedListener(new DateWatcher(mEditTextBirthday));
-        mEditTextBirthday.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mEditTextPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_DONE) {
-                    executeRegister();
+                    KeyboardUtil.hide(mEditTextPassword);
                     return true;
                 }
                 return false;
@@ -129,8 +129,8 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             }
 
             if (birthday != null) {
-                mEditTextBirthday.setText(DateUtils.formatDate(user.getBirthday(), "dd/MM/yyyy"));
-                mEditTextBirthday.setEnabled(false);
+                mTextViewBirthday.setText(DateUtil.format(user.getBirthday(), DateUtil.DATE_PATTERN));
+                mTextViewBirthday.setEnabled(false);
             }
 
             if (gender != null) {
@@ -175,6 +175,10 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
             case R.id.register_imageView_picture:
                 showPictureOptions();
+                break;
+
+            case R.id.register_editText_birthday:
+                DateUtil.picker(this, this);
                 break;
 
             default:
@@ -254,7 +258,6 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void executeRegister() {
-        KeyboardUtil.hide(mEditTextBirthday);
         KeyboardUtil.hide(mEditTextPassword);
         KeyboardUtil.hide(mEditTextMail);
         KeyboardUtil.hide(mEditTextName);
@@ -264,15 +267,15 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         String password = mEditTextPassword.getText().toString();
         String name = mEditTextName.getText().toString();
         String mail = mEditTextMail.getText().toString();
-        String birthday = mEditTextBirthday.getText().toString();
+        String birthday = mTextViewBirthday.getText().toString();
 
         if (login.isEmpty() || password.isEmpty() || name.isEmpty()
-                || mail.isEmpty() || birthday.isEmpty()) {
+                || mail.isEmpty() || birthday.isEmpty() || mGender == Person.Gender.UNKNOWN) {
             Toast.makeText(this, R.string.text_field_all_fields_correctly, Toast.LENGTH_LONG).show();
             return;
         }
 
-        Date date = null;
+        Date date;
         try {
             date = DateUtil.parse(birthday, DateUtil.DATE_PATTERN);
             easterEager(date);
@@ -421,4 +424,16 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
         Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        mBirthday = Calendar.getInstance();
+        mBirthday.set(Calendar.YEAR, year);
+        mBirthday.set(Calendar.MONTH, monthOfYear);
+        mBirthday.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        String birthday = DateUtil.format(mBirthday.getTime(), DateUtil.DATE_PATTERN);
+        mTextViewBirthday.setText(birthday);
+    }
+
 }

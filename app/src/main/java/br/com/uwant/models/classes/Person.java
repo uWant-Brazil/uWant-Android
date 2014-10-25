@@ -13,7 +13,7 @@ public class Person implements Serializable {
     public static final String EXTRA = "extra_person";
 
     public enum Gender {
-        FEMALE, MALE;
+        FEMALE, MALE, UNKNOWN;
     }
 
     public enum FriendshipLevel {
