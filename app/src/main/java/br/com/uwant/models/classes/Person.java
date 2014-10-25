@@ -25,6 +25,7 @@ public class Person implements Serializable {
     private String name;
     private String login;
     private String mail;
+    private String facebookId;
     private Date birthday;
     private Gender gender;
     private Multimedia picture;
@@ -42,6 +43,7 @@ public class Person implements Serializable {
     public Person(GraphUser friend) {
         final String name = ((String) friend.getProperty("first_name")) + " " + ((String) friend.getProperty("last_name"));
         final String mail = (String) friend.getProperty("email");
+        final String id = (String) friend.getProperty("id");
         JSONObject go = (JSONObject) friend.getProperty("picture");
 
         if (go != null) {
@@ -61,6 +63,7 @@ public class Person implements Serializable {
 
         this.name = name;
         this.mail = mail;
+        this.facebookId = id;
     }
 
     public long getId() {
@@ -129,5 +132,17 @@ public class Person implements Serializable {
 
     public void setFriendshipLevel(FriendshipLevel friendshipLevel) {
         this.friendshipLevel = friendshipLevel;
+    }
+
+    public void setFriend(boolean friend) {
+        this.friend = friend;
+    }
+
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
     }
 }

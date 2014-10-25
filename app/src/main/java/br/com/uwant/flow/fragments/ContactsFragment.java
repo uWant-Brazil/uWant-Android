@@ -56,10 +56,7 @@ public abstract class ContactsFragment extends Fragment implements AdapterView.O
     @Override
     public void onResume() {
         super.onResume();
-        if (!this.mIsLoading && this.mPersons.size() == 0) {
-            this.mIsLoading = true;
-            this.loadAsync();
-        }
+        this.loadAsync();
     }
 
     private void loadAsync() {
@@ -67,7 +64,8 @@ public abstract class ContactsFragment extends Fragment implements AdapterView.O
         if (baseAdapter != null) {
             mGridView.setAdapter(baseAdapter);
 
-            if (this.mPersons != null && this.mPersons.size() == 0) {
+            if (!this.mIsLoading && this.mPersons != null && this.mPersons.size() == 0) {
+                this.mIsLoading = true;
                 this.mTask = new AsyncTask<Void, Void, Void>() {
 
                     @Override
@@ -104,7 +102,6 @@ public abstract class ContactsFragment extends Fragment implements AdapterView.O
                 }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             } else {
                 if (mPersons.size() > 0) {
-                    mGridView.setAdapter(baseAdapter);
                     baseAdapter.notifyDataSetChanged();
                     mIsLoading = false;
                 } else {
@@ -144,15 +141,14 @@ public abstract class ContactsFragment extends Fragment implements AdapterView.O
         return this.mPersons != null && this.mPersons.size() > 0 && !mIsLoading;
     }
 
-    public List<String> getCheckedContacts() {
-        List<String> contacts = new ArrayList<String>(this.mPersons.size() / 2);
+    public List<Person> getCheckedContacts() {
+        List<Person> contacts = new ArrayList<Person>(this.mPersons.size() / 2);
 
         SparseBooleanArray sba = this.mGridView.getCheckedItemPositions();
-        for (int i = 0;i < this.mPersons.size();i++) {
+        for (int i = 1;i <= this.mPersons.size();i++) {
             if (sba.get(i, false)) {
-                Person person = this.mPersons.get(i);
-                String email = person.getMail();
-                contacts.add(email);
+                Person person = this.mPersons.get(i - 1);
+                contacts.add(person);
             }
         }
 

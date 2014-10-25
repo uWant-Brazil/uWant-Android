@@ -4,8 +4,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.cloud.AbstractJSONRequestModel;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
@@ -16,20 +18,28 @@ import br.com.uwant.models.cloud.Requester;
  */
 public class ContactsModel extends AbstractJSONRequestModel {
 
-    private List<String> emails;
+    private List<Person> persons;
 
-    public List<String> getEmails() {
-        return emails;
+    public List<Person> getPersons() {
+        return persons;
     }
 
-    public void setEmails(List<String> emails) {
-        this.emails = emails;
+    public void setPersons(List<Person> persons) {
+        this.persons = persons;
     }
 
     @Override
     protected JsonObject toJson() {
-        TypeToken<List<String>> token = new TypeToken<List<String>>() {};
-        JsonElement jsonElement = super.GSON.toJsonTree(this.emails, token.getType());
+        List<JsonObject> jsonContacts = new ArrayList<JsonObject>();
+        for (Person p : persons) {
+            JsonObject json = new JsonObject();
+            json.addProperty(Requester.ParameterKey.MAIL, p.getMail());
+            json.addProperty(Requester.ParameterKey.FACEBOOK_ID, p.getFacebookId());
+            jsonContacts.add(json);
+        }
+
+        TypeToken<List<JsonObject>> token = new TypeToken<List<JsonObject>>() {};
+        JsonElement jsonElement = super.GSON.toJsonTree(jsonContacts, token.getType());
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.add(Requester.ParameterKey.CONTACTS, jsonElement);

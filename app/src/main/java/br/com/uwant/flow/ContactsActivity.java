@@ -156,14 +156,14 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
 
     private void sendContacts() {
         boolean canSkip = false;
-        List<String> contacts = new ArrayList<String>();
+        List<Person> contacts = new ArrayList<Person>();
         for (int i = 0;i < TABS.length;i++) {
             Fragment f = mAdapter.getItem(i);
             if (f instanceof ContactsFragment) {
                 ContactsFragment cf = (ContactsFragment) f;
                 if (cf.hasPersons()) {
                     canSkip = true;
-                    List<String> emails = cf.getCheckedContacts();
+                    List<Person> emails = cf.getCheckedContacts();
                     contacts.addAll(emails);
                 }
             }
@@ -172,7 +172,7 @@ public class ContactsActivity extends ActionBarActivity implements View.OnClickL
         if (canSkip) {
             if (contacts != null && contacts.size() > 0) {
                 ContactsModel model = new ContactsModel();
-                model.setEmails(contacts);
+                model.setPersons(contacts);
 
                 Requester.executeAsync(model);
             }

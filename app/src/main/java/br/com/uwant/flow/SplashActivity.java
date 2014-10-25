@@ -27,7 +27,7 @@ public class SplashActivity extends Activity implements Runnable {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Crashlytics.start(this);
+        //Crashlytics.start(this);
         super.onCreate(savedInstanceState);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
                 .diskCacheExtraOptions(480, 800, null)
