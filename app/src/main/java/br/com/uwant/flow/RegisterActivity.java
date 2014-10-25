@@ -3,6 +3,7 @@ package br.com.uwant.flow;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
@@ -38,6 +40,7 @@ import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
+import br.com.uwant.models.cloud.helpers.UWFileBodyListener;
 import br.com.uwant.models.cloud.models.RegisterModel;
 import br.com.uwant.models.cloud.models.RegisterPictureModel;
 import br.com.uwant.models.cloud.models.SocialRegisterModel;
@@ -46,8 +49,9 @@ import br.com.uwant.utils.DateUtil;
 import br.com.uwant.utils.KeyboardUtil;
 import br.com.uwant.utils.PictureUtil;
 
-public class RegisterActivity extends ActionBarActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, IRequest.OnRequestListener<User>, DatePickerDialog.OnDateSetListener {
+public class RegisterActivity extends ActionBarActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, IRequest.OnRequestListener<User>, DatePickerDialog.OnDateSetListener,UWFileBodyListener {
 
+    private static final int NOTIFICATION_ID = 0x613;
     private static final int PICTURE_REQUEST_CODE = 9898;
     private static final int GALLERY_REQUEST_CODE = 9797;
 //    private static final String URL_FACEBOOK_PICTURE = "http://graph.facebook.com/%s/picture";
@@ -66,6 +70,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     private ImageView mImageViewPictureDetail;
     private RadioGroup mRadioGroupGender;
     private ProgressFragmentDialog mProgressDialog;
+    private NotificationCompat.Builder mBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -377,6 +382,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
             RegisterPictureModel model = new RegisterPictureModel();
             model.setUser(result);
+            model.setListener(this);
             Requester.executeAsync(model, new IRequest.OnRequestListener<Multimedia>() {
 
                 @Override
@@ -423,6 +429,33 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         }
 
         Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void preWrite(int totalAmount) {
+        mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setAutoCancel(false)
+                        .setSmallIcon(R.drawable.ic_action_uwant)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setProgress(totalAmount, 0, false)
+                        .setContentText(getString(R.string.text_sending_picture));
+
+        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
+    }
+
+    @Override
+    public void written(int totalBytes, int amountOfBytes) {
+        mBuilder.setProgress(totalBytes, amountOfBytes, false);
+
+        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (totalBytes > amountOfBytes) {
+            mNotifyMgr.notify(NOTIFICATION_ID, mBuilder.build());
+        } else {
+            mNotifyMgr.cancel(NOTIFICATION_ID);
+            mBuilder = null;
+        }
     }
 
     @Override

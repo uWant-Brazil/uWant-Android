@@ -308,6 +308,11 @@ public abstract class AbstractRequest<K> {
         }
 
         @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
         protected void onPostExecute(K result) {
             super.onPostExecute(result);
             if (mListener != null) {

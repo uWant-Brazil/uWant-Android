@@ -15,13 +15,20 @@ import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.AbstractMultipartDataModel;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
+import br.com.uwant.models.cloud.helpers.UWFileBody;
+import br.com.uwant.models.cloud.helpers.UWFileBodyListener;
 
 public class RegisterPictureModel extends AbstractMultipartDataModel {
 
     private User user;
+    private UWFileBodyListener listener;
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setListener(UWFileBodyListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -38,7 +45,7 @@ public class RegisterPictureModel extends AbstractMultipartDataModel {
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.addPart(Requester.ParameterKey.MULTIMEDIA_USER_PICTURE,
                 new StringBody(String.valueOf(user.getId()), ContentType.APPLICATION_FORM_URLENCODED));
-        builder.addPart(Requester.ParameterKey.MULTIMEDIA, new FileBody(new File(((Uri)picture.getUri()).getPath()), ContentType.MULTIPART_FORM_DATA, now + "-U-" + user.getId() + ".jpg"));
+        builder.addPart(Requester.ParameterKey.MULTIMEDIA, new UWFileBody(new File(picture.getUri().getPath()), ContentType.MULTIPART_FORM_DATA, now + "-U-" + user.getId() + ".jpg", this.listener));
 
         return builder;
     }
