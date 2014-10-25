@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="15dp"
@@ -10,79 +9,81 @@
     android:layout_marginBottom="5dp"
     android:background="@color/GRAY_BACKGROUND">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:hint="Fale sobre os seus desejos"
-        android:gravity="left|top"
-        style="@style/UWEditText"
-        android:ems="10"
-        android:imeOptions="actionNext|actionDone"
-        android:id="@+id/wishList_editText_comment"
-        android:layout_weight="1" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableRight="@drawable/ic_post_campo_loja"
-        android:id="@+id/wishList_editText_store"
-        android:hint="Nome da loja"
-        style="@style/UWEditText"
-        android:singleLine="true"
-        android:lines="1"
-        android:maxLines="1"
-        android:imeOptions="actionNext|actionDone"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Lista de desejos"
-        android:drawableRight="@drawable/ic_post_campo_lista"
-        android:singleLine="true"
-        android:lines="1"
-        android:maxLines="1"
-        android:imeOptions="actionNext|actionDone"
-        android:id="@+id/wishList_editText_list"
-        style="@style/UWEditText" />
-
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        style="@style/UWEditText"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
-        <Switch
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/wishList_switch_share"
-            android:thumb="@drawable/uwant_switch_inner_holo_light"
-            android:track="@drawable/uwant_switch_track_holo_light"
-            android:checked="false"
-            android:textColor="@color/GRAY_TEXT"
-            android:hint="Compartilhar Facebook"
-            android:textSize="18sp" />
-    </LinearLayout>
+            android:inputType="textMultiLine"
+            android:hint="Fale sobre os seus desejos"
+            android:gravity="left|top"
+            style="@style/UWEditText"
+            android:ems="10"
+            android:id="@+id/wishList_editText_comment"
+            android:layout_weight="1" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1">
-
-        <org.lucasr.twowayview.TwoWayView
-            android:id="@+id/wishList_twoWayView"
+        <EditText
             android:layout_width="match_parent"
-            android:layout_height="175dp"
-            android:visibility="invisible"
-            android:drawSelectorOnTop="false"
-            android:layout_weight="1"/>
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/ic_post_campo_loja"
+            android:id="@+id/wishList_editText_store"
+            android:hint="Nome da loja"
+            style="@style/UWEditText"
+            android:lines="1"
+            android:maxLines="1"
+            android:imeOptions="actionNext|actionDone"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
 
-        <!--<br.com.uwant.models.views.TwoWayView-->
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Lista de desejos"
+            android:drawableRight="@drawable/ic_post_campo_lista"
+            android:id="@+id/wishList_editText_list"
+            android:lines="1"
+            android:maxLines="1"
+            android:imeOptions="actionNext|actionDone"
+            style="@style/UWEditText" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            style="@style/UWEditText"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp">
+
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/wishList_switch_share"
+                android:thumb="@drawable/uwant_switch_inner_holo_light"
+                android:track="@drawable/uwant_switch_track_holo_light"
+                android:checked="false"
+                android:textColor="@color/GRAY_TEXT"
+                android:hint="Compartilhar Facebook"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1">
+
+            <org.lucasr.twowayview.TwoWayView
+                android:id="@+id/wishList_twoWayView"
+                android:layout_width="match_parent"
+                android:layout_height="175dp"
+                android:visibility="invisible"
+                android:drawSelectorOnTop="false"
+                android:layout_weight="1"/>
+
+            <!--<br.com.uwant.models.views.TwoWayView-->
             <!--android:id="@+id/wishList_twoWayView"-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="175dp"-->
@@ -90,53 +91,54 @@
             <!--android:drawSelectorOnTop="false"-->
             <!--android:layout_weight="1"/>-->
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:id="@+id/wishList_linearLayout_present"
+                style="@style/UWEditText">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_post_presente"
+                    android:layout_gravity="center" />
+            </LinearLayout>
+        </FrameLayout>
+
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:id="@+id/wishList_linearLayout_present"
-            style="@style/UWEditText">
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_post_presente"
-                android:layout_gravity="center" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/wishList_imageButton_picture"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:src="@drawable/wishlist_picture_selector" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/wishList_imageButton_gallery"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:src="@drawable/wishlist_gallery_selector" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/wishList_imageButton_link"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:src="@drawable/wishlist_link_selector" />
         </LinearLayout>
-    </FrameLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp">
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/wishList_imageButton_picture"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:src="@drawable/wishlist_picture_selector" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/wishList_imageButton_gallery"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:src="@drawable/wishlist_gallery_selector" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/wishList_imageButton_link"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:src="@drawable/wishlist_link_selector" />
     </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

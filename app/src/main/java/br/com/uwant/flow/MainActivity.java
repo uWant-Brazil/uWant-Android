@@ -116,24 +116,31 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             mTextViewUserName.setText(name);
         }
 
-        Multimedia picture = user.getPicture();
+        final Multimedia picture = user.getPicture();
         if (picture != null) {
+            Bitmap bitmap = picture.getBitmap();
             String url = picture.getUrl();
+            if (bitmap != null) {
+                mImageViewPicture.setImageBitmap(bitmap);
+                mImageViewPictureDetail.setVisibility(View.VISIBLE);
+            } else if (url != null && !url.isEmpty()) {
+                ImageLoader imageLoader = ImageLoader.getInstance();
+                imageLoader.loadImage(url, new SimpleImageLoadingListener() {
 
-            ImageLoader imageLoader = ImageLoader.getInstance();
-            imageLoader.loadImage(url, new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        loadedImage = PictureUtil.cropToFit(loadedImage);
+                        loadedImage = PictureUtil.scale(loadedImage, mImageViewPicture);
+                        loadedImage = PictureUtil.circle(loadedImage);
 
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    loadedImage = PictureUtil.cropToFit(loadedImage);
-                    loadedImage = PictureUtil.scale(loadedImage, mImageViewPicture);
-                    loadedImage = PictureUtil.circle(loadedImage);
+                        mImageViewPicture.setImageBitmap(loadedImage);
+                        mImageViewPictureDetail.setVisibility(View.VISIBLE);
 
-                    mImageViewPicture.setImageBitmap(loadedImage);
-                    mImageViewPictureDetail.setVisibility(View.VISIBLE);
-                }
+                        picture.setBitmap(loadedImage);
+                    }
 
-            });
+                });
+            }
         }
 
         mDrawerAdapter = new DrawerAdapter(this);
@@ -281,6 +288,8 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         if (it != null) {
             startActivity(it);
         }
+
+        mDrawerLayout.closeDrawer(mDrawerList);
     }
 
     private void askForLogoff() {
@@ -319,6 +328,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
                 UserDatabase db = new UserDatabase(MainActivity.this);
                 db.removeAll();
+                User.clearInstance();
 
                 Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
                 startActivity(intent);

@@ -101,7 +101,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
 
                                             @Override
                                             public void onCompleted(List<GraphUser> users, Response response) {
-                                                if (response.getError() != null) {
+                                                if (users != null && response.getError() == null) {
                                                     for (GraphUser friend : users) {
                                                         Person person = new Person(friend);
                                                         persons.add(person);

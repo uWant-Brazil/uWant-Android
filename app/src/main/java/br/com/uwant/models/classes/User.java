@@ -15,6 +15,19 @@ public class User extends Person implements Serializable {
         return INSTANCE;
     }
 
+    public static void clearInstance() {
+        INSTANCE.setId(-1);
+        INSTANCE.setLogin(null);
+        INSTANCE.setMail(null);
+        INSTANCE.setName(null);
+        INSTANCE.setGender(null);
+        INSTANCE.setPicture(null);
+        INSTANCE.setToken(null);
+        INSTANCE.setBirthday(null);
+        INSTANCE.setFacebookToken(null);
+        INSTANCE.setFriendshipLevel(null);
+    }
+
     public String getToken() {
         return token;
     }
@@ -43,4 +56,5 @@ public class User extends Person implements Serializable {
         instance.setMail(user.getMail());
         instance.setId(user.getId());
     }
+
 }

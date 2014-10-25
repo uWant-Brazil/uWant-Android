@@ -70,5 +70,7 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_report_activity">A atividade foi reportada com sucesso.</string>
     <string name="text_sending_picture">Enviando foto...</string>
     <string name="text_sending_pictures">Enviando fotos...</string>
+    <string name="text_link_facebook">Sua conta foi vinculada com sucesso.</string>
+    <string name="text_unlink_facebook">Sua conta foi desvinculada com sucesso.</string>
 
 </resources>

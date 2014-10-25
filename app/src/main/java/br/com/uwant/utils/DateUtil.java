@@ -41,7 +41,8 @@ public abstract class DateUtil {
      * @throws java.text.ParseException
      */
     public static Date parse(String dateHour, String pattern) throws ParseException {
-        return new SimpleDateFormat(pattern).parse(dateHour);
+        if (dateHour == null) return null;
+        else return new SimpleDateFormat(pattern).parse(dateHour);
     }
 
     /**
@@ -51,7 +52,8 @@ public abstract class DateUtil {
      * @return formattedDate
      */
     public static String format(Date dateHour, String pattern) {
-        return new SimpleDateFormat(pattern).format(dateHour);
+        if (dateHour == null) return null;
+        else return new SimpleDateFormat(pattern).format(dateHour);
     }
 
     public static DatePicker picker(Context context, DatePickerDialog.OnDateSetListener listener) {

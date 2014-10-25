@@ -22,8 +22,6 @@ public class SocialLinkRequest extends AbstractRequest<Boolean> implements IRequ
      */
     private static final String ROUTE = "/mobile/social/link";
 
-    private SocialLinkModel mModel;
-
     public SocialLinkRequest() {
         super();
     }
@@ -34,7 +32,6 @@ public class SocialLinkRequest extends AbstractRequest<Boolean> implements IRequ
 
     @Override
     public void executeAsync(SocialLinkModel data, OnRequestListener listener) {
-        this.mModel = data;
         execute(data, listener);
     }
 
@@ -56,12 +53,6 @@ public class SocialLinkRequest extends AbstractRequest<Boolean> implements IRequ
             JsonObject jsonObject = jsonElement.getAsJsonObject();
 
             if (jsonObject.has(Requester.ParameterKey.LINKED)) {
-                User user = User.getInstance();
-                user.setFacebookToken(mModel.getToken());
-
-                UserDatabase udb = new UserDatabase(getContext());
-                udb.update(user);
-
                 return jsonObject.get(Requester.ParameterKey.LINKED).getAsBoolean();
             }
         }

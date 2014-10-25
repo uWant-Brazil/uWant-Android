@@ -30,6 +30,8 @@ import android.preference.PreferenceFragment;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.facebook.Request;
+import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
@@ -41,11 +43,13 @@ import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.models.classes.SocialProvider;
+import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.ExcludeAccountModel;
 import br.com.uwant.models.cloud.models.SocialLinkModel;
+import br.com.uwant.models.databases.UserDatabase;
 
 public class ConfigurationsActivity extends PreferenceActivity {
 
@@ -74,11 +78,12 @@ public class ConfigurationsActivity extends PreferenceActivity {
                             //final String name = graphUser.getName();
                             //final String birthday = graphUser.getBirthday();
                             final String mail = (String) graphUser.getProperty("email");
+                            final String token = session.getAccessToken();
 
                             final SocialLinkModel model = new SocialLinkModel();
                             model.setLogin(login == null ? mail : login);
                             model.setProvider(SocialProvider.FACEBOOK);
-                            model.setToken(session.getAccessToken());
+                            model.setToken(token);
 
                             Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
 
@@ -88,19 +93,8 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
                                 @Override
                                 public void onExecute(Boolean linked) {
-                                    try {
-                                        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                                            mProgressDialog.dismiss();
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    if (linked) {
-                                        Toast.makeText(ConfigurationsActivity.this, "Sua conta foi vinculada com sucesso.", Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Toast.makeText(ConfigurationsActivity.this, "Sua conta foi desvinculada com sucesso.", Toast.LENGTH_LONG).show();
-                                    }
+                                    dismissProgress();
+                                    updateUserFacebookToken(linked, token);
                                 }
 
                                 @Override
@@ -121,10 +115,36 @@ public class ConfigurationsActivity extends PreferenceActivity {
                     }
 
                 }).executeAsync();
+            } else if (session.isClosed() && mProgressDialog.isShowing()) {
+                dismissProgress();
             }
         }
 
     };
+
+    private void updateUserFacebookToken(Boolean linked, String token) {
+        User user = User.getInstance();
+        if (linked) {
+            user.setFacebookToken(token);
+            Toast.makeText(this, R.string.text_link_facebook, Toast.LENGTH_LONG).show();
+        } else {
+            user.setFacebookToken(null);
+            Toast.makeText(this, R.string.text_unlink_facebook, Toast.LENGTH_LONG).show();
+        }
+
+        UserDatabase udb = new UserDatabase(this);
+        udb.update(user);
+    }
+
+    private void dismissProgress() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            try {
+                mProgressDialog.dismiss();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     private ProgressDialog mProgressDialog;
     private Method mHeaders = null;
@@ -186,13 +206,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
                     @Override
                     public void onExecute(Boolean result) {
-                        try {
-                            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                                mProgressDialog.dismiss();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        dismissProgress();
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(ConfigurationsActivity.this)
                                 .setTitle(R.string.app_name)
@@ -215,13 +229,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
                     @Override
                     public void onError(RequestError error) {
-                        try {
-                            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                                mProgressDialog.dismiss();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        dismissProgress();
                     }
 
                 });
@@ -340,10 +348,10 @@ public class ConfigurationsActivity extends PreferenceActivity {
             @Override
             public void call(final Session session, SessionState state, Exception exception) {
                 if (session.isOpened()) {
-                    com.facebook.Request.newMeRequest(session, new com.facebook.Request.GraphUserCallback() {
+                    Request.newMeRequest(session, new Request.GraphUserCallback() {
 
                         @Override
-                        public void onCompleted(final GraphUser graphUser, com.facebook.Response response) {
+                        public void onCompleted(final GraphUser graphUser, Response response) {
                             if (graphUser != null) {
                                 //final String id = graphUser.getId();
 
@@ -351,11 +359,12 @@ public class ConfigurationsActivity extends PreferenceActivity {
                                 //final String name = graphUser.getName();
                                 //final String birthday = graphUser.getBirthday();
                                 final String mail = (String) graphUser.getProperty("email");
+                                final String token = session.getAccessToken();
 
                                 final SocialLinkModel model = new SocialLinkModel();
                                 model.setLogin(login == null ? mail : login);
                                 model.setProvider(SocialProvider.FACEBOOK);
-                                model.setToken(session.getAccessToken());
+                                model.setToken(token);
 
                                 Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
 
@@ -365,51 +374,54 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
                                     @Override
                                     public void onExecute(Boolean linked) {
-                                        if (linked) {
-                                            try {
-                                                if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                                                    mProgressDialog.dismiss();
-                                                }
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-
-                                            Toast.makeText(getActivity(), "Sua conta foi vinculada com sucesso.", Toast.LENGTH_LONG).show();
-                                        } else {
-                                            Toast.makeText(getActivity(), "Sua conta foi desvinculada com sucesso.", Toast.LENGTH_LONG).show();
-                                        }
+                                        dismissProgress();
+                                        updateUserFacebookToken(linked, token);
                                     }
 
                                     @Override
                                     public void onError(RequestError error) {
-                                        try {
-                                            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                                                mProgressDialog.dismiss();
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
+                                        dismissProgress();
 
                                         Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
                                     }
 
                                 });
                             } else {
-                                try {
-                                    if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                                        mProgressDialog.dismiss();
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                dismissProgress();
                             }
                         }
 
                     }).executeAsync();
+                } else if (session.isClosed()) {
+                    dismissProgress();
                 }
             }
 
         };
+
+        private void dismissProgress() {
+            try {
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void updateUserFacebookToken(Boolean linked, String token) {
+            User user = User.getInstance();
+            if (linked) {
+                user.setFacebookToken(token);
+                Toast.makeText(getActivity(), R.string.text_link_facebook, Toast.LENGTH_LONG).show();
+            } else {
+                user.setFacebookToken(null);
+                Toast.makeText(getActivity(), R.string.text_unlink_facebook, Toast.LENGTH_LONG).show();
+            }
+
+            UserDatabase udb = new UserDatabase(getActivity());
+            udb.update(user);
+        }
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -437,13 +449,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
                         @Override
                         public void onExecute(Boolean result) {
-                            try {
-                                if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                                    mProgressDialog.dismiss();
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            dismissProgress();
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                                     .setTitle(R.string.app_name)
@@ -466,13 +472,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
                         @Override
                         public void onError(RequestError error) {
-                            try {
-                                if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                                    mProgressDialog.dismiss();
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            dismissProgress();
                         }
 
                     });
