@@ -43,11 +43,13 @@ import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.models.classes.SocialProvider;
+import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.ExcludeAccountModel;
 import br.com.uwant.models.cloud.models.SocialLinkModel;
+import br.com.uwant.models.databases.UserDatabase;
 
 public class ConfigurationsActivity extends PreferenceActivity {
 
@@ -76,11 +78,12 @@ public class ConfigurationsActivity extends PreferenceActivity {
                             //final String name = graphUser.getName();
                             //final String birthday = graphUser.getBirthday();
                             final String mail = (String) graphUser.getProperty("email");
+                            final String token = session.getAccessToken();
 
                             final SocialLinkModel model = new SocialLinkModel();
                             model.setLogin(login == null ? mail : login);
                             model.setProvider(SocialProvider.FACEBOOK);
-                            model.setToken(session.getAccessToken());
+                            model.setToken(token);
 
                             Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
 
@@ -90,19 +93,8 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
                                 @Override
                                 public void onExecute(Boolean linked) {
-                                    try {
-                                        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                                            mProgressDialog.dismiss();
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    if (linked) {
-                                        Toast.makeText(ConfigurationsActivity.this, R.string.text_link_facebook, Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Toast.makeText(ConfigurationsActivity.this, R.string.text_unlink_facebook, Toast.LENGTH_LONG).show();
-                                    }
+                                    dismissProgress();
+                                    updateUserFacebookToken(linked, token);
                                 }
 
                                 @Override
@@ -129,6 +121,20 @@ public class ConfigurationsActivity extends PreferenceActivity {
         }
 
     };
+
+    private void updateUserFacebookToken(Boolean linked, String token) {
+        User user = User.getInstance();
+        if (linked) {
+            user.setFacebookToken(token);
+            Toast.makeText(this, R.string.text_link_facebook, Toast.LENGTH_LONG).show();
+        } else {
+            user.setFacebookToken(null);
+            Toast.makeText(this, R.string.text_unlink_facebook, Toast.LENGTH_LONG).show();
+        }
+
+        UserDatabase udb = new UserDatabase(this);
+        udb.update(user);
+    }
 
     private void dismissProgress() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
@@ -353,11 +359,12 @@ public class ConfigurationsActivity extends PreferenceActivity {
                                 //final String name = graphUser.getName();
                                 //final String birthday = graphUser.getBirthday();
                                 final String mail = (String) graphUser.getProperty("email");
+                                final String token = session.getAccessToken();
 
                                 final SocialLinkModel model = new SocialLinkModel();
                                 model.setLogin(login == null ? mail : login);
                                 model.setProvider(SocialProvider.FACEBOOK);
-                                model.setToken(session.getAccessToken());
+                                model.setToken(token);
 
                                 Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
 
@@ -367,13 +374,8 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
                                     @Override
                                     public void onExecute(Boolean linked) {
-                                        if (linked) {
-                                            dismissProgress();
-
-                                            Toast.makeText(getActivity(), R.string.text_link_facebook, Toast.LENGTH_LONG).show();
-                                        } else {
-                                            Toast.makeText(getActivity(), R.string.text_unlink_facebook, Toast.LENGTH_LONG).show();
-                                        }
+                                        dismissProgress();
+                                        updateUserFacebookToken(linked, token);
                                     }
 
                                     @Override
@@ -405,6 +407,20 @@ public class ConfigurationsActivity extends PreferenceActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        private void updateUserFacebookToken(Boolean linked, String token) {
+            User user = User.getInstance();
+            if (linked) {
+                user.setFacebookToken(token);
+                Toast.makeText(getActivity(), R.string.text_link_facebook, Toast.LENGTH_LONG).show();
+            } else {
+                user.setFacebookToken(null);
+                Toast.makeText(getActivity(), R.string.text_unlink_facebook, Toast.LENGTH_LONG).show();
+            }
+
+            UserDatabase udb = new UserDatabase(getActivity());
+            udb.update(user);
         }
 
         @Override
