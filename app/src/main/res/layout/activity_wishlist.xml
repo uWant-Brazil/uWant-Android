@@ -18,6 +18,7 @@
         android:gravity="left|top"
         style="@style/UWEditText"
         android:ems="10"
+        android:imeOptions="actionNext|actionDone"
         android:id="@+id/wishList_editText_comment"
         android:layout_weight="1" />
 
@@ -28,6 +29,10 @@
         android:id="@+id/wishList_editText_store"
         android:hint="Nome da loja"
         style="@style/UWEditText"
+        android:singleLine="true"
+        android:lines="1"
+        android:maxLines="1"
+        android:imeOptions="actionNext|actionDone"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp" />
 
@@ -36,6 +41,10 @@
         android:layout_height="wrap_content"
         android:hint="Lista de desejos"
         android:drawableRight="@drawable/ic_post_campo_lista"
+        android:singleLine="true"
+        android:lines="1"
+        android:maxLines="1"
+        android:imeOptions="actionNext|actionDone"
         android:id="@+id/wishList_editText_list"
         style="@style/UWEditText" />
 

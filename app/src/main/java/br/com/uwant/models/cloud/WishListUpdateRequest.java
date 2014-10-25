@@ -17,7 +17,7 @@ import br.com.uwant.models.cloud.models.WishListUpdateModel;
 /**
  * Classe de requisição responsável por configurar as informações da chamada ao WS.
  */
-public class WishListUpdateRequest extends AbstractRequest<HashMap<Integer, String>> implements IRequest<WishListUpdateModel, HashMap<Integer, String>> {
+public class WishListUpdateRequest extends AbstractRequest<List<Product>> implements IRequest<WishListUpdateModel, List<Product>> {
 
     /**
      * Route da requisição.
@@ -43,31 +43,32 @@ public class WishListUpdateRequest extends AbstractRequest<HashMap<Integer, Stri
     }
 
     @Override
-    protected HashMap<Integer, String> parse(String response) {
+    protected List<Product> parse(String response) {
         JsonParser jsonParser = new JsonParser();
         JsonElement jsonElement = jsonParser.parse(response);
-//        if (jsonElement.isJsonObject()) {
-//            JsonObject jsonObject = jsonElement.getAsJsonObject();
-//            if (jsonObject.has(Requester.ParameterKey.PRODUCTS)) {
-//                JsonElement jsonWishLists = jsonObject.get(Requester.ParameterKey.PRODUCTS);
-//                if (jsonWishLists.isJsonObject()) {
-//                    JsonObject arrayWishLists = jsonWishLists.getAsJsonObject();
-//                    for (int i = 0;i < mModel.getProducts().size();i++) {
-//                        if (arrayWishLists.has(String.valueOf(i))) {
-//                            long productId = arrayWishLists.get(String.valueOf(i)).getAsLong();
-//                            Product product = mModel.getProducts().get(i);
-//                            product.setId(productId);
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        List<Product> produtosInseridos = mModel.getmUpdateProducts().get(WishListUpdateModel.Type.INSERT);
+        if (jsonElement.isJsonObject()) {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            if (jsonObject.has(Requester.ParameterKey.PRODUCTS)) {
+                JsonElement jsonWishLists = jsonObject.get(Requester.ParameterKey.PRODUCTS);
+                if (jsonWishLists.isJsonObject()) {
+                    JsonObject arrayWishLists = jsonWishLists.getAsJsonObject();
+                    for (int i = 0;i < produtosInseridos.size();i++) {
+                        if (arrayWishLists.has(String.valueOf(i))) {
+                            long productId = arrayWishLists.get(String.valueOf(i)).getAsLong();
+                            Product product = produtosInseridos.get(i);
+                            product.setId(productId);
+                        }
+                    }
+                }
+            }
+        }
 
-        return null;
+        return produtosInseridos;
     }
 
     @Override
-    protected HashMap<Integer, String> debugParse() {
+    protected List<Product> debugParse() {
         int productsSize = (int)(Math.random() * 15);
         List<Product> products = new ArrayList<Product>(productsSize + 5);
         for (int i = 0;i < productsSize;i++) {
