@@ -61,7 +61,7 @@
     <string name="text_add_wishes">Add wishes</string>
     <string name="text_wishlist_created">The wish list has been create successfully.</string>
     <string name="text_ancient_easter_eager">An ancient was detected, congratulations master Yoda!</string>
-    <string name="text_exclude_account_success">Your account has been unblocked right now.</string>
+    <string name="text_exclude_account_success">Your account has been blocked right now.</string>
     <string name="text_configurations_facebook_title">Add/Remove Facebook</string>
     <string name="text_configurations_facebook_summary">You can add or remove your Facebook account from uWant anitime you want.</string>
     <string name="text_see_perfil">Open perfil</string>
@@ -73,5 +73,7 @@
     <string name="text_sending_pictures">Enviando fotos...</string>
     <string name="text_feed_empty">Você ainda não tem notificações, pressione a imagem e adicione amigos!</string>
     <string name="text_empty_friends">Você ainda não tem amigos no seu círculo, pressione a imagem e adicione-os do seus contatos!</string>
+    <string name="text_link_facebook">Sua conta foi vinculada com sucesso.</string>
+    <string name="text_unlink_facebook">Sua conta foi desvinculada com sucesso.</string>
 
 </resources>
