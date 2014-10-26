@@ -86,6 +86,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, Context, IRequest> {
                 request = new ActionCommentsRequest();
                 break;
 
+            case ACTION_COMMENT:
+                request = new ActionSendCommentRequest();
+                break;
+
             case ACTION_REPORT:
                 request = new ActionReportRequest();
                 break;

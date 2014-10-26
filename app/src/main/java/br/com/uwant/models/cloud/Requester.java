@@ -69,6 +69,8 @@ public abstract class Requester {
         public static final String FRIENDSHIP_LEVEL = "friendshipLevel";
         public static final String PRODUCTS_REMOVED = "productsRemoved";
         public static final String FACEBOOK_ID = "facebookId";
+        public static final String COMMENT = "comment";
+        public static final String ACTION = "action";
     }
 
     /**

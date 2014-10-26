@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -39,7 +40,7 @@ import br.com.uwant.models.cloud.models.ShareModel;
 import br.com.uwant.models.cloud.models.WantModel;
 
 public class FeedsFragment extends Fragment implements View.OnClickListener,
-        IRequest.OnRequestListener<List<Action>>, PopupMenu.OnMenuItemClickListener {
+        IRequest.OnRequestListener<List<Action>>, PopupMenu.OnMenuItemClickListener, FragmentManager.OnBackStackChangedListener {
 
     public static final String TAG = "feedsFragment";
     private static final int DEFAULT_START_INDEX = 0;
@@ -80,22 +81,23 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     };
     private final IRequest.OnRequestListener<Action> LISTENER_COMMENTS = new IRequest.OnRequestListener<Action>() {
 
-        public FeedCommentFragment mFragment;
-
         @Override
         public void onPreExecute() {
-            mFragment = new FeedCommentFragment();
+            mFadeView.setClickable(true);
+
             getFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top, R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
-                    .replace(android.R.id.content, mFragment, FeedCommentFragment.TAG)
+                    .replace(android.R.id.content, FeedsFragment.this.mFragment, FeedCommentFragment.TAG)
                     .addToBackStack(FeedCommentFragment.TAG)
                     .commit();
         }
 
         @Override
         public void onExecute(Action action) {
-            mFragment.updateContent(action);
+            FeedsFragment.this.mActionSelected.setComments(action.getComments());
+            FeedsFragment.this.mFeedsAdapter.notifyDataSetChanged();
+            FeedsFragment.this.mFragment.updateContent(action);
         }
 
         @Override
@@ -157,11 +159,14 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     private Person mPerson;
     private FeedsAdapter mFeedsAdapter;
 
+    private FeedCommentFragment mFragment;
     private GridView mGridView;
+    private View mFadeView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getFragmentManager().addOnBackStackChangedListener(FeedsFragment.this);
         mActions = new ArrayList<Action>(25);
     }
 
@@ -186,11 +191,11 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         Activity activity = getActivity();
         if (activity instanceof MainActivity) {
             MainActivity mainActivity = (MainActivity) activity;
-            View fadeView = mainActivity.findViewById(R.id.main_frameLayout_fade);
+            mFadeView = mainActivity.findViewById(R.id.main_frameLayout_fade);
 
-            if (fadeView == null) {
-                fadeView = getActivity().getLayoutInflater().inflate(R.layout.fade_in_out, null);
-                mainActivity.addContentView(fadeView, new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            if (mFadeView == null) {
+                mFadeView = getActivity().getLayoutInflater().inflate(R.layout.fade_in_out, null);
+                mainActivity.addContentView(mFadeView, new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }
         }
     }
@@ -198,14 +203,7 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
-        getView().setClickable(false);
         updateFeeds();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        getView().setClickable(true);
     }
 
     private void updateFeeds() {
@@ -311,6 +309,9 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         ListCommentsModel model = new ListCommentsModel();
         model.setAction(action);
 
+        mActionSelected = action;
+        mFragment = FeedCommentFragment.newInstance(action);
+
         Requester.executeAsync(model, LISTENER_COMMENTS);
     }
 
@@ -402,5 +403,10 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
 
     public void setPerson(Person person) {
         this.mPerson = person;
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        this.mFeedsAdapter.notifyDataSetChanged();
     }
 }
