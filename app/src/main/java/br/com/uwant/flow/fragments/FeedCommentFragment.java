@@ -1,17 +1,21 @@
 package br.com.uwant.flow.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.uwant.R;
+import br.com.uwant.flow.MainActivity;
 import br.com.uwant.models.adapters.FeedCommentsAdapter;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Comment;
@@ -44,6 +48,26 @@ public class FeedCommentFragment extends Fragment {
         final ListView listView = (ListView) view.findViewById(R.id.feed_comment_listView);
         listView.setAdapter(this.mAdapter);
         listView.setEmptyView(view.findViewById(R.id.contacts_gridView_loading));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Activity activity = getActivity();
+        if (activity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) activity;
+            mainActivity.fadeIn();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Activity activity = getActivity();
+        if (activity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) activity;
+            mainActivity.fadeOut();
+        }
     }
 
     public void updateContent(Action action) {

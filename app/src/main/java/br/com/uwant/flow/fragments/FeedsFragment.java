@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.ContactsActivity;
+import br.com.uwant.flow.MainActivity;
 import br.com.uwant.models.adapters.FeedsAdapter;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Person;
@@ -180,6 +182,17 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
 
         final ImageView imageViewEmpty = (ImageView) view.findViewById(R.id.feed_imageView_empty);
         imageViewEmpty.setOnClickListener(this);
+
+        Activity activity = getActivity();
+        if (activity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) activity;
+            View fadeView = mainActivity.findViewById(R.id.main_frameLayout_fade);
+
+            if (fadeView == null) {
+                fadeView = getActivity().getLayoutInflater().inflate(R.layout.fade_in_out, null);
+                mainActivity.addContentView(fadeView, new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+        }
     }
 
     @Override
