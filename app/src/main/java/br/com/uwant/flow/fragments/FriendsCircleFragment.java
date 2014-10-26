@@ -66,10 +66,10 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
         super.onViewCreated(view, savedInstanceState);
         mListView = (ListView) view.findViewById(R.id.friendsCircle_gridView);
         mListView.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.view_friends_circle_invite, mListView, false));
-        mListView.setEmptyView(view.findViewById(R.id.contacts_gridView_loading));
         mListView.setAdapter(mAdapter); // TODO Adapter correto...
         mListView.setOnItemClickListener(this);
         mListView.setTextFilterEnabled(true);
+        mListView.setEmptyView(view.findViewById(R.id.contacts_gridView_loading));
 
         final TextView textView = (TextView) view.findViewById(R.id.feed_textView_empty);
         textView.setText(R.string.text_empty_friends);
@@ -85,6 +85,9 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
     }
 
     public void updateFriends() {
+        mFriends.clear();
+        mAdapter.notifyDataSetChanged();
+
         FriendsCircleModel model = new FriendsCircleModel();
         model.setPerson(this.mPerson);
         Requester.executeAsync(model, this);
@@ -100,15 +103,17 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
 
     @Override
     public void onPreExecute() {
+        getView().findViewById(R.id.contacts_gridView_loading).setVisibility(View.GONE);
+        getView().findViewById(R.id.feed_linearLayout_empty).setVisibility(View.GONE);
+
+        mListView.setEmptyView(getView().findViewById(R.id.contacts_gridView_loading));
     }
 
     @Override
     public void onExecute(List<Person> result) {
         if (result != null && result.size() > 0) {
-            mFriends.clear();
             mFriends.addAll(result);
         } else {
-            getView().findViewById(R.id.contacts_gridView_loading).setVisibility(View.GONE);
             mListView.setEmptyView(getView().findViewById(R.id.feed_linearLayout_empty));
         }
         mAdapter.notifyDataSetChanged();

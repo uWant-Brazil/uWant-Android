@@ -131,11 +131,6 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
 
     };
     private final IRequest.OnRequestListener<Boolean> LISTENER_EXCLUDE_BLOCK = new IRequest.OnRequestListener<Boolean>() {
-    private Action mActionSelected;
-    private List<Action> mActions;
-    private FeedsAdapter mFeedsAdapter;
-    private GridView mGridView;
-
 
         @Override
         public void onPreExecute() {
@@ -179,9 +174,9 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         mFeedsAdapter = new FeedsAdapter(getActivity(), mActions, this);
 
         mGridView = (GridView) view.findViewById(R.id.main_gridView);
-        mGridView.setEmptyView(view.findViewById(R.id.contacts_gridView_loading));
-        mGridView.setNumColumns(1);
         mGridView.setAdapter(mFeedsAdapter);
+        mGridView.setNumColumns(1);
+        mGridView.setEmptyView(view.findViewById(R.id.contacts_gridView_loading));
 
         final ImageView imageViewEmpty = (ImageView) view.findViewById(R.id.feed_imageView_empty);
         imageViewEmpty.setOnClickListener(this);
@@ -194,8 +189,6 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     }
 
     private void updateFeeds() {
-        mGridView.setEmptyView(getView().findViewById(R.id.contacts_gridView_loading));
-
         mActions.clear();
         mFeedsAdapter.notifyDataSetChanged();
 
@@ -210,6 +203,10 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onPreExecute() {
+        getView().findViewById(R.id.feed_linearLayout_empty).setVisibility(View.GONE);
+        getView().findViewById(R.id.contacts_gridView_loading).setVisibility(View.GONE);
+
+        mGridView.setEmptyView(getView().findViewById(R.id.contacts_gridView_loading));
     }
 
     @Override
@@ -219,11 +216,13 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         } else {
             mGridView.setEmptyView(getView().findViewById(R.id.feed_linearLayout_empty));
         }
+
         mFeedsAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onError(RequestError error) {
+        mGridView.setEmptyView(null);
         Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
     }
 
