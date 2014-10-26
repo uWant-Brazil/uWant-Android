@@ -198,7 +198,14 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
+        getView().setClickable(false);
         updateFeeds();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getView().setClickable(true);
     }
 
     private void updateFeeds() {

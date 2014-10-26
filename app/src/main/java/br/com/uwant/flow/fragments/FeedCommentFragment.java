@@ -30,6 +30,8 @@ public class FeedCommentFragment extends Fragment {
     private List<Comment> mComments;
     private FeedCommentsAdapter mAdapter;
 
+    private ListView mListView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,9 +47,9 @@ public class FeedCommentFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final ListView listView = (ListView) view.findViewById(R.id.feed_comment_listView);
-        listView.setAdapter(this.mAdapter);
-        listView.setEmptyView(view.findViewById(R.id.contacts_gridView_loading));
+        mListView = (ListView) view.findViewById(R.id.feed_comment_listView);
+        mListView.setAdapter(this.mAdapter);
+        mListView.setEmptyView(view.findViewById(R.id.contacts_gridView_loading));
     }
 
     @Override
@@ -71,13 +73,18 @@ public class FeedCommentFragment extends Fragment {
     }
 
     public void updateContent(Action action) {
-        this.mComments.clear();
+        if (this.mComments != null && this.mAdapter != null) {
+            this.mComments.clear();
 
-        List<Comment> comments = action.getComments();
-        if (comments != null && comments.size() > 0) {
-            this.mComments.addAll(comments);
+            List<Comment> comments = action.getComments();
+            if (comments != null && comments.size() > 0) {
+                this.mComments.addAll(comments);
+            } else {
+                getView().findViewById(R.id.contacts_gridView_loading).setVisibility(View.GONE);
+                mListView.setEmptyView(null);
+            }
+
+            this.mAdapter.notifyDataSetChanged();
         }
-
-        this.mAdapter.notifyDataSetChanged();
     }
 }

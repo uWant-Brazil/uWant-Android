@@ -20,23 +20,56 @@
             layout="@layout/view_loading_contacts"
             android:layout_gravity="center" />
 
-        <ListView
-            android:id="@+id/feed_comment_listView"
-            android:divider="@android:color/transparent"
-            android:scrollbars="vertical"
-            android:fadingEdge="vertical"
-            android:background="@android:color/transparent"
-            android:cacheColorHint="#00000000"
-            android:fastScrollEnabled="true"
-            android:scrollbarStyle="outsideOverlay"
-            android:gravity="center_horizontal"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
-            android:paddingTop="1dp"
-            android:choiceMode="singleChoice" />
+            android:layout_height="match_parent">
+
+            <ListView
+                android:layout_above="@+id/feed_comment_linearLayout_bottom"
+                android:id="@+id/feed_comment_listView"
+                android:divider="@android:color/transparent"
+                android:scrollbars="vertical"
+                android:fadingEdge="vertical"
+                android:background="@android:color/transparent"
+                android:cacheColorHint="#00000000"
+                android:fastScrollEnabled="true"
+                android:scrollbarStyle="outsideOverlay"
+                android:gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="1dp"
+                android:choiceMode="singleChoice" />
+
+            <LinearLayout
+                android:layout_margin="3dp"
+                android:id="@+id/feed_comment_linearLayout_bottom"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:layout_weight="1"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:hint="@string/text_hint_comment"
+                    style="@style/UWEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <ImageButton
+                    android:src="@android:drawable/ic_dialog_email"
+                    android:layout_weight="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </FrameLayout>
 

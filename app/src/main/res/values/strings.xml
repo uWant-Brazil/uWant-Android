@@ -75,5 +75,6 @@
     <string name="text_empty_friends">Você ainda não tem amigos no seu círculo, pressione a imagem e adicione-os do seus contatos!</string>
     <string name="text_link_facebook">Sua conta foi vinculada com sucesso.</string>
     <string name="text_unlink_facebook">Sua conta foi desvinculada com sucesso.</string>
+    <string name="text_hint_comment">Digite seu comentário</string>
 
 </resources>
