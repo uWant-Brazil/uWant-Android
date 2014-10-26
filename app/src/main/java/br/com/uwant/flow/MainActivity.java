@@ -329,6 +329,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                 UserDatabase db = new UserDatabase(MainActivity.this);
                 db.removeAll();
                 User.clearInstance();
+                GoogleCloudMessageUtil.clear(MainActivity.this);
 
                 Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
                 startActivity(intent);

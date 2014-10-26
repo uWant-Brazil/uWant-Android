@@ -72,4 +72,10 @@ public abstract class GoogleCloudMessageUtil {
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
+    public static void clear(Context context) {
+        final SharedPreferences sharedPreferences = context.
+                getSharedPreferences(GCM_PREFERENCES, Activity.MODE_PRIVATE);
+        sharedPreferences.edit().clear().commit();
+    }
+
 }
