@@ -66,9 +66,11 @@
                 android:thumb="@drawable/uwant_switch_inner_holo_light"
                 android:track="@drawable/uwant_switch_track_holo_light"
                 android:checked="false"
+                android:textOn="ON"
+                android:textOff="OFF"
                 android:textColor="@color/GRAY_TEXT"
                 android:hint="Compartilhar Facebook"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
         </LinearLayout>
 
         <FrameLayout

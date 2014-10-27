@@ -125,6 +125,8 @@ public class ConfigurationsActivity extends PreferenceActivity {
     private void updateUserFacebookToken(Boolean linked, String token) {
         User user = User.getInstance();
         if (linked) {
+            setResult(RESULT_OK);
+
             user.setFacebookToken(token);
             Toast.makeText(this, R.string.text_link_facebook, Toast.LENGTH_LONG).show();
         } else {

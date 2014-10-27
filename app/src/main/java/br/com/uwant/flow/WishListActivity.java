@@ -28,8 +28,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.internal.ca;
-
 import org.lucasr.twowayview.TwoWayView;
 
 import java.io.ByteArrayOutputStream;
@@ -37,13 +35,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
@@ -51,7 +44,6 @@ import br.com.uwant.flow.fragments.ProgressFragmentDialog;
 import br.com.uwant.models.adapters.WishListProductAdapter;
 import br.com.uwant.models.classes.Manufacturer;
 import br.com.uwant.models.classes.Multimedia;
-import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.Product;
 import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
@@ -64,18 +56,20 @@ import br.com.uwant.models.cloud.models.WishListUpdateModel;
 import br.com.uwant.utils.PictureUtil;
 import br.com.uwant.utils.UserUtil;
 
-import static br.com.uwant.flow.WishListActivity.EXTRA_MODE.CREATE;
-
 public class WishListActivity extends ActionBarActivity implements View.OnClickListener,
         IRequest.OnRequestListener<List<Product>>, CompoundButton.OnCheckedChangeListener, UWFileBodyListener {
 
-    private static final int REQUEST_CAMERA = 984;
-    private static final int REQUEST_GALLERY = 989;
+    private static final int RQ_OPEN_CAMERA = 984;
+    private static final int RQ_OPEN_GALLERY = 989;
+    private static final int RQ_FACEBOOK_LINK = 823;
     private static final int NOTIFICATION_ID = 0x200;
-    private WishList mWishListExtra;
+    private static final String CONST_SWITCH_FACEBOOK_DIALOG = "SwitchFacebookDialog";
+    private static final String CONST_HEADS_UP_WIHLIST = "heads_up_wihlist";
+    private static final String CONST_LINK_TAG = "link_tag";
 
     public static enum EXTRA_MODE{CREATE, EDIT, DELETE}
 
+    private WishList mWishListExtra;
     private List<Product> mProducts;
     private WishListProductAdapter mAdapter;
     private File mLastProductPicture;
@@ -199,8 +193,8 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
                     Manufacturer manufacturer = new Manufacturer();
                     manufacturer.setName(store);
                     product.setManufacturer(manufacturer);
-                    product.setName("Product#" + mProducts.indexOf(product));
-                    product.setNickName("Product#" + mProducts.indexOf(product));
+                    product.setName(String.format("Product#%d", mProducts.indexOf(product)));
+                    product.setNickName(String.format("Product#%d", mProducts.indexOf(product)));
 
                     if (produtosInseridos == null)
                         produtosInseridos = new ArrayList<Product>();
@@ -238,37 +232,51 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CAMERA) {
-            if (resultCode == RESULT_OK && this.mLastProductPicture != null && this.mLastProductPicture.exists()) {
-                saveProduct(this.mLastProductPicture);
+        switch (requestCode) {
+            case RQ_OPEN_CAMERA:
+                if (resultCode == RESULT_OK
+                        && this.mLastProductPicture != null
+                        && this.mLastProductPicture.exists()) {
+                    saveProduct(this.mLastProductPicture);
 
-                this.mLastProductPicture = null;
-            }
-        } else if (requestCode == REQUEST_GALLERY) {
-            if (resultCode == RESULT_OK) {
-                Uri selectedImage = data.getData();
-                String[] filePathColumn = {
-                        MediaStore.Images.Media.DATA};
+                    this.mLastProductPicture = null;
+                }
+                break;
 
-                Cursor cursor = getContentResolver().query(
-                        selectedImage, filePathColumn, null, null, null);
-                cursor.moveToFirst();
+            case RQ_OPEN_GALLERY:
+                if (resultCode == RESULT_OK) {
+                    Uri selectedImage = data.getData();
+                    String[] filePathColumn = {
+                            MediaStore.Images.Media.DATA};
 
-                int columnIndex = cursor.getColumnIndex(
-                        filePathColumn[0]);
-                String filePath = cursor.getString(columnIndex);
-                cursor.close();
+                    Cursor cursor = getContentResolver().query(
+                            selectedImage, filePathColumn, null, null, null);
+                    cursor.moveToFirst();
 
-                File pictureFile = new File(filePath);
-                saveProduct(pictureFile);
-            }
+                    int columnIndex = cursor.getColumnIndex(
+                            filePathColumn[0]);
+                    String filePath = cursor.getString(columnIndex);
+                    cursor.close();
+
+                    File pictureFile = new File(filePath);
+                    saveProduct(pictureFile);
+                }
+                break;
+
+            case RQ_FACEBOOK_LINK:
+                if (resultCode != RESULT_OK || !UserUtil.hasFacebook()) {
+                    mSwitchView.setChecked(false);
+                }
+                break;
+
+            default:
+                break;
         }
     }
 
     private void saveProduct(File pictureFile) {
         Multimedia multimedia = new Multimedia();
         Bitmap bitmap = BitmapFactory.decodeFile(pictureFile.getAbsolutePath());
-//        bitmap = PictureUtil.scale(bitmap);
 
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -340,63 +348,17 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
             case R.id.wishList_imageButton_picture:
                 mLastProductPicture = new File(Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES),
-                        "uw-product-" + System.currentTimeMillis() + ".jpg");
+                        String.format("uw-product-%d.jpg", System.currentTimeMillis()));
 
-                PictureUtil.takePicture(this, this.mLastProductPicture, REQUEST_CAMERA);
+                PictureUtil.takePicture(this, this.mLastProductPicture, RQ_OPEN_CAMERA);
                 break;
 
             case R.id.wishList_imageButton_gallery:
-                PictureUtil.openGallery(this, REQUEST_GALLERY);
+                PictureUtil.openGallery(this, RQ_OPEN_GALLERY);
                 break;
 
             case R.id.wishList_imageButton_link:
-                if (this.mEditTextLink == null) {
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    params.setMargins(5, 5, 5, 5);
-
-                    mEditTextLink = new EditText(this);
-                    mEditTextLink.setLayoutParams(params);
-                    mEditTextLink.setImeOptions(EditorInfo.IME_ACTION_DONE);
-                    mEditTextLink.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
-                    mEditTextLink.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
-                        @Override
-                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                                if (mAlertLink != null) {
-                                    mAlertLink.dismiss();
-                                }
-
-                                loadLink();
-                                return true;
-                            }
-
-                            return false;
-                        }
-
-                    });
-                } else {
-                    this.mEditTextLink.setText("");
-                }
-
-                DialogInterface.OnClickListener listenerP = new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        loadLink();
-                    }
-
-                };
-
-                mAlertLink = AlertFragmentDialog.create(
-                        getString(R.string.app_name),
-                        mEditTextLink,
-                        getString(R.string.text_ok),
-                        listenerP,
-                        getString(R.string.text_cancel),
-                        null
-                );
-                mAlertLink.show(getSupportFragmentManager(), "link_tag");
+                configureLinkDialog();
                 break;
 
             default:
@@ -404,9 +366,59 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
         }
     }
 
+    private void configureLinkDialog() {
+        if (this.mEditTextLink == null) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            params.setMargins(5, 5, 5, 5);
+
+            mEditTextLink = new EditText(this);
+            mEditTextLink.setLayoutParams(params);
+            mEditTextLink.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            mEditTextLink.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
+            mEditTextLink.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        if (mAlertLink != null) {
+                            mAlertLink.dismiss();
+                        }
+
+                        loadLink();
+                        return true;
+                    }
+
+                    return false;
+                }
+
+            });
+        } else {
+            this.mEditTextLink.setText("");
+        }
+
+        DialogInterface.OnClickListener listenerP = new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                loadLink();
+            }
+
+        };
+
+        mAlertLink = AlertFragmentDialog.create(
+                getString(R.string.app_name),
+                mEditTextLink,
+                getString(R.string.text_ok),
+                listenerP,
+                getString(R.string.text_cancel),
+                null
+        );
+        mAlertLink.show(getSupportFragmentManager(), CONST_LINK_TAG);
+    }
+
     private void loadLink() {
         String url = mEditTextLink.getText().toString();
-        if (!url.isEmpty()) {
+        if (url != null && !url.isEmpty()) {
             saveProduct(url);
         } else {
             Toast.makeText(this, R.string.text_field_all_fields_correctly, Toast.LENGTH_LONG).show();
@@ -452,7 +464,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
                 getString(R.string.text_wishlist_created),
                 getString(R.string.text_ok),
                 listener);
-        alertDialog.show(getSupportFragmentManager(), "heads_up_wihlist");
+        alertDialog.show(getSupportFragmentManager(), CONST_HEADS_UP_WIHLIST);
     }
 
     @Override
@@ -472,6 +484,8 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
 
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent it = new Intent(WishListActivity.this, ConfigurationsActivity.class);
+                        startActivityForResult(it, RQ_FACEBOOK_LINK);
                     }
 
                 };
@@ -484,8 +498,8 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
 
                 };
 
-                AlertFragmentDialog afd = AlertFragmentDialog.create(getString(R.string.text_attention), "Você ainda não vinculou nenhuma conta do Facebook. Deseja realizar isto agora?", getString(R.string.text_yes, lp, getString(R.string.text_no), ln));
-                afd.show(getSupportFragmentManager(), "SwitchFacebookDialog");
+                AlertFragmentDialog afd = AlertFragmentDialog.create(getString(R.string.text_attention), getString(R.string.text_facebook_link), getString(R.string.text_yes, lp, getString(R.string.text_no), ln), lp, getString(R.string.text_no), ln);
+                afd.show(getSupportFragmentManager(), CONST_SWITCH_FACEBOOK_DIALOG);
             }
         }
     }
