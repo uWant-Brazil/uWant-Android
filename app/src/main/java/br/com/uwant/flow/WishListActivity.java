@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -368,11 +369,17 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
 
     private void configureLinkDialog() {
         if (this.mEditTextLink == null) {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            params.setMargins(5, 5, 5, 5);
+            final float scale = getResources().getDisplayMetrics().density;
+            int marginDP = (int) (10 * scale + 0.5f);
+
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(marginDP, marginDP, marginDP, marginDP);
 
             mEditTextLink = new EditText(this);
             mEditTextLink.setLayoutParams(params);
+            mEditTextLink.setHint(R.string.text_hint_link);
             mEditTextLink.setImeOptions(EditorInfo.IME_ACTION_DONE);
             mEditTextLink.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
             mEditTextLink.setOnEditorActionListener(new TextView.OnEditorActionListener() {

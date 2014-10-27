@@ -77,5 +77,6 @@
     <string name="text_unlink_facebook">Sua conta foi desvinculada com sucesso.</string>
     <string name="text_hint_comment">Digite seu comentário</string>
     <string name="text_facebook_link">Você ainda não vinculou nenhuma conta do Facebook. Deseja realizar isto agora?</string>
+    <string name="text_hint_link">Digite seu link...</string>
 
 </resources>
