@@ -53,7 +53,11 @@ public class WishListUpdateRequest extends AbstractRequest<List<Product>> implem
                 JsonElement jsonWishLists = jsonObject.get(Requester.ParameterKey.PRODUCTS);
                 if (jsonWishLists.isJsonObject()) {
                     JsonObject arrayWishLists = jsonWishLists.getAsJsonObject();
-                    for (int i = 0;i < produtosInseridos.size();i++) {
+                    if (produtosInseridos == null) {
+                        produtosInseridos = new ArrayList<Product>();
+                    }
+
+                    for (int i = 0; i < produtosInseridos.size(); i++) {
                         if (arrayWishLists.has(String.valueOf(i))) {
                             long productId = arrayWishLists.get(String.valueOf(i)).getAsLong();
                             Product product = produtosInseridos.get(i);

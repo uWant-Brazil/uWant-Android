@@ -5,11 +5,20 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 
+import com.facebook.FacebookRequestError;
+import com.facebook.Request;
+import com.facebook.RequestBatch;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.model.GraphObject;
+import com.facebook.model.OpenGraphAction;
+import com.facebook.model.OpenGraphObject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -38,6 +47,34 @@ public abstract class WishListUtil {
                                 .considerExifParams(true)
                                 .displayer(new FadeInBitmapDisplayer(500))
                                 .build();
+
+    public synchronized static void share(WishList wishList, Multimedia multimedia) {
+        OpenGraphObject share = OpenGraphObject.Factory.createForPost("uwant-social:share");
+        share.setProperty("title", wishList.getTitle());
+        share.setProperty("image", multimedia.getUrl());
+        share.setProperty("url", "http://www.uwant.com.br/"); // TODO URL no site!
+        share.setProperty("description", wishList.getDescription());
+
+        OpenGraphAction oga = GraphObject.Factory.create(OpenGraphAction.class);
+        oga.setProperty("share", share);
+
+        Request.Callback callback = new Request.Callback() {
+
+            @Override
+            public void onCompleted(Response response) {
+                FacebookRequestError error = response.getError();
+                if (error != null) {
+                    DebugUtil.error(error.getErrorMessage());
+                }
+            }
+
+        };
+        Request objectRequest = Request.newPostOpenGraphObjectRequest(Session.getActiveSession(), share, callback);
+
+        RequestBatch request = new RequestBatch();
+        request.add(objectRequest);
+        request.executeAsync();
+    }
 
     public static void renderProducts(Context context, List<Product> products, GridLayout gridLayout) {
         if (products == null)
