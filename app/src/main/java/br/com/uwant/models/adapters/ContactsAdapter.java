@@ -14,6 +14,13 @@ import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -34,17 +41,35 @@ import br.com.uwant.utils.PictureUtil;
 
 public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
 
+    private final int WDP;
+    private final int HDP;
     private Context mContext;
     private Map<String, Integer> alphabeticIndexer;
     private List<String> sectionsArray;
     private String[] sections;
     private List<Person> mPersons;
     private GridView mGridView;
+    private final DisplayImageOptions mOptions;
+    private final ImageSize mTargetSize;
 
     public ContactsAdapter(Context context, GridView listView, List<Person> persons) {
         this.mContext = context;
         this.mPersons = persons;
         this.mGridView = listView;
+
+        this.mOptions = new DisplayImageOptions.Builder()
+                .resetViewBeforeLoading(true)
+                .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .considerExifParams(true)
+                .displayer(new FadeInBitmapDisplayer(300))
+                .build();
+
+        float dpi = context.getResources().getDisplayMetrics().density;
+        WDP = (int) (dpi * 76);
+        HDP = (int) (dpi * 76);
+        this.mTargetSize = new ImageSize(WDP, HDP);
 
         getAlphabeticIndex(persons);
     }
@@ -116,13 +141,19 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
             Person person = getItem(i);
             String name = person.getName();
             String mail = person.getMail();
-            Multimedia multimedia = person.getPicture();
+            final Multimedia multimedia = person.getPicture();
             if (multimedia != null) {
+                Bitmap bitmap = multimedia.getBitmap();
                 Uri uri = (Uri)multimedia.getUri();
-                if (uri != null) {
+                String url = multimedia.getUrl();
+                if (bitmap != null) {
+                    hImageViewPicture.setImageBitmap(bitmap);
+                    hImageViewPictureCircle.setVisibility(View.VISIBLE);
+                } else if (uri != null) {
                     Picasso.with(this.mContext)
                             .load(uri)
                             .placeholder(R.drawable.ic_semfoto)
+                            .resize(WDP, HDP)
                             .into(new Target() {
 
                                 @Override
@@ -132,6 +163,8 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
                                     bitmap = PictureUtil.circle(bitmap);
                                     hImageViewPicture.setImageBitmap(bitmap);
                                     hImageViewPictureCircle.setVisibility(View.VISIBLE);
+
+                                    multimedia.setBitmap(bitmap);
                                 }
 
                                 @Override
@@ -146,6 +179,40 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
                                 }
 
                             });
+                } else if (url != null) {
+                    final ImageLoader imageLoader = ImageLoader.getInstance();
+                    imageLoader.loadImage(url, this.mTargetSize, this.mOptions, new ImageLoadingListener() {
+
+                        @Override
+                        public void onLoadingStarted(String imageUri, View view) {
+                            hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
+                            hImageViewPictureCircle.setVisibility(View.INVISIBLE);
+                        }
+
+                        @Override
+                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                            hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
+                            hImageViewPictureCircle.setVisibility(View.INVISIBLE);
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+                            bitmap = PictureUtil.cropToFit(bitmap);
+                            bitmap = PictureUtil.scale(bitmap, hImageViewPicture);
+                            bitmap = PictureUtil.circle(bitmap);
+                            hImageViewPicture.setImageBitmap(bitmap);
+                            hImageViewPictureCircle.setVisibility(View.VISIBLE);
+
+                            multimedia.setBitmap(bitmap);
+                        }
+
+                        @Override
+                        public void onLoadingCancelled(String imageUri, View view) {
+                            hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
+                            hImageViewPictureCircle.setVisibility(View.INVISIBLE);
+                        }
+
+                    });
                 } else {
                     hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
                     hImageViewPictureCircle.setVisibility(View.INVISIBLE);
