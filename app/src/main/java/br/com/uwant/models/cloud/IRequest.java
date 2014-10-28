@@ -78,7 +78,8 @@ public interface IRequest<K extends AbstractRequestModel, T> {
         SOCIAL_LINK,
         ADD_FRIEND,
         UPDATE_WISH_LIST,
-        ACTION_COMMENT;
+        ACTION_COMMENT,
+        USER_UPDATE;
     }
 
 }

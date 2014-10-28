@@ -17,7 +17,7 @@ import java.io.File;
 
 public abstract class PictureUtil {
 
-    public static void decodePicture(File picture, ImageView imageViewPicture) {
+    public static Bitmap decodePicture(File picture, ImageView imageViewPicture) {
         // Obtém o tamanho da ImageView
         int targetW = imageViewPicture.getWidth();
         int targetH = imageViewPicture.getHeight();
@@ -47,6 +47,8 @@ public abstract class PictureUtil {
         bitmap = circle(bitmap);
 
         imageViewPicture.setImageBitmap(bitmap);
+
+        return bitmap;
     }
 
     public static Bitmap scale(Bitmap bitmap, ImageView imageViewPicture) {

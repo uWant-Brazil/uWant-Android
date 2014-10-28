@@ -1,5 +1,6 @@
 package br.com.uwant.flow;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -32,6 +33,8 @@ import br.com.uwant.models.classes.User;
 import br.com.uwant.utils.PictureUtil;
 
 public class PerfilActivity extends ActionBarActivity implements View.OnClickListener {
+
+    private static final int RQ_UPDATE_USER = 914;
 
     private Person mPerson;
     private static String[] TABS;
@@ -184,8 +187,36 @@ public class PerfilActivity extends ActionBarActivity implements View.OnClickLis
                 finish();
                 return true;
 
+            case R.id.menu_perfil_configurations:
+                Intent it = new Intent(this, RegisterActivity.class);
+                it.putExtra(User.EXTRA_UPDATE, true);
+                startActivityForResult(it, RQ_UPDATE_USER);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case RQ_UPDATE_USER:
+                    User user = User.getInstance();
+                    Multimedia multimedia = user.getPicture();
+                    if (multimedia != null) {
+                        Bitmap bitmap = multimedia.getBitmap();
+                        if (bitmap != null) {
+                            mImageViewPicture.setImageBitmap(bitmap);
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 

@@ -49,18 +49,6 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:imeOptions="actionNext"
-            style="@style/UWEditText"
-            android:layout_margin="2.5dp"
-            android:hint="@string/text_name_plus_last_name"
-            android:ems="10"
-            android:id="@+id/register_editText_name"
-            android:layout_gravity="center_horizontal" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             style="@style/UWEditText"
             android:inputType="textWebEmailAddress"
             android:lines="1"
@@ -108,6 +96,18 @@
                 android:layout_gravity="center_horizontal" />
 
         </RadioGroup>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:imeOptions="actionNext"
+            style="@style/UWEditText"
+            android:layout_margin="2.5dp"
+            android:hint="@string/text_name_plus_last_name"
+            android:ems="10"
+            android:id="@+id/register_editText_name"
+            android:layout_gravity="center_horizontal" />
 
         <TextView
             android:layout_width="match_parent"

@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,9 +23,18 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.io.File;
 import java.text.ParseException;
@@ -44,6 +54,7 @@ import br.com.uwant.models.cloud.helpers.UWFileBodyListener;
 import br.com.uwant.models.cloud.models.RegisterModel;
 import br.com.uwant.models.cloud.models.RegisterPictureModel;
 import br.com.uwant.models.cloud.models.SocialRegisterModel;
+import br.com.uwant.models.cloud.models.UserUpdateModel;
 import br.com.uwant.models.databases.UserDatabase;
 import br.com.uwant.utils.DateUtil;
 import br.com.uwant.utils.KeyboardUtil;
@@ -56,9 +67,13 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     private static final int GALLERY_REQUEST_CODE = 9797;
 //    private static final String URL_FACEBOOK_PICTURE = "http://graph.facebook.com/%s/picture";
     private static final String TAG_REGISTER_CANCEL_DIALOG = "RegisterCancelTag";
+    private static final String CONST_EXIT_DIALOG = "exit_dialog";
 
+    private boolean mPictureUpdated;
+    private boolean mUserUpdated;
     private Calendar mBirthday;
     private File mPicturePath;
+    private Bitmap mBitmap;
     private User.Gender mGender = Person.Gender.UNKNOWN;
 
     private EditText mEditTextLogin;
@@ -68,6 +83,8 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     private TextView mTextViewBirthday;
     private ImageView mImageViewPicture;
     private ImageView mImageViewPictureDetail;
+    private RadioButton mRadioMale;
+    private RadioButton mRadioFemale;
     private RadioGroup mRadioGroupGender;
     private ProgressFragmentDialog mProgressDialog;
     private NotificationCompat.Builder mBuilder;
@@ -109,41 +126,109 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         mRadioGroupGender = (RadioGroup) findViewById(R.id.register_radioGroup_gender);
         mRadioGroupGender.setOnCheckedChangeListener(this);
 
+        mRadioMale = (RadioButton) findViewById(R.id.register_radioButton_male);
+        mRadioFemale = (RadioButton) findViewById(R.id.register_radioButton_female);
+
         Intent it = getIntent();
         if (it.hasExtra(User.EXTRA)) {
             User user = (User) it.getSerializableExtra(User.EXTRA);
-            String login = user.getLogin();
-            String name = user.getName();
-            String mail = user.getMail();
-            Date birthday = user.getBirthday();
-            Person.Gender gender = user.getGender();
+            fill(user);
+        } else if (it.hasExtra(User.EXTRA_UPDATE)) {
+            mUserUpdated = true;
 
-            if (login != null && !login.isEmpty()) {
-                mEditTextLogin.setText(user.getLogin());
-                mEditTextLogin.setEnabled(false);
+            User user = User.getInstance();
+            fill(user);
+
+            mEditTextPassword.setVisibility(View.GONE);
+            mEditTextMail.setEnabled(true);
+        }
+    }
+
+    private void fill(User user) {
+        String login = user.getLogin();
+        String name = user.getName();
+        String mail = user.getMail();
+        Date birthday = user.getBirthday();
+        Person.Gender gender = user.getGender();
+        final Multimedia picture = user.getPicture();
+
+        if (login != null && !login.isEmpty()) {
+            mEditTextLogin.setText(user.getLogin());
+            mEditTextLogin.setEnabled(false);
+        }
+
+        if (name != null && !name.isEmpty()) {
+            mEditTextName.setText(user.getName());
+            mEditTextName.setEnabled(false);
+        }
+
+        if (mail != null && !mail.isEmpty()) {
+            mEditTextMail.setText(user.getMail());
+            mEditTextMail.setEnabled(false);
+        }
+
+        if (birthday != null) {
+            mTextViewBirthday.setText(DateUtil.format(user.getBirthday(), DateUtil.DATE_PATTERN));
+            mTextViewBirthday.setEnabled(false);
+        }
+
+        if (gender != null) {
+            if (gender == Person.Gender.MALE) {
+                mRadioGroupGender.check(R.id.register_radioButton_male);
+            } else {
+                mRadioGroupGender.check(R.id.register_radioButton_female);
             }
 
-            if (name != null && !name.isEmpty()) {
-                mEditTextName.setText(user.getName());
-                mEditTextName.setEnabled(false);
-            }
+            mRadioMale.setEnabled(false);
+            mRadioFemale.setEnabled(false);
+        }
 
-            if (mail != null && !mail.isEmpty()) {
-                mEditTextMail.setText(user.getMail());
-                mEditTextMail.setEnabled(false);
-            }
+        if (picture != null) {
+            Bitmap bitmap = picture.getBitmap();
+            String url = picture.getUrl();
+            if (bitmap != null) {
+                mImageViewPictureDetail.setVisibility(View.VISIBLE);
+                mImageViewPicture.setImageBitmap(bitmap);
+            } else if (url != null) {
+                float dpi = getResources().getDisplayMetrics().density;
+                int size = (int) (dpi * 76);
+                DisplayImageOptions options = new DisplayImageOptions.Builder()
+                        .resetViewBeforeLoading(true)
+                        .cacheOnDisk(true)
+                        .imageScaleType(ImageScaleType.EXACTLY)
+                        .bitmapConfig(Bitmap.Config.RGB_565)
+                        .considerExifParams(true)
+                        .displayer(new FadeInBitmapDisplayer(300))
+                        .build();
+                ImageSize imageSize = new ImageSize(size, size);
 
-            if (birthday != null) {
-                mTextViewBirthday.setText(DateUtil.format(user.getBirthday(), DateUtil.DATE_PATTERN));
-                mTextViewBirthday.setEnabled(false);
-            }
+                final ImageLoader imageLoader = ImageLoader.getInstance();
+                imageLoader.loadImage(url, imageSize, options, new ImageLoadingListener() {
 
-            if (gender != null) {
-                if (gender == Person.Gender.MALE) {
-                    mRadioGroupGender.check(R.id.register_radioButton_male);
-                } else {
-                    mRadioGroupGender.check(R.id.register_radioButton_female);
-                }
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+                        bitmap = PictureUtil.cropToFit(bitmap);
+                        bitmap = PictureUtil.scale(bitmap, mImageViewPicture);
+                        bitmap = PictureUtil.circle(bitmap);
+                        mImageViewPictureDetail.setVisibility(View.VISIBLE);
+                        mImageViewPicture.setImageBitmap(bitmap);
+
+                        picture.setBitmap(bitmap);
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+                    }
+
+                });
             }
         }
     }
@@ -216,7 +301,11 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                askBeforeCancel();
+                if (mUserUpdated) {
+                    super.onBackPressed();
+                } else {
+                    askBeforeCancel();
+                }
                 break;
 
             default:
@@ -227,7 +316,11 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
     @Override
     public void onBackPressed() {
-        askBeforeCancel();
+        if (mUserUpdated) {
+            super.onBackPressed();
+        } else {
+            askBeforeCancel();
+        }
     }
 
     private void askBeforeCancel() {
@@ -263,51 +356,67 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void executeRegister() {
-        KeyboardUtil.hide(mEditTextPassword);
         KeyboardUtil.hide(mEditTextMail);
-        KeyboardUtil.hide(mEditTextName);
-        KeyboardUtil.hide(mEditTextLogin);
 
-        String login = mEditTextLogin.getText().toString();
-        String password = mEditTextPassword.getText().toString();
-        String name = mEditTextName.getText().toString();
         String mail = mEditTextMail.getText().toString();
-        String birthday = mTextViewBirthday.getText().toString();
-
-        if (login.isEmpty() || password.isEmpty() || name.isEmpty()
-                || mail.isEmpty() || birthday.isEmpty() || mGender == Person.Gender.UNKNOWN) {
+        if (mail.isEmpty()) {
             Toast.makeText(this, R.string.text_field_all_fields_correctly, Toast.LENGTH_LONG).show();
             return;
         }
 
-        Date date;
-        try {
-            date = DateUtil.parse(birthday, DateUtil.DATE_PATTERN);
-            easterEager(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            date = new Date();
+        if (mUserUpdated) {
+            UserUpdateModel model = new UserUpdateModel();
+            model.setMail(mail);
+
+            Requester.executeAsync(model, this);
+        } else {
+            KeyboardUtil.hide(mEditTextPassword);
+            KeyboardUtil.hide(mEditTextName);
+            KeyboardUtil.hide(mEditTextLogin);
+
+            String login = mEditTextLogin.getText().toString();
+            String password = mEditTextPassword.getText().toString();
+            String name = mEditTextName.getText().toString();
+            String birthday = mTextViewBirthday.getText().toString();
+
+            if (login.isEmpty()
+                    || password.isEmpty()
+                    || name.isEmpty()
+                    || birthday.isEmpty()
+                    || mGender == Person.Gender.UNKNOWN) {
+                Toast.makeText(this, R.string.text_field_all_fields_correctly, Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Date date;
+            try {
+                date = DateUtil.parse(birthday, DateUtil.DATE_PATTERN);
+                easterEager(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                date = new Date();
+            }
+
+            User user = new User();
+            user.setLogin(login);
+            user.setName(name);
+            user.setMail(mail);
+            user.setGender(mGender);
+            user.setBirthday(date);
+
+            RegisterModel model = new RegisterModel();
+            model.setUser(user);
+            model.setPassword(password);
+            model.setBirthday(birthday);
+
+            Intent it = getIntent();
+            if (it.hasExtra(SocialRegisterModel.EXTRA)) {
+                SocialRegisterModel socialModel = (SocialRegisterModel) it.getSerializableExtra(SocialRegisterModel.EXTRA);
+                model.setSocialModel(socialModel);
+            }
+
+            Requester.executeAsync(model, this);
         }
-
-        User user = new User();
-        user.setLogin(login);
-        user.setName(name);
-        user.setMail(mail);
-        user.setGender(mGender);
-        user.setBirthday(date);
-
-        RegisterModel model = new RegisterModel();
-        model.setUser(user);
-        model.setPassword(password);
-        model.setBirthday(birthday);
-
-        Intent it = getIntent();
-        if (it.hasExtra(SocialRegisterModel.EXTRA)) {
-            SocialRegisterModel socialModel = (SocialRegisterModel) it.getSerializableExtra(SocialRegisterModel.EXTRA);
-            model.setSocialModel(socialModel);
-        }
-
-        Requester.executeAsync(model, this);
     }
 
     private void easterEager(Date birthday) {
@@ -325,9 +434,11 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == PICTURE_REQUEST_CODE) {
+                mPictureUpdated = true;
                 mImageViewPictureDetail.setVisibility(View.VISIBLE);
-                PictureUtil.decodePicture(mPicturePath, mImageViewPicture);
+                mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPicture);
             } else if (requestCode == GALLERY_REQUEST_CODE) {
+                mPictureUpdated = true;
                 Uri selectedImage = data.getData();
                 String[] filePathColumn = {
                         MediaStore.Images.Media.DATA };
@@ -343,7 +454,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
                 mPicturePath = new File(filePath);
                 mImageViewPictureDetail.setVisibility(View.VISIBLE);
-                PictureUtil.decodePicture(mPicturePath, mImageViewPicture);
+                mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPicture);
             }
         }
     }
@@ -375,9 +486,12 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             db.create(result);
         }
 
-        if (this.mPicturePath != null && this.mPicturePath.exists()) {
+        if (this.mPictureUpdated
+                && this.mPicturePath != null
+                && this.mPicturePath.exists()) {
             Multimedia multimedia = new Multimedia();
             multimedia.setUri(Uri.fromFile(this.mPicturePath));
+            multimedia.setBitmap(mBitmap);
             result.setPicture(multimedia);
 
             RegisterPictureModel model = new RegisterPictureModel();
@@ -392,6 +506,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
                 @Override
                 public void onExecute(Multimedia picture) {
+                    picture.setBitmap(mBitmap);
                     result.setPicture(picture);
                     UserDatabase db = new UserDatabase(getApplicationContext());
                     db.update(result);
@@ -405,9 +520,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             });
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(false);
-        builder.setNeutralButton(R.string.text_ok, new DialogInterface.OnClickListener() {
+        DialogInterface.OnClickListener lp = new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -415,11 +528,17 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                 finish();
             }
 
-        });
-        builder.setTitle(R.string.app_name);
-        builder.setMessage(R.string.text_register_congratulations);
-        Dialog dialog = builder.create();
-        dialog.show();
+        };
+
+        String title = getString(R.string.text_attention);
+        String message = mUserUpdated ?
+                getString(R.string.text_update_user)
+                :
+                getString(R.string.text_register_congratulations);
+
+        AlertFragmentDialog afd = AlertFragmentDialog.create(title, message, lp, true);
+        afd.setCancelable(false);
+        afd.show(getSupportFragmentManager(), CONST_EXIT_DIALOG);
     }
 
     @Override

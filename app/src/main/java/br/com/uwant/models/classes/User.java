@@ -6,6 +6,8 @@ public class User extends Person implements Serializable {
 
     public static final String EXTRA = "extra_user";
     public static final String EXTRA_ADD_CONTACTS = "extra_add_contacts";
+    public static final String EXTRA_UPDATE = "extra_user_update";
+    
     private static final User INSTANCE = new User();
 
     private String token;

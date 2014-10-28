@@ -33,6 +33,7 @@ public abstract class BaseDatabase<K> extends SQLiteOpenHelper implements IDatab
     public static final String ID_WISHLIST = "id_wishlist";
     public static final String ID_PRODUCT = "id_product";
     public static final String FACEBOOK_TOKEN = "facebook_token";
+    public static final String MAIL = "mail";
 
     protected Context mContext;
 

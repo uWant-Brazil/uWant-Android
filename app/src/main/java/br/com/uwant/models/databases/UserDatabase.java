@@ -27,7 +27,7 @@ public class UserDatabase extends BaseDatabase<User> {
     protected String getUpgradeSQL(int oldVersion, int newVersion) {
         String sql = null;
         // Não colocar break, apenas no default...
-        switch (newVersion) {
+        switch (oldVersion + 1) {
             default:
                 break;
         }
@@ -40,6 +40,7 @@ public class UserDatabase extends BaseDatabase<User> {
         cv.put(TOKEN, data.getToken());
         cv.put(NAME, data.getName());
         cv.put(LOGIN, data.getLogin());
+        cv.put(MAIL, data.getMail());
         cv.put(BIRTHDAY, DateUtil.format(data.getBirthday(), DateUtil.DATE_PATTERN));
         cv.put(GENDER, (data.getGender() != null) ? data.getGender().ordinal() : null);
 
@@ -63,6 +64,7 @@ public class UserDatabase extends BaseDatabase<User> {
         String token = cursor.getString(cursor.getColumnIndex(TOKEN));
         String name = cursor.getString(cursor.getColumnIndex(NAME));
         String login = cursor.getString(cursor.getColumnIndex(LOGIN));
+        String mail = cursor.getString(cursor.getColumnIndex(MAIL));
         String birthdayStr = cursor.getString(cursor.getColumnIndex(BIRTHDAY));
         Integer genderOrdinal = cursor.getInt(cursor.getColumnIndex(GENDER));
 
@@ -91,6 +93,7 @@ public class UserDatabase extends BaseDatabase<User> {
         user.setToken(token);
         user.setName(name);
         user.setLogin(login);
+        user.setMail(mail);
         user.setBirthday(birthday);
         user.setGender(gender);
         user.setPicture(picture);
