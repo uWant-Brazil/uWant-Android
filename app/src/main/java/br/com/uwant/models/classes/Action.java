@@ -32,6 +32,7 @@ public class Action {
     private int UWantsCount;
     private int commentsCount;
     private int SharesCount;
+    private WishList wishList;
 
     public long getId() {
         return id;
@@ -127,5 +128,13 @@ public class Action {
 
     public void setuShare(boolean uShare) {
         this.uShare = uShare;
+    }
+
+    public WishList getWishList() {
+        return wishList;
+    }
+
+    public void setWishList(WishList wishList) {
+        this.wishList = wishList;
     }
 }
