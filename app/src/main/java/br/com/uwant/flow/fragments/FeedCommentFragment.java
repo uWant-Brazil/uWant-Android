@@ -101,7 +101,7 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
                 this.mComments.addAll(comments);
             } else {
                 getView().findViewById(R.id.contacts_gridView_loading).setVisibility(View.GONE);
-                mListView.setEmptyView(null);
+                mListView.setEmptyView(getView().findViewById(R.id.feed_comment_linearLayout_empty));
             }
 
             this.mAdapter.notifyDataSetChanged();

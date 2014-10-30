@@ -54,16 +54,10 @@ import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.Product;
 import br.com.uwant.models.classes.WishList;
+import br.com.uwant.utils.DateUtil;
 import br.com.uwant.utils.PictureUtil;
 
 public class FeedsAdapter extends BaseAdapter {
-
-    private static final int DEFAULT_TIME_AGO = R.string.text_feeds_just_now;
-    private static final int YEARS = R.plurals.text_feeds_years;
-    private static final int MONTHS = R.plurals.text_feeds_months;
-    private static final int DAYS = R.plurals.text_feeds_days;
-    private static final int HOURS = R.plurals.text_feeds_hours;
-    private static final int MINUTES = R.plurals.text_feeds_minutes;
 
     private static float DEFAULT_RADIUS;
     private static int DEFAULT_MARGIN_BOTTOM;
@@ -165,7 +159,7 @@ public class FeedsAdapter extends BaseAdapter {
         String systemMessage = action.getMessage();
         String userMessage = action.getExtra();
         Date when = action.getWhen();
-        String timeAgo = getTimeAgo(when);
+        String timeAgo = DateUtil.getTimeAgo(this.mContext, when);
         int uWantCount = action.getUWantsCount();
         int commentsCount = action.getCommentsCount();
         int sharesCount = action.getSharesCount();
@@ -258,44 +252,6 @@ public class FeedsAdapter extends BaseAdapter {
             hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
             hImageViewPictureDetail.setVisibility(View.INVISIBLE);
         }
-    }
-
-    private String getTimeAgo(Date when) {
-        Resources resources = this.mContext.getResources();
-
-        String timeAgo;
-        if (when != null) {
-            Date now = new Date();
-            long diff = now.getTime() - when.getTime();
-            int diffMinutes = (int) diff / (60 * 1000);
-            if (diffMinutes > 59) {
-                int diffHours = diffMinutes / 60;
-                if (diffHours > 23) {
-                    int diffDays = diffHours / 24;
-                    if (diffDays > 29) {
-                        int diffMonths = diffDays / 30;
-                        if (diffMonths > 11) {
-                            int diffYears = diffMonths / 12;
-                            timeAgo = resources.getQuantityString(YEARS, diffYears, diffYears); // FINALMENTE...
-                        } else {
-                            timeAgo = resources.getQuantityString(MONTHS, diffMonths, diffMonths);
-                        }
-                    } else {
-                        timeAgo = resources.getQuantityString(DAYS, diffDays, diffDays);
-                    }
-                } else {
-                    timeAgo = resources.getQuantityString(HOURS, diffHours, diffHours);
-                }
-            } else if (diffMinutes > 0) {
-                timeAgo = resources.getQuantityString(MINUTES, diffMinutes, diffMinutes);
-            } else {
-                timeAgo = resources.getString(DEFAULT_TIME_AGO);
-            }
-        } else {
-            timeAgo = resources.getString(DEFAULT_TIME_AGO);
-        }
-
-        return timeAgo;
     }
 
 }

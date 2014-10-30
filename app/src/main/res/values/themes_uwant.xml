@@ -8,9 +8,6 @@
 
     <style name="_uWant.NoActionBar" parent="@android:style/Theme.Holo.Light.NoActionBar">
 
-        <item name="android:alertDialogStyle">@style/MyCustomTheme</item>
-        <item name="android:dialogTheme">@style/MyCustomTheme</item>
-
         <item name="android:textColorHighlight">#99ffbb33</item>
 
         <item name="android:checkboxStyle">@style/CheckBoxuWant</item>
@@ -36,9 +33,6 @@
     </style>
 
   <style name="_uWant" parent="Theme.AppCompat.Light.DarkActionBar">
-
-      <item name="android:alertDialogStyle">@style/MyCustomTheme</item>
-      <item name="android:dialogTheme">@style/MyCustomTheme</item>
 
     <item name="android:textColorHighlight">#99ffbb33</item>
 
@@ -70,18 +64,5 @@
     <item name="android:fastScrollPreviewBackgroundRight">@drawable/uwant_list_focused_holo</item>
 
   </style>
-
-    <style name="MyCustomTheme" parent="@android:style/Theme.Holo.Dialog">
-        <item name="android:windowAnimationStyle">@style/MyAnimation.Window</item>
-    </style>
-
-    <style name="MyAnimation.Window" parent="@android:style/Animation.Activity">
-        <item name="android:windowEnterAnimation">@anim/abc_fade_in</item>
-        <item name="android:windowExitAnimation">@anim/abc_fade_out</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:useDefaultMargins">false</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowIsFloating">true</item>
-    </style>
 
 </resources>
