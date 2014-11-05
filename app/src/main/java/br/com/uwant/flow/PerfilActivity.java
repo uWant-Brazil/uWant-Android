@@ -85,7 +85,10 @@ public class PerfilActivity extends ActionBarActivity implements View.OnClickLis
                 mCurrentFragment = (SearchView.OnQueryTextListener) mAdapter.getItem(i);
                 actionBar.setSelectedNavigationItem(i);
                 supportInvalidateOptionsMenu();
-                mSearchView.clearFocus();
+
+                if (mSearchView != null) {
+                    mSearchView.clearFocus();
+                }
             }
 
             @Override
@@ -101,7 +104,10 @@ public class PerfilActivity extends ActionBarActivity implements View.OnClickLis
                 mCurrentFragment = (SearchView.OnQueryTextListener) mAdapter.getItem(tab.getPosition());
                 viewPager.setCurrentItem(tab.getPosition());
                 supportInvalidateOptionsMenu();
-                mSearchView.clearFocus();
+
+                if (mSearchView != null) {
+                    mSearchView.clearFocus();
+                }
             }
 
             public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {

@@ -191,7 +191,6 @@ public class FeedsRequest extends AbstractRequest<List<Action>> implements IRequ
                                                             Product product = new Product();
                                                             product.setId(productId);
                                                             product.setName(name);
-                                                            product.setWishListId(wishListId);
 
                                                             if (jsonProduct.has(Requester.ParameterKey.NICK_NAME)) {
                                                                 JsonElement jsonNickElem = jsonProduct.get(Requester.ParameterKey.NICK_NAME);
@@ -226,7 +225,6 @@ public class FeedsRequest extends AbstractRequest<List<Action>> implements IRequ
 
                                                                         Manufacturer manufacturer = new Manufacturer();
                                                                         manufacturer.setId(manufacturerId);
-                                                                        manufacturer.setProductId(product.getId());
                                                                         manufacturer.setName(manufacturerName);
                                                                         product.setManufacturer(manufacturer);
                                                                     }

@@ -38,11 +38,9 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
     private List<Product> mProducts;
     private WishListActivity.OnProductListener onProductListener;
 
-
     public WishListProductAdapter(Context context, List<Product> products) {
         this.mContext = context;
         this.mProducts = products;
-//        setFakeProduct(products);
         this.mOptions = new DisplayImageOptions.Builder()
                 .resetViewBeforeLoading(true)
                 .cacheOnDisk(true)
@@ -57,7 +55,6 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
     public WishListProductAdapter(Context context, List<Product> products, WishListActivity.OnProductListener onProductListener) {
         this.mContext = context;
         this.mProducts = products;
-//        setFakeProduct(products);
         this.mOptions = new DisplayImageOptions.Builder()
                 .resetViewBeforeLoading(true)
                 .cacheOnDisk(true)
@@ -103,7 +100,7 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
         holder.hButtonRemove.setTag(i);
         Product product = getItem(i);
         final Multimedia picture = product.getPicture();
-        Uri uri = (Uri)picture.getUri();
+        Uri uri = picture.getUri();
         Bitmap bitmap = picture.getBitmap();
         if (bitmap != null) {
             holder.hImageViewProduct.setImageBitmap(bitmap);

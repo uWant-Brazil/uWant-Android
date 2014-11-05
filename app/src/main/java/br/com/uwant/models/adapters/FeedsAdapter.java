@@ -116,7 +116,9 @@ public class FeedsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder vh;
         if (convertView == null) {
+            vh = new ViewHolder();
             LinearLayout linearLayout = new LinearLayout(this.mContext);
             linearLayout.setGravity(Gravity.CENTER);
 
@@ -132,20 +134,25 @@ public class FeedsAdapter extends BaseAdapter {
             cardView.addView(contentView);
 
             convertView = linearLayout;
-        }
 
-        ImageView imageViewPicture = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_picture);
-        ImageView imageViewPictureDetail = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_pictureDetail);
-        ImageButton imageButtonMenu = (ImageButton) convertView.findViewById(R.id.adapter_feeds_imageButton);
-        TextView textViewSystemMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_systemMessage);
-        TextView textViewUserMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_userMessage);
-        TextView textViewWhen = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_when);
-        Button buttonUWants = (Button) convertView.findViewById(R.id.adapter_feeds_button_uwants);
-        Button buttonComments = (Button) convertView.findViewById(R.id.adapter_feeds_button_comments);
-        Button buttonShares = (Button) convertView.findViewById(R.id.adapter_feeds_button_shares);
-        TwoWayView twoWayView = (TwoWayView) convertView.findViewById(R.id.adapter_feed_twoWayView);
-        twoWayView.setOrientation(TwoWayView.Orientation.HORIZONTAL);
-        twoWayView.setItemMargin(10);
+            vh.imageViewPicture = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_picture);
+            vh.imageViewPictureDetail = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_pictureDetail);
+            vh.imageButtonMenu = (ImageButton) convertView.findViewById(R.id.adapter_feeds_imageButton);
+            vh.textViewSystemMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_systemMessage);
+            vh.textViewUserMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_userMessage);
+            vh.textViewWhen = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_when);
+            vh.buttonUWants = (Button) convertView.findViewById(R.id.adapter_feeds_button_uwants);
+            vh.buttonComments = (Button) convertView.findViewById(R.id.adapter_feeds_button_comments);
+            vh.buttonShares = (Button) convertView.findViewById(R.id.adapter_feeds_button_shares);
+            vh.twoWayView = (TwoWayView) convertView.findViewById(R.id.adapter_feed_twoWayView);
+
+            vh.twoWayView.setOrientation(TwoWayView.Orientation.HORIZONTAL);
+            vh.twoWayView.setItemMargin(10);
+
+            convertView.setTag(vh);
+        } else {
+            vh = (ViewHolder)convertView.getTag();
+        }
 
         Action action = getItem(position);
         Person from = action.getFrom();
@@ -153,7 +160,7 @@ public class FeedsAdapter extends BaseAdapter {
         if (wishList != null) {
             List<Product> products = wishList.getProducts();
             WishListProductAdapter adapter = new WishListProductAdapter(mContext, products);
-            twoWayView.setAdapter(adapter);
+            vh.twoWayView.setAdapter(adapter);
         }
 
         String systemMessage = action.getMessage();
@@ -166,24 +173,24 @@ public class FeedsAdapter extends BaseAdapter {
         boolean uWant = action.isuWant();
         boolean uShare = action.isuShare();
 
-        populatePicture(imageViewPicture, imageViewPictureDetail, from.getPicture());
+        populatePicture(vh.imageViewPicture, vh.imageViewPictureDetail, from.getPicture());
 
-        textViewSystemMessage.setText(systemMessage);
-        textViewUserMessage.setText(userMessage);
-        textViewWhen.setText(timeAgo);
-        buttonUWants.setText(String.valueOf(uWantCount));
-        buttonComments.setText(String.valueOf(commentsCount));
-        buttonShares.setText(String.valueOf(sharesCount));
+        vh.textViewSystemMessage.setText(systemMessage);
+        vh.textViewUserMessage.setText(userMessage);
+        vh.textViewWhen.setText(timeAgo);
+        vh.buttonUWants.setText(String.valueOf(uWantCount));
+        vh.buttonComments.setText(String.valueOf(commentsCount));
+        vh.buttonShares.setText(String.valueOf(sharesCount));
 
-        buttonUWants.setTag(position);
-        buttonComments.setTag(position);
-        buttonShares.setTag(position);
-        imageButtonMenu.setTag(position);
+        vh.buttonUWants.setTag(position);
+        vh.buttonComments.setTag(position);
+        vh.buttonShares.setTag(position);
+        vh.imageButtonMenu.setTag(position);
 
-        buttonUWants.setOnClickListener(this.mClickListener);
-        buttonComments.setOnClickListener(this.mClickListener);
-        buttonShares.setOnClickListener(this.mClickListener);
-        imageButtonMenu.setOnClickListener(this.mClickListener);
+        vh.buttonUWants.setOnClickListener(this.mClickListener);
+        vh.buttonComments.setOnClickListener(this.mClickListener);
+        vh.buttonShares.setOnClickListener(this.mClickListener);
+        vh.imageButtonMenu.setOnClickListener(this.mClickListener);
 
         Drawable drawableLeftUWant;
         if (uWant) {
@@ -199,8 +206,8 @@ public class FeedsAdapter extends BaseAdapter {
             drawableLeftUShare = USHARE_DRAWABLE;
         }
 
-        buttonUWants.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUWant, null, null, null);
-        buttonShares.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUShare, null, null, null);
+        vh.buttonUWants.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUWant, null, null, null);
+        vh.buttonShares.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUShare, null, null, null);
 
         return convertView;
     }
@@ -252,6 +259,19 @@ public class FeedsAdapter extends BaseAdapter {
             hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
             hImageViewPictureDetail.setVisibility(View.INVISIBLE);
         }
+    }
+
+    static class ViewHolder {
+        ImageView imageViewPicture;
+        ImageView imageViewPictureDetail;
+        ImageButton imageButtonMenu;
+        TextView textViewSystemMessage;
+        TextView textViewUserMessage;
+        TextView textViewWhen;
+        Button buttonUWants;
+        Button buttonComments;
+        Button buttonShares;
+        TwoWayView twoWayView;
     }
 
 }
