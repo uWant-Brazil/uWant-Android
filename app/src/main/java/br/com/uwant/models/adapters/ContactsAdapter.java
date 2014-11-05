@@ -122,6 +122,7 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
             vh.hTextViewName = (TextView) view.findViewById(R.id.contacts_adapter_textView_name);
             vh.hTextViewMail = (TextView) view.findViewById(R.id.contacts_adapter_textView_mail);
             vh.hCheckBox = (CheckBox) view.findViewById(R.id.checkablelinearlayou_checkbox);
+            vh.hPosition = position;
 
             view.setTag(vh);
         } else {
