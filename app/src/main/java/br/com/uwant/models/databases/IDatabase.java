@@ -5,6 +5,10 @@ import android.database.Cursor;
 
 import java.util.List;
 
+/**
+ * Interface de todos os bancos de dados do sistema.
+ * @param <K> - Classe de modelagem.
+ */
 public interface IDatabase<K> {
 
     long create(K data);

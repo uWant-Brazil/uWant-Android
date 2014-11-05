@@ -15,8 +15,14 @@ import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.utils.DateUtil;
 
+/**
+ * Classe de banco de dados para entidades de usuários.
+ */
 public class UserDatabase extends BaseDatabase<User> {
 
+    /**
+     * Nome da tabela do banco de dados.
+     */
     private static final String TABLE = "users";
 
     public UserDatabase(Context context) {
@@ -24,35 +30,24 @@ public class UserDatabase extends BaseDatabase<User> {
     }
 
     @Override
-    protected String getUpgradeSQL(int oldVersion, int newVersion) {
-        String sql = null;
-        // Não colocar break, apenas no default...
-        switch (newVersion) {
-            default:
-                break;
-        }
-        return sql;
-    }
-
-    @Override
     public ContentValues getValues(User data) {
         ContentValues cv = new ContentValues();
-        cv.put(TOKEN, data.getToken());
-        cv.put(NAME, data.getName());
-        cv.put(LOGIN, data.getLogin());
-        cv.put(BIRTHDAY, DateUtil.format(data.getBirthday(), DateUtil.DATE_PATTERN));
-        cv.put(GENDER, (data.getGender() != null) ? data.getGender().ordinal() : null);
+        cv.put(Key.TOKEN, data.getToken());
+        cv.put(Key.NAME, data.getName());
+        cv.put(Key.LOGIN, data.getLogin());
+        cv.put(Key.BIRTHDAY, DateUtil.format(data.getBirthday(), DateUtil.DATE_PATTERN));
+        cv.put(Key.GENDER, (data.getGender() != null) ? data.getGender().ordinal() : null);
 
         Multimedia picture = data.getPicture();
         if (picture != null) {
             String url = picture.getUrl();
             if (url != null && !url.isEmpty()) {
-                cv.put(PICTURE_URL, picture.getUrl());
+                cv.put(Key.PICTURE_URL, picture.getUrl());
             }
         }
 
         if (data.getFacebookToken() != null) {
-            cv.put(FACEBOOK_TOKEN, data.getFacebookToken());
+            cv.put(Key.FACEBOOK_TOKEN, data.getFacebookToken());
         }
 
         return cv;
@@ -60,11 +55,11 @@ public class UserDatabase extends BaseDatabase<User> {
 
     @Override
     public User getFromCursor(Cursor cursor) {
-        String token = cursor.getString(cursor.getColumnIndex(TOKEN));
-        String name = cursor.getString(cursor.getColumnIndex(NAME));
-        String login = cursor.getString(cursor.getColumnIndex(LOGIN));
-        String birthdayStr = cursor.getString(cursor.getColumnIndex(BIRTHDAY));
-        Integer genderOrdinal = cursor.getInt(cursor.getColumnIndex(GENDER));
+        String token = cursor.getString(cursor.getColumnIndex(Key.TOKEN));
+        String name = cursor.getString(cursor.getColumnIndex(Key.NAME));
+        String login = cursor.getString(cursor.getColumnIndex(Key.LOGIN));
+        String birthdayStr = cursor.getString(cursor.getColumnIndex(Key.BIRTHDAY));
+        Integer genderOrdinal = cursor.getInt(cursor.getColumnIndex(Key.GENDER));
 
         Person.Gender gender = null;
         if (genderOrdinal != null) {
@@ -79,13 +74,13 @@ public class UserDatabase extends BaseDatabase<User> {
         }
 
         Multimedia picture = null;
-        String url = cursor.getString(cursor.getColumnIndex(PICTURE_URL));
+        String url = cursor.getString(cursor.getColumnIndex(Key.PICTURE_URL));
         if (url != null && !url.isEmpty()) {
             picture = new Multimedia();
             picture.setUrl(url);
         }
 
-        String facebookToken = cursor.getString(cursor.getColumnIndex(FACEBOOK_TOKEN));
+        String facebookToken = cursor.getString(cursor.getColumnIndex(Key.FACEBOOK_TOKEN));
 
         User user = User.getInstance();
         user.setToken(token);
@@ -146,14 +141,14 @@ public class UserDatabase extends BaseDatabase<User> {
     @Override
     public void remove(User data) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE, String.format("%s%s", TOKEN, QUERY), new String[] { data.getToken() });
+        db.delete(TABLE, String.format("%s%s", Key.TOKEN, QUERY), new String[] { data.getToken() });
         
     }
 
     @Override
     public void update(User data) {
         SQLiteDatabase db = getWritableDatabase();
-        db.update(TABLE, getValues(data), String.format("%s=?", TOKEN), new String[] { data.getToken() });
+        db.update(TABLE, getValues(data), String.format("%s=?", Key.TOKEN), new String[] { data.getToken() });
         
     }
 
@@ -215,7 +210,7 @@ public class UserDatabase extends BaseDatabase<User> {
 
     @Override
     public boolean exist(User data) {
-        return exist(new String[] { TOKEN }, new String[] { data.getToken() });
+        return exist(new String[] { Key.TOKEN }, new String[] { data.getToken() });
     }
 
     @Override
