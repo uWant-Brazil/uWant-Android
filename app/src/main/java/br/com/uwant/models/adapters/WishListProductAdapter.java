@@ -70,20 +70,6 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
         this.onProductListener = onProductListener;
     }
 
-    void setFakeProduct(List<Product> products) {
-        if (products != null) {
-            Product product = new Product();
-            product.setId(100000);
-            product.setName("Fake");
-            product.setManufacturer(null);
-            product.setNickName("fake");
-            product.setFake(true);
-            Multimedia multimedia = new Multimedia();
-            multimedia.setUrl("");
-            product.setPicture(multimedia);
-            mProducts.add(product);
-        }
-    }
     @Override
     public int getCount() {
         return this.mProducts != null ? mProducts.size() : 0;
@@ -117,11 +103,8 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
         holder.hButtonRemove.setTag(i);
         Product product = getItem(i);
         Multimedia picture = product.getPicture();
-        Uri uri = (Uri)picture.getUri();
-        if (product.isFake()){
-            holder.hImageViewProduct.setImageResource(R.drawable.ic_post_presente);
-            holder.hButtonRemove.setVisibility(View.GONE);
-        } else if (uri == null) {
+        Uri uri = picture.getUri();
+        if (uri == null) {
             String url = picture.getUrl();
             final ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.loadImage(url, this.mTargetSize, this.mOptions, new ImageLoadingListener() {
@@ -150,7 +133,7 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
                 }
 
             });
-        } else if (uri != null && !product.isFake()){
+        } else if (uri != null){
             holder.mProgressBar.setVisibility(View.VISIBLE);
             Picasso.with(this.mContext)
                     .load(uri)

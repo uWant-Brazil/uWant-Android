@@ -74,7 +74,6 @@ public class WishListProductsRequest extends AbstractRequest<List<Product>> impl
                             Product product = new Product();
                             product.setId(id);
                             product.setName(name);
-                            product.setWishListId(mModel.getWishList().getId());
 
                             if (jsonProduct.has(Requester.ParameterKey.NICK_NAME)) {
                                 JsonElement jsonNickElem = jsonProduct.get(Requester.ParameterKey.NICK_NAME);
@@ -111,7 +110,6 @@ public class WishListProductsRequest extends AbstractRequest<List<Product>> impl
 
                                         Manufacturer manufacturer = new Manufacturer();
                                         manufacturer.setId(manufacturerId);
-                                        manufacturer.setProductId(product.getId());
                                         manufacturer.setName(manufacturerName);
                                         product.setManufacturer(manufacturer);
                                     }

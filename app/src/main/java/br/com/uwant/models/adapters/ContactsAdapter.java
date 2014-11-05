@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -85,81 +87,102 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(int position, View view, ViewGroup viewGroup) {
+        ViewHolder vh;
         if (view == null) {
+            vh = new ViewHolder();
             view = LayoutInflater.from(this.mContext).inflate(R.layout.adapter_contacts, viewGroup, false);
+            vh.hImageViewPicture = (ImageView) view.findViewById(R.id.contacts_adapter_imageView_picture);
+            vh.hImageViewPictureCircle = (ImageView) view.findViewById(R.id.contacts_adapter_imageView_pictureCircle);
+            vh.hTextViewName = (TextView) view.findViewById(R.id.contacts_adapter_textView_name);
+            vh.hTextViewMail = (TextView) view.findViewById(R.id.contacts_adapter_textView_mail);
+            vh.hCheckBox = (CheckBox) view.findViewById(R.id.checkablelinearlayou_checkbox);
+        } else {
+            vh = (ViewHolder) view.getTag();
         }
 
-        final ImageView hImageViewPicture = (ImageView) view.findViewById(R.id.contacts_adapter_imageView_picture);
-        final ImageView hImageViewPictureCircle = (ImageView) view.findViewById(R.id.contacts_adapter_imageView_pictureCircle);
-        final TextView hTextViewName = (TextView) view.findViewById(R.id.contacts_adapter_textView_name);
-        final TextView hTextViewMail = (TextView) view.findViewById(R.id.contacts_adapter_textView_mail);
-        final CheckBox hCheckBox = (CheckBox) view.findViewById(R.id.checkablelinearlayou_checkbox);
+        vh.hImageViewPictureCircle.setVisibility(View.INVISIBLE);
 
-        hImageViewPictureCircle.setVisibility(View.INVISIBLE);
-
-        if (i == 0) {
-            hTextViewMail.setVisibility(View.GONE);
-            hImageViewPicture.setVisibility(View.GONE);
-            hCheckBox.setVisibility(View.GONE);
-            hTextViewName.setText(R.string.text_invite_all_friends);
+        if (position == 0) {
+            vh.hTextViewMail.setVisibility(View.GONE);
+            vh.hImageViewPicture.setVisibility(View.GONE);
+            vh.hCheckBox.setVisibility(View.GONE);
+            vh.hTextViewName.setText(R.string.text_invite_all_friends);
         } else {
-            hTextViewMail.setVisibility(View.VISIBLE);
-            hImageViewPicture.setVisibility(View.VISIBLE);
-            hCheckBox.setVisibility(View.VISIBLE);
+            vh.hTextViewMail.setVisibility(View.VISIBLE);
+            vh.hImageViewPicture.setVisibility(View.VISIBLE);
+            vh.hCheckBox.setVisibility(View.VISIBLE);
 
-            boolean isChecked = mGridView.isItemChecked(i);
+            boolean isChecked = mGridView.isItemChecked(position);
             CheckableLinearLayout cll = (CheckableLinearLayout) view;
             cll.setChecked(isChecked);
-            hCheckBox.setChecked(isChecked);
+            vh.hCheckBox.setChecked(isChecked);
 
-            Person person = getItem(i);
+            Person person = getItem(position);
             String name = person.getName();
             String mail = person.getMail();
             Multimedia multimedia = person.getPicture();
+
             if (multimedia != null) {
-                Uri uri = (Uri)multimedia.getUri();
+                Uri uri = multimedia.getUri();
                 if (uri != null) {
-                    Picasso.with(this.mContext)
-                            .load(uri)
-                            .placeholder(R.drawable.ic_semfoto)
-                            .into(new Target() {
-
-                                @Override
-                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                    bitmap = PictureUtil.cropToFit(bitmap);
-                                    bitmap = PictureUtil.scale(bitmap, hImageViewPicture);
-                                    bitmap = PictureUtil.circle(bitmap);
-                                    hImageViewPicture.setImageBitmap(bitmap);
-                                    hImageViewPictureCircle.setVisibility(View.VISIBLE);
-                                }
-
-                                @Override
-                                public void onBitmapFailed(Drawable errorDrawable) {
-                                    hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
-                                    hImageViewPictureCircle.setVisibility(View.INVISIBLE);
-                                }
-
-                                @Override
-                                public void onPrepareLoad(Drawable placeHolderDrawable) {
-                                    hImageViewPicture.setImageDrawable(placeHolderDrawable);
-                                }
-
-                            });
+                    load(position, vh, uri);
                 } else {
-                    hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
-                    hImageViewPictureCircle.setVisibility(View.INVISIBLE);
+                    vh.hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
+                    vh.hImageViewPictureCircle.setVisibility(View.INVISIBLE);
                 }
             } else {
-                hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
-                hImageViewPictureCircle.setVisibility(View.INVISIBLE);
+                vh.hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
+                vh.hImageViewPictureCircle.setVisibility(View.INVISIBLE);
             }
 
-            hTextViewName.setText(name);
-            hTextViewMail.setText(mail == null ? "" : mail);
+            vh.hTextViewName.setText(name);
+            vh.hTextViewMail.setText(mail == null ? "" : mail);
         }
 
         return view;
+    }
+
+    private void load(final int position, ViewHolder vh, Uri uri) {
+        new AsyncTask<Object, Void, Bitmap>() {
+
+            private ViewHolder viewHolder;
+
+            @Override
+            protected Bitmap doInBackground(Object... objects) {
+                viewHolder = (ViewHolder) objects[0];
+                Uri uri = (Uri) objects[1];
+
+                try {
+                    Bitmap bitmap = Picasso.with(mContext)
+                            .load(uri)
+                            .placeholder(R.drawable.ic_semfoto)
+                            .get();
+
+                    bitmap = PictureUtil.cropToFit(bitmap);
+                    bitmap = PictureUtil.scale(bitmap, viewHolder.hImageViewPicture);
+                    bitmap = PictureUtil.circle(bitmap);
+
+                    return bitmap;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                if (bitmap != null) {
+                    if (viewHolder.hPosition == position) {
+                        viewHolder.hImageViewPicture.setImageBitmap(bitmap);
+                        viewHolder.hImageViewPictureCircle.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+        }.execute(vh, uri);
     }
 
     @Override
@@ -188,6 +211,15 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
             }
         }
         return 0;
+    }
+
+    static class ViewHolder {
+        int hPosition;
+        ImageView hImageViewPicture;
+        ImageView hImageViewPictureCircle;
+        TextView hTextViewName;
+        TextView hTextViewMail;
+        CheckBox hCheckBox;
     }
 
 }
