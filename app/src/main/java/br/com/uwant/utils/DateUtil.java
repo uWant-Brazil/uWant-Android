@@ -2,6 +2,7 @@ package br.com.uwant.utils;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.res.Resources;
 import android.widget.DatePicker;
 
 import java.text.ParseException;
@@ -9,10 +10,19 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import br.com.uwant.R;
+
 /**
  * Classe utilitária para ações relacionadas a entidades de data.
  */
 public abstract class DateUtil {
+
+    private static final int DEFAULT_TIME_AGO = R.string.text_feeds_just_now;
+    private static final int YEARS = R.plurals.text_feeds_years;
+    private static final int MONTHS = R.plurals.text_feeds_months;
+    private static final int DAYS = R.plurals.text_feeds_days;
+    private static final int HOURS = R.plurals.text_feeds_hours;
+    private static final int MINUTES = R.plurals.text_feeds_minutes;
 
     /**
      * Padrão de data brasileira.
@@ -66,6 +76,44 @@ public abstract class DateUtil {
         dpd.show();
 
         return dpd.getDatePicker();
+    }
+
+    public static String getTimeAgo(Context context, Date when) {
+        Resources resources = context.getResources();
+
+        String timeAgo;
+        if (when != null) {
+            Date now = new Date();
+            long diff = now.getTime() - when.getTime();
+            int diffMinutes = (int) diff / (60 * 1000);
+            if (diffMinutes > 59) {
+                int diffHours = diffMinutes / 60;
+                if (diffHours > 23) {
+                    int diffDays = diffHours / 24;
+                    if (diffDays > 29) {
+                        int diffMonths = diffDays / 30;
+                        if (diffMonths > 11) {
+                            int diffYears = diffMonths / 12;
+                            timeAgo = resources.getQuantityString(YEARS, diffYears, diffYears); // FINALMENTE...
+                        } else {
+                            timeAgo = resources.getQuantityString(MONTHS, diffMonths, diffMonths);
+                        }
+                    } else {
+                        timeAgo = resources.getQuantityString(DAYS, diffDays, diffDays);
+                    }
+                } else {
+                    timeAgo = resources.getQuantityString(HOURS, diffHours, diffHours);
+                }
+            } else if (diffMinutes > 0) {
+                timeAgo = resources.getQuantityString(MINUTES, diffMinutes, diffMinutes);
+            } else {
+                timeAgo = resources.getString(DEFAULT_TIME_AGO);
+            }
+        } else {
+            timeAgo = resources.getString(DEFAULT_TIME_AGO);
+        }
+
+        return timeAgo;
     }
 
 }

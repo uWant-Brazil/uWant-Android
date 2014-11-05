@@ -24,6 +24,8 @@ public class AlertFragmentDialog extends DialogFragment {
      */
     private static final int DEFAULT_VIEW_ID = R.layout.dialog_default;
 
+    private boolean mWithoutCancel;
+
     /**
      * Título do AlertDialog.
      */
@@ -70,6 +72,10 @@ public class AlertFragmentDialog extends DialogFragment {
         return create(title, message, null, listener, null, null);
     }
 
+    public static AlertFragmentDialog create(String title, String message, DialogInterface.OnClickListener listener, boolean withoutCancel) {
+        return create(title, message, null, listener, null, null, withoutCancel);
+    }
+
     public static AlertFragmentDialog create(String title, View customView, String positiveText, DialogInterface.OnClickListener listener) {
         return create(title, customView, positiveText, listener, null, null);
     }
@@ -108,6 +114,18 @@ public class AlertFragmentDialog extends DialogFragment {
         return fd;
     }
 
+    public static AlertFragmentDialog create(String title, String message, String positiveText, DialogInterface.OnClickListener listenerOk, String negativeText, DialogInterface.OnClickListener listenerCancel, boolean withoutCancel) {
+        AlertFragmentDialog fd = new AlertFragmentDialog();
+        fd.setTitle(title);
+        fd.setMessage(message);
+        fd.setListenerOk(listenerOk);
+        fd.setListenerCancel(listenerCancel);
+        fd.setPositiveText(positiveText);
+        fd.setNegativeText(negativeText);
+        fd.mWithoutCancel = withoutCancel;
+        return fd;
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -135,7 +153,7 @@ public class AlertFragmentDialog extends DialogFragment {
         }
 
         builder.setPositiveButton(mPositiveText, mListenerOk);
-        if (mListenerOk != null) {
+        if (mListenerOk != null && !mWithoutCancel) {
             if (mNegativeText == null) {
                 mNegativeText = getString(R.string.text_cancel);
             }

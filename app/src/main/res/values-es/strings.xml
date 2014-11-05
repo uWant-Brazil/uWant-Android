@@ -75,5 +75,7 @@
     <string name="text_hint_comment">Digite seu comentário</string>
     <string name="text_facebook_link">Você ainda não vinculou nenhuma conta do Facebook. Deseja realizar isto agora?</string>
     <string name="text_hint_link">Digite seu link...</string>
+    <string name="text_update_user">O seu registro foi atualizado com sucesso! Se você modificou o seu e-mail, recomendamos você confirma-lo imediatamente.</string>
+    <string name="text_first_comment">Faça o primeiro comentário</string>
 
 </resources>

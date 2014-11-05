@@ -17,6 +17,12 @@
         <include
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            layout="@layout/view_empty_contacts"
+            android:layout_gravity="center" />
+
+        <include
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             layout="@layout/view_loading_contacts"
             android:layout_gravity="center" />
 
@@ -25,7 +31,7 @@
             android:layout_height="match_parent">
 
             <ListView
-                android:layout_above="@+id/feed_comment_linearLayout_bottom"
+                android:layout_above="@+id/view_line"
                 android:id="@+id/feed_comment_listView"
                 android:divider="@android:color/transparent"
                 android:scrollbars="vertical"
@@ -43,6 +49,13 @@
                 android:paddingTop="1dp"
                 android:choiceMode="singleChoice" />
 
+            <View
+                android:layout_above="@+id/feed_comment_linearLayout_bottom"
+                android:id="@+id/view_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/GRAY_WITH_TRANSPARENCY_BACKGROUND" />
+
             <LinearLayout
                 android:layout_margin="3dp"
                 android:id="@+id/feed_comment_linearLayout_bottom"
@@ -58,13 +71,19 @@
                     android:lines="1"
                     android:maxLines="1"
                     android:hint="@string/text_hint_comment"
-                    style="@style/UWEditText"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="7dp"
+                    android:paddingBottom="7dp"
+                    android:background="@android:color/transparent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <ImageButton
                     android:id="@+id/feed_comment_imageButton_send"
-                    android:src="@android:drawable/ic_dialog_email"
+                    android:src="@drawable/ic_enviar_mensagem"
+                    android:background="@android:color/transparent"
+                    android:layout_margin="5dp"
                     android:layout_weight="0"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />

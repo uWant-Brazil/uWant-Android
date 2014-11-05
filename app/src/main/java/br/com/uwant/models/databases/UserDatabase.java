@@ -58,6 +58,7 @@ public class UserDatabase extends BaseDatabase<User> {
         String token = cursor.getString(cursor.getColumnIndex(Key.TOKEN));
         String name = cursor.getString(cursor.getColumnIndex(Key.NAME));
         String login = cursor.getString(cursor.getColumnIndex(Key.LOGIN));
+        String mail = cursor.getString(cursor.getColumnIndex(Key.MAIL));
         String birthdayStr = cursor.getString(cursor.getColumnIndex(Key.BIRTHDAY));
         Integer genderOrdinal = cursor.getInt(cursor.getColumnIndex(Key.GENDER));
 
@@ -86,6 +87,7 @@ public class UserDatabase extends BaseDatabase<User> {
         user.setToken(token);
         user.setName(name);
         user.setLogin(login);
+        user.setMail(mail);
         user.setBirthday(birthday);
         user.setGender(gender);
         user.setPicture(picture);

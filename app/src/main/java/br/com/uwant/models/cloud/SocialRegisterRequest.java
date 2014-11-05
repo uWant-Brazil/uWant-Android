@@ -97,6 +97,11 @@ public class SocialRegisterRequest extends AbstractRequest<Boolean> implements I
                         }
                     }
                 }
+
+                if (jsonUser.has(Requester.ParameterKey.MAIL)) {
+                    String mail = jsonUser.get(Requester.ParameterKey.MAIL).getAsString();
+                    user.setMail(mail);
+                }
             }
 
             if (jsonObject.has(Requester.ParameterKey.REGISTERED)) {

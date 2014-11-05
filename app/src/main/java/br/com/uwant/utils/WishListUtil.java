@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,14 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 
 import com.facebook.FacebookRequestError;
+import com.facebook.HttpMethod;
+import com.facebook.LoggingBehavior;
 import com.facebook.Request;
+import com.facebook.RequestAsyncTask;
 import com.facebook.RequestBatch;
 import com.facebook.Response;
 import com.facebook.Session;
+import com.facebook.Settings;
 import com.facebook.model.GraphObject;
 import com.facebook.model.OpenGraphAction;
 import com.facebook.model.OpenGraphObject;
@@ -28,7 +33,12 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import br.com.uwant.R;
@@ -49,14 +59,33 @@ public abstract class WishListUtil {
                                 .build();
 
     public synchronized static void share(WishList wishList, Multimedia multimedia) {
-        OpenGraphObject share = OpenGraphObject.Factory.createForPost("uwant-social:share");
-        share.setProperty("title", wishList.getTitle());
-        share.setProperty("image", multimedia.getUrl());
-        share.setProperty("url", "http://www.uwant.com.br/"); // TODO URL no site!
-        share.setProperty("description", wishList.getDescription());
+        Bundle postParams = new Bundle();
+        postParams.putString("name", wishList.getDescription());
+        postParams.putParcelable("picture", multimedia.getBitmap());
 
-        OpenGraphAction oga = GraphObject.Factory.create(OpenGraphAction.class);
-        oga.setProperty("share", share);
+        Request.Callback callback= new Request.Callback() {
+            public void onCompleted(Response response) {
+            }
+        };
+
+        new Request(Session.getActiveSession(), "me/photos", postParams,
+                HttpMethod.POST, callback).executeAsync();
+    }
+
+    public synchronized static void shareAction(WishList wishList, Multimedia multimedia) {
+        Settings.addLoggingBehavior(LoggingBehavior.REQUESTS);
+
+        OpenGraphObject share = OpenGraphObject.Factory.createForPost("uwant-social:wish");
+        share.setProperty("title", wishList.getTitle());
+        share.setProperty("description", wishList.getDescription());
+        share.setUrl("http://samples.ogp.me/347734502017922");
+        share.setPostActionId("me/uwant-social:share");
+        share.setCreatedTime(new Date());
+
+        OpenGraphAction oga = OpenGraphAction.Factory.createForPost("uwant-social:share");
+        oga.setProperty("wish", share);
+        oga.setImageUrls(Arrays.asList(multimedia.getUrl()));
+        oga.setExplicitlyShared(true);
 
         Request.Callback callback = new Request.Callback() {
 
@@ -69,7 +98,7 @@ public abstract class WishListUtil {
             }
 
         };
-        Request objectRequest = Request.newPostOpenGraphObjectRequest(Session.getActiveSession(), share, callback);
+        Request objectRequest = Request.newPostOpenGraphActionRequest(Session.getActiveSession(), oga, callback);
 
         RequestBatch request = new RequestBatch();
         request.add(objectRequest);

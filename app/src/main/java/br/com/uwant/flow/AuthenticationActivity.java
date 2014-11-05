@@ -80,6 +80,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
                             model.setLogin(login == null ? mail : login);
                             model.setProvider(SocialProvider.FACEBOOK);
                             model.setToken(session.getAccessToken());
+                            model.setFacebookId(id);
 
                             Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
 

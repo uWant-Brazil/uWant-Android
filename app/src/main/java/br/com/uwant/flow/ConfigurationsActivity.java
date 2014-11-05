@@ -72,7 +72,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
                     @Override
                     public void onCompleted(final GraphUser graphUser, com.facebook.Response response) {
                         if (graphUser != null) {
-                            //final String id = graphUser.getId();
+                            final String id = graphUser.getId();
 
                             final String login = graphUser.getUsername();
                             //final String name = graphUser.getName();
@@ -84,6 +84,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
                             model.setLogin(login == null ? mail : login);
                             model.setProvider(SocialProvider.FACEBOOK);
                             model.setToken(token);
+                            model.setFacebookId(id);
 
                             Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
 
@@ -355,7 +356,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
                         @Override
                         public void onCompleted(final GraphUser graphUser, Response response) {
                             if (graphUser != null) {
-                                //final String id = graphUser.getId();
+                                final String id = graphUser.getId();
 
                                 final String login = graphUser.getUsername();
                                 //final String name = graphUser.getName();
@@ -367,6 +368,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
                                 model.setLogin(login == null ? mail : login);
                                 model.setProvider(SocialProvider.FACEBOOK);
                                 model.setToken(token);
+                                model.setFacebookId(id);
 
                                 Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
 

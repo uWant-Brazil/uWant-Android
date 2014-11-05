@@ -102,9 +102,13 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
 
         holder.hButtonRemove.setTag(i);
         Product product = getItem(i);
-        Multimedia picture = product.getPicture();
-        Uri uri = picture.getUri();
-        if (uri == null) {
+        final Multimedia picture = product.getPicture();
+        Uri uri = (Uri)picture.getUri();
+        Bitmap bitmap = picture.getBitmap();
+        if (bitmap != null) {
+            holder.hImageViewProduct.setImageBitmap(bitmap);
+            holder.hButtonRemove.setVisibility(View.GONE);
+        } else if (uri == null) {
             String url = picture.getUrl();
             final ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.loadImage(url, this.mTargetSize, this.mOptions, new ImageLoadingListener() {
@@ -122,6 +126,7 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
 
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+                    picture.setBitmap(bitmap);
                     holder.mProgressBar.setVisibility(View.GONE);
                     holder.hImageViewProduct.setImageBitmap(bitmap);
                 }
@@ -143,6 +148,7 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
 
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    picture.setBitmap(bitmap);
                     holder.mProgressBar.setVisibility(View.GONE);
                     holder.hImageViewProduct.setImageBitmap(bitmap);
                 }

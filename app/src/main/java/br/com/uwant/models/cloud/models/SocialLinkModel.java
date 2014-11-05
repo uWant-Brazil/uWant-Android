@@ -9,9 +9,22 @@ import br.com.uwant.models.cloud.Requester;
 
 public class SocialLinkModel extends AbstractJSONRequestModel {
 
+    private String facebookId;
     private String login;
     private String token;
     private SocialProvider provider;
+
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
+    }
+
+    public String getLogin() {
+        return login;
+    }
 
     public void setLogin(String login) {
         this.login = login;
@@ -19,6 +32,10 @@ public class SocialLinkModel extends AbstractJSONRequestModel {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public SocialProvider getProvider() {
+        return provider;
     }
 
     public void setProvider(SocialProvider provider) {
@@ -31,6 +48,7 @@ public class SocialLinkModel extends AbstractJSONRequestModel {
         jsonObject.addProperty(Requester.ParameterKey.TOKEN, this.token);
         jsonObject.addProperty(Requester.ParameterKey.LOGIN, this.login);
         jsonObject.addProperty(Requester.ParameterKey.SOCIAL_PROVIDER, this.provider.ordinal());
+        jsonObject.addProperty(Requester.ParameterKey.FACEBOOK_ID, this.facebookId);
         return jsonObject;
     }
 

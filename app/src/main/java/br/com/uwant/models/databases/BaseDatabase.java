@@ -39,6 +39,7 @@ public abstract class BaseDatabase<K> extends SQLiteOpenHelper implements IDatab
         public static final String TOKEN = "token";
         public static final String NAME = "name";
         public static final String LOGIN = "login";
+        public static final String MAIL = "mail";
         public static final String GENDER = "gender";
         public static final String BIRTHDAY = "birthday";
         public static final String PICTURE_URL = "picture_url";

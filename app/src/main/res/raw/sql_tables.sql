@@ -6,6 +6,7 @@ CREATE TABLE users (
     ,birthday varchar(255) not null
     ,picture_url varchar(255)
     ,facebook_token varchar(255)
+    ,mail varchar(255) not null
 );
 
 CREATE TABLE wishlists (

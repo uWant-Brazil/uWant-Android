@@ -43,6 +43,8 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import org.lucasr.twowayview.TwoWayView;
+
 import java.util.Date;
 import java.util.List;
 
@@ -50,16 +52,12 @@ import br.com.uwant.R;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
+import br.com.uwant.models.classes.Product;
+import br.com.uwant.models.classes.WishList;
+import br.com.uwant.utils.DateUtil;
 import br.com.uwant.utils.PictureUtil;
 
 public class FeedsAdapter extends BaseAdapter {
-
-    private static final int DEFAULT_TIME_AGO = R.string.text_feeds_just_now;
-    private static final int YEARS = R.plurals.text_feeds_years;
-    private static final int MONTHS = R.plurals.text_feeds_months;
-    private static final int DAYS = R.plurals.text_feeds_days;
-    private static final int HOURS = R.plurals.text_feeds_hours;
-    private static final int MINUTES = R.plurals.text_feeds_minutes;
 
     private static float DEFAULT_RADIUS;
     private static int DEFAULT_MARGIN_BOTTOM;
@@ -118,15 +116,6 @@ public class FeedsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        TextView hTextViewSystemMessage;
-        ImageView hImageViewPicture;
-        ImageView hImageViewPictureDetail;
-        ImageButton hImageButtonMenu;
-        TextView hTextViewUserMessage;
-        TextView hTextViewWhen;
-        Button hButtonUWants;
-        Button hButtonComments;
-        Button hButtonShares;
         if (convertView == null) {
             LinearLayout linearLayout = new LinearLayout(this.mContext);
             linearLayout.setGravity(Gravity.CENTER);
@@ -145,47 +134,56 @@ public class FeedsAdapter extends BaseAdapter {
             convertView = linearLayout;
         }
 
-        hImageViewPicture = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_picture);
-        hImageViewPictureDetail = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_pictureDetail);
-        hImageButtonMenu = (ImageButton) convertView.findViewById(R.id.adapter_feeds_imageButton);
-        hTextViewSystemMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_systemMessage);
-        hTextViewUserMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_userMessage);
-        hTextViewWhen = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_when);
-        hButtonUWants = (Button) convertView.findViewById(R.id.adapter_feeds_button_uwants);
-        hButtonComments = (Button) convertView.findViewById(R.id.adapter_feeds_button_comments);
-        hButtonShares = (Button) convertView.findViewById(R.id.adapter_feeds_button_shares);
-        
+        ImageView imageViewPicture = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_picture);
+        ImageView imageViewPictureDetail = (ImageView) convertView.findViewById(R.id.adapter_feeds_imageView_pictureDetail);
+        ImageButton imageButtonMenu = (ImageButton) convertView.findViewById(R.id.adapter_feeds_imageButton);
+        TextView textViewSystemMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_systemMessage);
+        TextView textViewUserMessage = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_userMessage);
+        TextView textViewWhen = (TextView) convertView.findViewById(R.id.adapter_feeds_textView_when);
+        Button buttonUWants = (Button) convertView.findViewById(R.id.adapter_feeds_button_uwants);
+        Button buttonComments = (Button) convertView.findViewById(R.id.adapter_feeds_button_comments);
+        Button buttonShares = (Button) convertView.findViewById(R.id.adapter_feeds_button_shares);
+        TwoWayView twoWayView = (TwoWayView) convertView.findViewById(R.id.adapter_feed_twoWayView);
+        twoWayView.setOrientation(TwoWayView.Orientation.HORIZONTAL);
+        twoWayView.setItemMargin(10);
+
         Action action = getItem(position);
         Person from = action.getFrom();
+        WishList wishList = action.getWishList();
+        if (wishList != null) {
+            List<Product> products = wishList.getProducts();
+            WishListProductAdapter adapter = new WishListProductAdapter(mContext, products);
+            twoWayView.setAdapter(adapter);
+        }
 
         String systemMessage = action.getMessage();
         String userMessage = action.getExtra();
         Date when = action.getWhen();
-        String timeAgo = getTimeAgo(when);
+        String timeAgo = DateUtil.getTimeAgo(this.mContext, when);
         int uWantCount = action.getUWantsCount();
         int commentsCount = action.getCommentsCount();
         int sharesCount = action.getSharesCount();
         boolean uWant = action.isuWant();
         boolean uShare = action.isuShare();
 
-        populatePicture(hImageViewPicture, hImageViewPictureDetail, from.getPicture());
+        populatePicture(imageViewPicture, imageViewPictureDetail, from.getPicture());
 
-        hTextViewSystemMessage.setText(systemMessage);
-        hTextViewUserMessage.setText(userMessage);
-        hTextViewWhen.setText(timeAgo);
-        hButtonUWants.setText(String.valueOf(uWantCount));
-        hButtonComments.setText(String.valueOf(commentsCount));
-        hButtonShares.setText(String.valueOf(sharesCount));
+        textViewSystemMessage.setText(systemMessage);
+        textViewUserMessage.setText(userMessage);
+        textViewWhen.setText(timeAgo);
+        buttonUWants.setText(String.valueOf(uWantCount));
+        buttonComments.setText(String.valueOf(commentsCount));
+        buttonShares.setText(String.valueOf(sharesCount));
 
-        hButtonUWants.setTag(position);
-        hButtonComments.setTag(position);
-        hButtonShares.setTag(position);
-        hImageButtonMenu.setTag(position);
+        buttonUWants.setTag(position);
+        buttonComments.setTag(position);
+        buttonShares.setTag(position);
+        imageButtonMenu.setTag(position);
 
-        hButtonUWants.setOnClickListener(this.mClickListener);
-        hButtonComments.setOnClickListener(this.mClickListener);
-        hButtonShares.setOnClickListener(this.mClickListener);
-        hImageButtonMenu.setOnClickListener(this.mClickListener);
+        buttonUWants.setOnClickListener(this.mClickListener);
+        buttonComments.setOnClickListener(this.mClickListener);
+        buttonShares.setOnClickListener(this.mClickListener);
+        imageButtonMenu.setOnClickListener(this.mClickListener);
 
         Drawable drawableLeftUWant;
         if (uWant) {
@@ -201,8 +199,8 @@ public class FeedsAdapter extends BaseAdapter {
             drawableLeftUShare = USHARE_DRAWABLE;
         }
 
-        hButtonUWants.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUWant, null, null, null);
-        hButtonShares.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUShare, null, null, null);
+        buttonUWants.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUWant, null, null, null);
+        buttonShares.setCompoundDrawablesWithIntrinsicBounds(drawableLeftUShare, null, null, null);
 
         return convertView;
     }
@@ -254,44 +252,6 @@ public class FeedsAdapter extends BaseAdapter {
             hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
             hImageViewPictureDetail.setVisibility(View.INVISIBLE);
         }
-    }
-
-    private String getTimeAgo(Date when) {
-        Resources resources = this.mContext.getResources();
-
-        String timeAgo;
-        if (when != null) {
-            Date now = new Date();
-            long diff = now.getTime() - when.getTime();
-            int diffMinutes = (int) diff / (60 * 1000);
-            if (diffMinutes > 59) {
-                int diffHours = diffMinutes / 60;
-                if (diffHours > 23) {
-                    int diffDays = diffHours / 24;
-                    if (diffDays > 29) {
-                        int diffMonths = diffDays / 30;
-                        if (diffMonths > 11) {
-                            int diffYears = diffMonths / 12;
-                            timeAgo = resources.getQuantityString(YEARS, diffYears, diffYears); // FINALMENTE...
-                        } else {
-                            timeAgo = resources.getQuantityString(MONTHS, diffMonths, diffMonths);
-                        }
-                    } else {
-                        timeAgo = resources.getQuantityString(DAYS, diffDays, diffDays);
-                    }
-                } else {
-                    timeAgo = resources.getQuantityString(HOURS, diffHours, diffHours);
-                }
-            } else if (diffMinutes > 0) {
-                timeAgo = resources.getQuantityString(MINUTES, diffMinutes, diffMinutes);
-            } else {
-                timeAgo = resources.getString(DEFAULT_TIME_AGO);
-            }
-        } else {
-            timeAgo = resources.getString(DEFAULT_TIME_AGO);
-        }
-
-        return timeAgo;
     }
 
 }

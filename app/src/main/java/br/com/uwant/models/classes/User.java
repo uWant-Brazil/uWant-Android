@@ -17,6 +17,8 @@ public class User extends Person implements Serializable {
     /**
      * Singleton.
      */
+    public static final String EXTRA_UPDATE = "extra_user_update";
+    
     private static final User INSTANCE = new User();
 
     /**

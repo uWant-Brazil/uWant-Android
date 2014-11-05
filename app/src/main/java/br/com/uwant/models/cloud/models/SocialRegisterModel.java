@@ -11,9 +11,18 @@ public class SocialRegisterModel extends AbstractJSONRequestModel {
 
     public static final String EXTRA = "extra_social_model";
 
+    private String facebookId;
     private String login;
     private String token;
     private SocialProvider provider;
+
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
+    }
 
     public String getLogin() {
         return login;
@@ -42,6 +51,7 @@ public class SocialRegisterModel extends AbstractJSONRequestModel {
     @Override
     protected JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty(Requester.ParameterKey.FACEBOOK_ID, this.facebookId);
         jsonObject.addProperty(Requester.ParameterKey.LOGIN, this.login);
         jsonObject.addProperty(Requester.ParameterKey.TOKEN, this.token);
         jsonObject.addProperty(Requester.ParameterKey.SOCIAL_PROVIDER, this.provider.ordinal());

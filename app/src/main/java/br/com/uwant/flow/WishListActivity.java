@@ -29,9 +29,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.facebook.Session;
 import com.facebook.SessionState;
-import com.facebook.model.GraphUser;
 
 import org.lucasr.twowayview.TwoWayView;
 
@@ -52,18 +52,15 @@ import br.com.uwant.models.adapters.WishListProductAdapter;
 import br.com.uwant.models.classes.Manufacturer;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Product;
-import br.com.uwant.models.classes.SocialProvider;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.helpers.UWFileBodyListener;
-import br.com.uwant.models.cloud.models.SocialLinkModel;
 import br.com.uwant.models.cloud.models.WishListCreateModel;
 import br.com.uwant.models.cloud.models.WishListProductPictureModel;
 import br.com.uwant.models.cloud.models.WishListUpdateModel;
-import br.com.uwant.models.databases.UserDatabase;
 import br.com.uwant.utils.PictureUtil;
 import br.com.uwant.utils.UserUtil;
 import br.com.uwant.utils.WishListUtil;
@@ -78,7 +75,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
     private static final String CONST_SWITCH_FACEBOOK_DIALOG = "SwitchFacebookDialog";
     private static final String CONST_HEADS_UP_WIHLIST = "heads_up_wihlist";
     private static final String CONST_LINK_TAG = "link_tag";
-    private boolean mPendingPublishReauthorization;
+    private final List<String> FACEBOOK_PERMISSIONS = Arrays.asList("publish_actions");
     private Multimedia mMultimedia;
 
     public static enum EXTRA_MODE{CREATE, EDIT, DELETE}
@@ -111,61 +108,11 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
         @Override
         public void call(final Session session, SessionState state, Exception exception) {
             if (session.isOpened()) {
-                mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
+                if (mProgressDialog != null) {
+                    mProgressDialog.dismiss();
+                }
 
-                com.facebook.Request.newMeRequest(session, new com.facebook.Request.GraphUserCallback() {
-
-                    @Override
-                    public void onCompleted(final GraphUser graphUser, com.facebook.Response response) {
-                        if (graphUser != null) {
-                            //final String id = graphUser.getId();
-
-                            final String login = graphUser.getUsername();
-                            //final String name = graphUser.getName();
-                            //final String birthday = graphUser.getBirthday();
-                            final String mail = (String) graphUser.getProperty("email");
-                            final String token = session.getAccessToken();
-
-                            final SocialLinkModel model = new SocialLinkModel();
-                            model.setLogin(login == null ? mail : login);
-                            model.setProvider(SocialProvider.FACEBOOK);
-                            model.setToken(token);
-
-                            Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
-
-                                @Override
-                                public void onPreExecute() {
-                                    if (mProgressDialog != null) {
-                                        mProgressDialog.dismiss();
-                                        mProgressDialog.show(getSupportFragmentManager());
-                                    } else {
-                                        mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
-                                    }
-                                }
-
-                                @Override
-                                public void onExecute(Boolean linked) {
-                                    if (mProgressDialog != null) {
-                                        mProgressDialog.dismiss();
-                                    }
-
-                                    updateUserFacebookToken(linked, token);
-                                }
-
-                                @Override
-                                public void onError(RequestError error) {
-                                    if (mProgressDialog != null) {
-                                        mProgressDialog.dismiss();
-                                    }
-
-                                    Toast.makeText(WishListActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
-                                }
-
-                            });
-                        }
-                    }
-
-                }).executeAsync();
+                shareFacebook(mMultimedia);
             } else if (session.isClosed() && !session.isOpened()) {
                 if (mProgressDialog != null) {
                     mProgressDialog.dismiss();
@@ -174,20 +121,6 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
         }
 
     };
-
-    private void updateUserFacebookToken(Boolean linked, String token) {
-        User user = User.getInstance();
-        if (linked) {
-            user.setFacebookToken(token);
-            Toast.makeText(this, R.string.text_link_facebook, Toast.LENGTH_LONG).show();
-        } else {
-            user.setFacebookToken(null);
-            Toast.makeText(this, R.string.text_unlink_facebook, Toast.LENGTH_LONG).show();
-        }
-
-        UserDatabase udb = new UserDatabase(this);
-        udb.update(user);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -377,10 +310,6 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
                 Session session = Session.getActiveSession();
                 if (session != null) {
                     session.onActivityResult(this, requestCode, resultCode, data);
-                    if (mPendingPublishReauthorization) {
-                        mPendingPublishReauthorization = false;
-                        WishListUtil.share(this.mWishList, this.mMultimedia);
-                    }
                 }
                 break;
         }
@@ -436,8 +365,6 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void fillProduct() {
-        if (this.mAdapter != null)
-            this.mAdapter.notifyDataSetChanged();
 
         if (!mTwoWayView.isShown()) {
             mTwoWayView.setVisibility(View.VISIBLE);
@@ -445,13 +372,15 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
             linearLayout.setVisibility(View.GONE);
         }
 
-        mTwoWayView.post(new Runnable() {
-            @Override
-            public void run() {
-                mTwoWayView.setSelection(mAdapter.getCount());
-            }
-        });
-
+        if (this.mAdapter != null) {
+            this.mAdapter.notifyDataSetChanged();
+            mTwoWayView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mTwoWayView.setSelection(mAdapter.getCount());
+                }
+            });
+        }
     }
 
     @Override
@@ -567,8 +496,6 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
                     if (i == 0) {
                         Requester.executeAsync(model, new IRequest.OnRequestListener<Multimedia>() {
 
-                            private final List<String> FACEBOOK_PERMISSIONS = Arrays.asList("publish_actions");
-
                             @Override
                             public void onPreExecute() {
                                 // notification sharing...
@@ -577,35 +504,12 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
                             @Override
                             public void onExecute(Multimedia result) {
                                 // close notification...
-                                Session session = Session.getActiveSession();
-                                if (session != null) {
-                                    // Check for publish permissions
-                                    List<String> permissions = session.getPermissions();
-                                    if (!isSubsetOf(FACEBOOK_PERMISSIONS, permissions)) {
-                                        mPendingPublishReauthorization = true;
-                                        mMultimedia = result;
-
-                                        Session.NewPermissionsRequest newPermissionsRequest = new Session
-                                                .NewPermissionsRequest(WishListActivity.this, FACEBOOK_PERMISSIONS);
-                                        session.requestNewPublishPermissions(newPermissionsRequest);
-                                    } else {
-                                        WishListUtil.share(WishListActivity.this.mWishList, result);
-                                    }
-                                }
+                                shareFacebook(product.getPicture());
                             }
 
                             @Override
                             public void onError(RequestError error) {
                                 // close notification...
-                            }
-
-                            private boolean isSubsetOf(Collection<String> subset, Collection<String> superset) {
-                                for (String string : subset) {
-                                    if (!superset.contains(string)) {
-                                        return false;
-                                    }
-                                }
-                                return true;
                             }
 
                         });
@@ -695,6 +599,37 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
             mNotifyMgr.cancel(NOTIFICATION_ID);
             mBuilder = null;
         }
+    }
+
+    private void shareFacebook(Multimedia result) {
+        mMultimedia = result;
+
+        Session session = Session.getActiveSession();
+        if (session != null) {
+            // Check for publish permissions
+            List<String> permissions = session.getPermissions();
+            if (!isSubsetOf(FACEBOOK_PERMISSIONS, permissions)) {
+                Session.NewPermissionsRequest newPermissionsRequest = new Session
+                        .NewPermissionsRequest(WishListActivity.this, FACEBOOK_PERMISSIONS);
+                session.requestNewPublishPermissions(newPermissionsRequest);
+            } else {
+                //WishListUtil.shareAction(WishListActivity.this.mWishList, result);
+                WishListUtil.share(mWishList, result);
+            }
+        } else {
+            User user = User.getInstance();
+            AccessToken accessToken = AccessToken.createFromExistingAccessToken(user.getFacebookToken(), null, null, null, FACEBOOK_PERMISSIONS);
+            Session.openActiveSessionWithAccessToken(WishListActivity.this, accessToken, callback);
+        }
+    }
+
+    private boolean isSubsetOf(Collection<String> subset, Collection<String> superset) {
+        for (String string : subset) {
+            if (!superset.contains(string)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

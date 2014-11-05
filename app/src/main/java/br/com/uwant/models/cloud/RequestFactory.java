@@ -62,6 +62,10 @@ class RequestFactory extends AbstractFactory<IRequest.Type, Context, IRequest> {
                 request = new UserSearchRequest();
                 break;
 
+            case USER_UPDATE:
+                request = new UserUpdateRequest();
+                break;
+
             case ACTIONS:
                 request = new ActionsRequest();
                 break;

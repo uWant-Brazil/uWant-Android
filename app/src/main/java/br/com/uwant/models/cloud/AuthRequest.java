@@ -98,6 +98,11 @@ public class AuthRequest extends AbstractRequest<User> implements IRequest<AuthM
                         }
                     }
                 }
+
+                if (jsonUser.has(Requester.ParameterKey.MAIL)) {
+                    String mail = jsonUser.get(Requester.ParameterKey.MAIL).getAsString();
+                    user.setMail(mail);
+                }
             }
         }
 
