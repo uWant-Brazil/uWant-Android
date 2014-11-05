@@ -3,18 +3,40 @@ package br.com.uwant.models.classes;
 import java.io.Serializable;
 import java.util.Comparator;
 
+
+/**
+ * Classe de modelagem para os produtos de lista de desejos de usuários.
+ */
 public class Product implements Serializable{
 
-    private long id = 0;
-    private long wishListId;
+    /**
+     * Identificador único.
+     */
+    private long id;
+
+    /**
+     * Nome do produto.
+     */
     private String name;
+
+    /**
+     * Apelido para o produto -> Segundo nome.
+     */
     private String nickName;
+
+    /**
+     * Marca/Fabricante do produto.
+     */
     private Manufacturer manufacturer;
+
+    /**
+     * Foto do produto.
+     */
     private Multimedia picture;
-    /*
-    * Attibuto utilizado para criacao do adapater
-    */
-    private boolean fake;
+
+    public Product() {
+        this.id = 0; // Valor padrão.
+    }
 
     public long getId() {
         return id;
@@ -56,19 +78,4 @@ public class Product implements Serializable{
         this.manufacturer = manufacturer;
     }
 
-    public boolean isFake() {
-        return fake;
-    }
-
-    public void setFake(boolean fake) {
-        this.fake = fake;
-    }
-
-    public long getWishListId() {
-        return wishListId;
-    }
-
-    public void setWishListId(long wishListId) {
-        this.wishListId = wishListId;
-    }
 }

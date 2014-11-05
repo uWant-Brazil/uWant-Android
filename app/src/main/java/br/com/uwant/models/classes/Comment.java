@@ -4,13 +4,28 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by felipebenezi on 01/07/14.
+ * Classe de modelagem para comentários realizados por usuário em ações.
  */
 public class Comment implements Serializable {
 
+    /**
+     * Identificador único.
+     */
     private long id;
+
+    /**
+     * Mensagem do comentário.
+     */
     private String text;
+
+    /**
+     * Usuário responsável por comentar.
+     */
     private Person who;
+
+    /**
+     * Quando esse comentário aconteceu.
+     */
     private Date since;
 
     public long getId() {

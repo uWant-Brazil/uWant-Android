@@ -4,15 +4,46 @@ import java.io.Serializable;
 
 public class User extends Person implements Serializable {
 
+    /**
+     * Constante para análise durante a serialização dessa classe.
+     */
     public static final String EXTRA = "extra_user";
+
+    /**
+     * Constante para análise durante a serialização dessa classe.
+     */
     public static final String EXTRA_ADD_CONTACTS = "extra_add_contacts";
+
+    /**
+     * Singleton.
+     */
     private static final User INSTANCE = new User();
 
+    /**
+     * Token responsável pela autenticação no WS.
+     */
     private String token;
+
+    /**
+     * Token do facebook.
+     */
     private String facebookToken;
 
     public static User getInstance() {
         return INSTANCE;
+    }
+
+    public static void newInstance(User user) {
+        INSTANCE.setId(user.getId());
+        INSTANCE.setLogin(user.getLogin());
+        INSTANCE.setMail(user.getMail());
+        INSTANCE.setName(user.getName());
+        INSTANCE.setGender(user.getGender());
+        INSTANCE.setPicture(user.getPicture());
+        INSTANCE.setToken(INSTANCE.getToken() == null ? user.getToken() : INSTANCE.getToken());
+        INSTANCE.setBirthday(user.getBirthday());
+        INSTANCE.setFacebookToken(user.getFacebookToken());
+        INSTANCE.setFriendshipLevel(user.getFriendshipLevel());
     }
 
     public static void clearInstance() {
@@ -42,19 +73,6 @@ public class User extends Person implements Serializable {
 
     public void setFacebookToken(String facebookToken) {
         this.facebookToken = facebookToken;
-    }
-
-    public static void newInstance(User user) {
-        User instance = getInstance();
-        instance.setToken(instance.getToken() == null ? user.getToken() : instance.getToken());
-        instance.setLogin(user.getLogin());
-        instance.setName(user.getName());
-        instance.setGender(user.getGender());
-        instance.setBirthday(user.getBirthday());
-        instance.setFacebookToken(user.getFacebookToken());
-        instance.setPicture(user.getPicture());
-        instance.setMail(user.getMail());
-        instance.setId(user.getId());
     }
 
 }

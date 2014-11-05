@@ -71,6 +71,10 @@ public abstract class Requester {
         public static final String FACEBOOK_ID = "facebookId";
         public static final String COMMENT = "comment";
         public static final String ACTION = "action";
+        public static final String EMAIL = "email";
+        public static final String FIRST_NAME = "first_name";
+        public static final String LAST_NAME = "last_name";
+        public static final String DATA = "data";
     }
 
     /**

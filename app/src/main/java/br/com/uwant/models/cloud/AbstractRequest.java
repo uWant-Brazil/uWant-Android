@@ -35,16 +35,20 @@ import br.com.uwant.utils.DebugUtil;
  */
 public abstract class AbstractRequest<K> {
 
-    public static final String JSON_CONTENT_TYPE = "application/json; encoding=utf-8;";
     /**
-     * Content-Type para a requisição.
+     * Content-Type.
+     */
+    public static final String JSON_CONTENT_TYPE = "application/json; encoding=utf-8;";
+
+    /**
+     * Content-Type encapsulado para a requisição.
      */
     private static final MediaType MEDIA_TYPE = MediaType.parse(JSON_CONTENT_TYPE);
 
     /**
      * Padrão das URLs de requisição.
      */
-    public static final String URL_COMMON = "http://192.168.1.9:9000/v1" ;
+    public static final String URL_COMMON = "http://192.168.2.11:9000/v1" ;
 
     /**
      * Header responsável por conter o token de autenticação para requisições.
@@ -104,10 +108,14 @@ public abstract class AbstractRequest<K> {
     /**
      * Método responsável por retornar a classe de resposta da requisição.
      * Dentro desse método você deve realizar o pase localmente para debug.
-     * @return
+     * @return K - Classe de resposta
      */
     protected abstract K debugParse();
 
+    /**
+     * Setter -> Contexto inicializante da requisição.
+     * @return context
+     */
     public Context getContext() {
         return mContext;
     }

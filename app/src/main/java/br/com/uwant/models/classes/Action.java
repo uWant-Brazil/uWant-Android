@@ -1,12 +1,14 @@
 package br.com.uwant.models.classes;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Created by felipebenezi on 01/07/14.
+ * Classe de modelagem para "ações" realizadas pela o usuário que são persistidas no WS.
+ * Elas possuem vários tipos, por isso, cada tipo tem sua peculiaridade de resposta.
  */
-public class Action {
+public class Action implements Serializable {
 
     public enum Type {
         ADD_FRIENDS_CIRCLE,
@@ -17,20 +19,67 @@ public class Action {
         WANT,
         REPORT,
         MESSAGE,
-        ACTIVITY;
+        ACTIVITY; // Feed!
     }
 
+    /**
+     * Identificador único.
+     */
     private long id;
+
+    /**
+     * Flag para informar se o usuário "wantou" a ação.
+     */
     private boolean uWant;
+
+    /**
+     * Flag para informar se o usuário compartilhou a ação.
+     */
     private boolean uShare;
+
+    /**
+     * Mensagem da ação.
+     */
     private String message;
+
+    /**
+     * Mensagem extra da ação.
+     */
     private String extra;
+
+    /**
+     * Tipo da ação.
+     */
     private Type type;
+
+    /**
+     * Usuário responsável pela ação.
+     */
     private Person from;
+
+    /**
+     * Quando ocorreu essa ação.
+     */
     private Date when;
+
+    /**
+     * Lista de comentários da ação.
+     */
     private List<Comment> comments;
+
+    /**
+     * Contador de "wants" da ação.
+     */
     private int UWantsCount;
+
+    /**
+     * Contador de comentários da ação.
+     */
     private int commentsCount;
+
+    /**
+     * Quantidade de compartilhamentos da ação.
+     */
     private int SharesCount;
 
     public long getId() {

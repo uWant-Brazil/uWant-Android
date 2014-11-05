@@ -2,10 +2,20 @@ package br.com.uwant.models.classes;
 
 import java.io.Serializable;
 
+/**
+ * Classe de modelagem para as marcas/fabricantes de produtos cadastrados em lista de desejos.
+ * Essa informação será MUITO relevante para levantarmos um relatório analítico dos produtos.
+ */
 public class Manufacturer implements Serializable {
 
+    /**
+     * Identificador único.
+     */
     private long id;
-    private long productId;
+
+    /**
+     * Nome da marca/fabricante.
+     */
     private String name;
 
     public long getId() {
@@ -24,11 +34,4 @@ public class Manufacturer implements Serializable {
         this.name = name;
     }
 
-    public long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(long productId) {
-        this.productId = productId;
-    }
 }

@@ -4,19 +4,43 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by felipebenezi on 01/07/14.
+ * Classe de modelagem para todas as listas de desejos cadastrados por usuários no sistema.
  */
 public class WishList implements Serializable {
 
-
+    /**
+     * Constante para análise durante a serialização dessa classe.
+     */
     public static final String EXTRA = "extra_wishList";
 
+    /**
+     * Constante responsável por identificar se a lista de desejos esta vazia.
+     */
     public static final long EMPTY_ID = 0x456271;
+
+    /**
+     * Constante responsável por identificar uma lista de desejos vazia a partir do ID.
+     */
     public static final long EMPTY_DEFAULT_ID = 0x456123;
 
+    /**
+     * Identificador único.
+     */
     private long id;
+
+    /**
+     * Título da lista de desejos.
+     */
     private String title;
+
+    /**
+     * Descrição da lista de desejos.
+     */
     private String description;
+
+    /**
+     * Produtos da lista de desejos.
+     */
     private List<Product> products;
 
     public WishList() {
