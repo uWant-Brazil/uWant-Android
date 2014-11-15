@@ -32,7 +32,7 @@ import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.utils.PictureUtil;
 
-public class PerfilActivity extends ActionBarActivity implements View.OnClickListener {
+public class PerfilActivity extends ActionBarActivity {
 
     private static final int RQ_UPDATE_USER = 914;
 
@@ -42,8 +42,6 @@ public class PerfilActivity extends ActionBarActivity implements View.OnClickLis
     private PerfilPagerAdapter mAdapter;
     private SearchView.OnQueryTextListener mCurrentFragment;
     private SearchView mSearchView;
-    private ImageView mImageViewPictureDetail;
-    private ImageView mImageViewPicture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +59,6 @@ public class PerfilActivity extends ActionBarActivity implements View.OnClickLis
         }
 
         setContentView(R.layout.activity_perfil);
-
-        final ImageView imageFeed = (ImageView) findViewById(R.id.perfil_imageView_feed);
-        imageFeed.setOnClickListener(this);
-
-        mImageViewPicture = (ImageView) findViewById(R.id.perfil_imageView_picture);
-        mImageViewPictureDetail = (ImageView) findViewById(R.id.perfil_imageView_pictureDetail);
 
         mAdapter = new PerfilPagerAdapter(getSupportFragmentManager());
 
@@ -125,45 +117,6 @@ public class PerfilActivity extends ActionBarActivity implements View.OnClickLis
             tab.setTabListener(tabListener);
             actionBar.addTab(tab);
         }
-
-        String name = mPerson.getName();
-        Multimedia multimedia = mPerson.getPicture();
-
-        final TextView textViewName = (TextView) findViewById(R.id.perfil_textView_name);
-        textViewName.setText(name);
-
-        if (multimedia != null) {
-            ImageLoader imageLoader = ImageLoader.getInstance();
-            imageLoader.displayImage(multimedia.getUrl(), mImageViewPicture, new ImageLoadingListener() {
-
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-                    mImageViewPicture.setImageResource(R.drawable.ic_semfoto);
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    mImageViewPicture.setImageResource(R.drawable.ic_semfoto);
-                    mImageViewPictureDetail.setVisibility(View.INVISIBLE);
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-                    bitmap = PictureUtil.cropToFit(bitmap);
-                    bitmap = PictureUtil.scale(bitmap, mImageViewPicture);
-                    bitmap = PictureUtil.circle(bitmap);
-                    mImageViewPicture.setImageBitmap(bitmap);
-                    mImageViewPictureDetail.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-                    mImageViewPicture.setImageResource(R.drawable.ic_semfoto);
-                    mImageViewPictureDetail.setVisibility(View.INVISIBLE);
-                }
-
-            });
-        }
     }
 
     @Override
@@ -212,13 +165,9 @@ public class PerfilActivity extends ActionBarActivity implements View.OnClickLis
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case RQ_UPDATE_USER:
-                    User user = User.getInstance();
-                    Multimedia multimedia = user.getPicture();
-                    if (multimedia != null) {
-                        Bitmap bitmap = multimedia.getBitmap();
-                        if (bitmap != null) {
-                            mImageViewPicture.setImageBitmap(bitmap);
-                        }
+                    if (mCurrentFragment instanceof WishListFragment) {
+                        WishListFragment wlf = (WishListFragment) mCurrentFragment;
+                        wlf.updatePicture();
                     }
                     break;
 
@@ -234,15 +183,6 @@ public class PerfilActivity extends ActionBarActivity implements View.OnClickLis
         mSearchView.setIconified(false);
         mSearchView.setOnQueryTextListener(mCurrentFragment);
         mSearchView.setQueryHint(getString(R.string.text_hint_perfil_search));
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.perfil_imageView_feed:
-                // TODO Visualizar o feed do usuário que está aberto (this.mPerson).
-                break;
-        }
     }
 
     private class PerfilPagerAdapter extends FragmentStatePagerAdapter {

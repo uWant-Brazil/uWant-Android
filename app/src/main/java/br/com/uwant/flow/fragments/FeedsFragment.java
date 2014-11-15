@@ -189,14 +189,11 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         imageViewEmpty.setOnClickListener(this);
 
         Activity activity = getActivity();
-        if (activity instanceof MainActivity) {
-            MainActivity mainActivity = (MainActivity) activity;
-            mFadeView = mainActivity.findViewById(R.id.main_frameLayout_fade);
+        mFadeView = activity.findViewById(R.id.main_frameLayout_fade);
 
-            if (mFadeView == null) {
-                mFadeView = getActivity().getLayoutInflater().inflate(R.layout.fade_in_out, null);
-                mainActivity.addContentView(mFadeView, new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            }
+        if (mFadeView == null) {
+            mFadeView = getActivity().getLayoutInflater().inflate(R.layout.fade_in_out, null);
+            activity.addContentView(mFadeView, new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
     }
 
