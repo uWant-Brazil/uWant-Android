@@ -8,17 +8,11 @@
 
     <FrameLayout
         android:orientation="vertical"
-        android:background="@drawable/comments_background"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:gravity="center"
         android:layout_width="match_parent"
+        android:background="@drawable/comments_background"
         android:layout_height="match_parent">
-
-        <include
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            layout="@layout/view_empty_contacts"
-            android:layout_gravity="center" />
 
         <include
             android:layout_width="wrap_content"
@@ -26,12 +20,65 @@
             layout="@layout/view_loading_contacts"
             android:layout_gravity="center" />
 
+        <include
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            layout="@layout/view_empty_feed_comments"
+            android:layout_gravity="center" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <LinearLayout
+                android:id="@+id/feed_comment_linearLayout_top"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:orientation="horizontal"
+                android:padding="5dp"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/feed_comment_imageView_top"
+                    android:visibility="visible"
+                    android:src="@drawable/ic_comentario_anteriores_cinza"
+                    android:layout_weight="0"
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <ProgressBar
+                    android:id="@+id/feed_comment_progress_top"
+                    android:visibility="gone"
+                    android:layout_width="37dp"
+                    android:layout_height="37dp" />
+
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:text="@string/text_comment_top"
+                    android:textColor="@color/GRAY_TEXT"
+                    android:textSize="16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view_line_2"
+                android:layout_below="@+id/feed_comment_linearLayout_top"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:alpha="0.5"
+                android:background="@color/GRAY_WITH_TRANSPARENCY_BACKGROUND" />
+
             <ListView
                 android:layout_above="@+id/view_line"
+                android:layout_below="@+id/view_line_2"
                 android:id="@+id/feed_comment_listView"
                 android:divider="@android:color/transparent"
                 android:scrollbars="vertical"
@@ -43,10 +90,6 @@
                 android:gravity="center_horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="10dp"
-                android:paddingTop="1dp"
                 android:choiceMode="singleChoice" />
 
             <View
@@ -54,10 +97,12 @@
                 android:id="@+id/view_line"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:alpha="0.5"
                 android:background="@color/GRAY_WITH_TRANSPARENCY_BACKGROUND" />
 
             <LinearLayout
-                android:layout_margin="3dp"
+                android:background="@color/GRAY_BACKGROUND"
+                android:padding="3dp"
                 android:id="@+id/feed_comment_linearLayout_bottom"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentBottom="true"
@@ -75,15 +120,16 @@
                     android:paddingRight="5dp"
                     android:paddingTop="7dp"
                     android:paddingBottom="7dp"
+                    android:textColor="@color/GRAY_TEXT"
                     android:background="@android:color/transparent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <ImageButton
                     android:id="@+id/feed_comment_imageButton_send"
-                    android:src="@drawable/ic_enviar_mensagem"
+                    android:src="@drawable/comment_selector"
                     android:background="@android:color/transparent"
-                    android:layout_margin="5dp"
+                    android:padding="10dp"
                     android:layout_weight="0"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />

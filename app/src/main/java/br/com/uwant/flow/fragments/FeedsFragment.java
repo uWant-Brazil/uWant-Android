@@ -22,7 +22,6 @@ import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.ContactsActivity;
-import br.com.uwant.flow.MainActivity;
 import br.com.uwant.models.adapters.FeedsAdapter;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Person;
@@ -35,7 +34,6 @@ import br.com.uwant.models.cloud.models.ActionReportModel;
 import br.com.uwant.models.cloud.models.BlockFriendModel;
 import br.com.uwant.models.cloud.models.ExcludeFriendModel;
 import br.com.uwant.models.cloud.models.FeedsModel;
-import br.com.uwant.models.cloud.models.ListCommentsModel;
 import br.com.uwant.models.cloud.models.ShareModel;
 import br.com.uwant.models.cloud.models.WantModel;
 
@@ -76,33 +74,6 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         @Override
         public void onError(RequestError error) {
             // TODO ... Caso de erro? Voltar? Rollback?
-        }
-
-    };
-    private final IRequest.OnRequestListener<Action> LISTENER_COMMENTS = new IRequest.OnRequestListener<Action>() {
-
-        @Override
-        public void onPreExecute() {
-            mFadeView.setClickable(true);
-
-            getFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top, R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
-                    .replace(android.R.id.content, FeedsFragment.this.mFragment, FeedCommentFragment.TAG)
-                    .addToBackStack(FeedCommentFragment.TAG)
-                    .commit();
-        }
-
-        @Override
-        public void onExecute(Action action) {
-            FeedsFragment.this.mActionSelected.setComments(action.getComments());
-            FeedsFragment.this.mFeedsAdapter.notifyDataSetChanged();
-            FeedsFragment.this.mFragment.updateContent(action);
-        }
-
-        @Override
-        public void onError(RequestError error) {
-            Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
         }
 
     };
@@ -159,7 +130,6 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     private Person mPerson;
     private FeedsAdapter mFeedsAdapter;
 
-    private FeedCommentFragment mFragment;
     private GridView mGridView;
     private View mFadeView;
 
@@ -258,7 +228,7 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.adapter_feeds_button_comments:
-                listComments(action);
+                showComments(action);
                 break;
 
             case R.id.adapter_feeds_button_shares:
@@ -302,14 +272,18 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         popup.show();
     }
 
-    private void listComments(Action action) {
-        ListCommentsModel model = new ListCommentsModel();
-        model.setAction(action);
-
+    private void showComments(Action action) {
         mActionSelected = action;
-        mFragment = FeedCommentFragment.newInstance(action);
+        FeedCommentFragment fragment = FeedCommentFragment.newInstance(action);
 
-        Requester.executeAsync(model, LISTENER_COMMENTS);
+        mFadeView.setClickable(true);
+
+        getFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top, R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
+                .replace(android.R.id.content, fragment, FeedCommentFragment.TAG)
+                .addToBackStack(FeedCommentFragment.TAG)
+                .commit();
     }
 
     private void toggleShare(Action action) {

@@ -3,6 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:padding="5dp"
+    android:layout_marginTop="5dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -41,7 +42,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="André Santana"
                 android:textColor="@color/GRAY_TEXT"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -54,11 +54,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Comentário"
                 android:textColor="@color/GRAY_TEXT"
                 android:textSize="16sp"
                 android:maxLines="15"
                 android:maxLength="300"
+                android:layout_marginTop="5dp"
                 android:id="@+id/adapter_feed_comment_textView_comment" />
 
         </LinearLayout>
@@ -80,12 +80,14 @@
             android:layout_height="match_parent" >
 
             <ImageView
+                android:id="@+id/adapter_feed_comment_imageView_uwant"
                 android:src="@drawable/ic_comentario_wantar_cinza"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:text="+1"
+                android:id="@+id/adapter_feed_comment_textView_uwant"
+                android:text=":-("
                 android:textColor="@color/GRAY_TEXT"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
@@ -102,7 +104,6 @@
             android:layout_height="match_parent" >
 
             <TextView
-                android:text="há 20 min"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
                 android:textColor="@color/GRAY_TEXT"

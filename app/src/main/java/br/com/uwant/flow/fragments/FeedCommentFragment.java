@@ -11,7 +11,10 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -26,10 +29,9 @@ import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.CommentModel;
+import br.com.uwant.models.cloud.models.ListCommentsModel;
+import br.com.uwant.utils.KeyboardUtil;
 
-/**
- * Created by felipebenezi on 18/08/14.
- */
 public class FeedCommentFragment extends Fragment implements View.OnClickListener, IRequest.OnRequestListener<Action> {
 
     public static final String TAG = "feed_comment";
@@ -40,6 +42,7 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
 
     private ListView mListView;
     private EditText mEditTextComment;
+    private boolean isPrimeiraVez;
 
     public static FeedCommentFragment newInstance(Action action) {
         FeedCommentFragment f = new FeedCommentFragment();
@@ -50,6 +53,7 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isPrimeiraVez = true;
         this.mComments = new ArrayList<Comment>(25);
         this.mAdapter = new FeedCommentsAdapter(getActivity(), this.mComments);
     }
@@ -68,7 +72,10 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
 
         mEditTextComment = (EditText) view.findViewById(R.id.feed_comment_editText);
 
-        ImageButton imageButtonSend = (ImageButton) view.findViewById(R.id.feed_comment_imageButton_send);
+        final LinearLayout linearLayoutTop = (LinearLayout) view.findViewById(R.id.feed_comment_linearLayout_top);
+        linearLayoutTop.setOnClickListener(this);
+
+        final ImageButton imageButtonSend = (ImageButton) view.findViewById(R.id.feed_comment_imageButton_send);
         imageButtonSend.setOnClickListener(this);
     }
 
@@ -80,6 +87,14 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
             MainActivity mainActivity = (MainActivity) activity;
             mainActivity.fadeIn();
         }
+
+        refresh();
+    }
+
+    private void refresh() {
+        ListCommentsModel model = new ListCommentsModel();
+        model.setAction(this.mAction);
+        Requester.executeAsync(model, this);
     }
 
     @Override
@@ -92,22 +107,6 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    public void updateContent(Action action) {
-        if (this.mComments != null && this.mAdapter != null) {
-            this.mComments.clear();
-
-            List<Comment> comments = action.getComments();
-            if (comments != null && comments.size() > 0) {
-                this.mComments.addAll(comments);
-            } else {
-                getView().findViewById(R.id.contacts_gridView_loading).setVisibility(View.GONE);
-                mListView.setEmptyView(getView().findViewById(R.id.feed_comment_linearLayout_empty));
-            }
-
-            this.mAdapter.notifyDataSetChanged();
-        }
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -115,9 +114,28 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
                 send();
                 break;
 
+            case R.id.feed_comment_linearLayout_top:
+                toggleProgress();
+                break;
+
             default:
                 break;
         }
+    }
+
+    private void toggleProgress() {
+        if (isPrimeiraVez) {
+            isPrimeiraVez = false;
+            return;
+        }
+
+        ProgressBar progressBar = (ProgressBar) getView().findViewById(R.id.feed_comment_progress_top);
+        ImageView imageView = (ImageView) getView().findViewById(R.id.feed_comment_imageView_top);
+
+        int visibility = progressBar.isShown() ? View.GONE : View.VISIBLE;
+        int visibility2 = imageView.isShown() ? View.GONE : View.VISIBLE;
+        progressBar.setVisibility(visibility);
+        imageView.setVisibility(visibility2);
     }
 
     public void setAction(Action action) {
@@ -127,29 +145,48 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
     private void send() {
         String comment = mEditTextComment.getText().toString();
         if (comment != null && !comment.isEmpty()) {
+            KeyboardUtil.hide(mEditTextComment);
+            
             CommentModel model = new CommentModel();
             model.setAction(this.mAction);
             model.setComment(comment);
 
             Requester.executeAsync(model, this);
+            mEditTextComment.setText("");
+        } else {
+            Toast.makeText(getActivity(), R.string.text_alert_comment_empty, Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onPreExecute() {
-        mEditTextComment.setText("");
     }
 
     @Override
-    public void onExecute(Action result) {
-        this.mAction.setComments(result.getComments());
-        this.mComments.clear();
-        this.mComments.addAll(result.getComments());
-        this.mAdapter.notifyDataSetChanged();
+    public void onExecute(Action action) {
+        if (this.mComments != null && this.mAdapter != null) {
+            this.mComments.clear();
+
+            LinearLayout linearLayoutTop = (LinearLayout) getView().findViewById(R.id.feed_comment_linearLayout_top);
+            List<Comment> comments = action.getComments();
+            if (comments != null && comments.size() > 0) {
+                linearLayoutTop.setVisibility(View.VISIBLE);
+                this.mComments.addAll(comments);
+            } else {
+                linearLayoutTop.setVisibility(View.GONE);
+                getView().findViewById(R.id.contacts_gridView_loading).setVisibility(View.GONE);
+                mListView.setEmptyView(getView().findViewById(R.id.feed_comment_linearLayout_empty));
+            }
+
+            this.mAdapter.notifyDataSetChanged();
+        }
+
+        toggleProgress();
     }
 
     @Override
     public void onError(RequestError error) {
         Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
+        toggleProgress();
     }
 }

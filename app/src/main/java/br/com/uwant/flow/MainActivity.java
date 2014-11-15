@@ -44,6 +44,7 @@ import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
+import br.com.uwant.flow.fragments.FeedCommentFragment;
 import br.com.uwant.flow.fragments.FeedsFragment;
 import br.com.uwant.flow.fragments.ProgressFragmentDialog;
 import br.com.uwant.models.adapters.DrawerAdapter;
@@ -168,7 +169,6 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
             @Override
             public void onDrawerOpened(View view) {
-
             }
 
             @Override
