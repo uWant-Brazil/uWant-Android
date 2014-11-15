@@ -10,7 +10,7 @@ public abstract class DebugUtil {
     /**
      * Variável responsável por ativar o monitoramento através de log's no LogCat.
      */
-    public static final boolean DEBUG_LOG = false;
+    public static final boolean DEBUG_LOG = true;
 
     /**
      * Variável responsável por ativar o modo debug para não envio de requisições
