@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,7 +29,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -159,7 +157,7 @@ public class FeedsAdapter extends BaseAdapter {
         WishList wishList = action.getWishList();
         if (wishList != null) {
             List<Product> products = wishList.getProducts();
-            WishListProductAdapter adapter = new WishListProductAdapter(mContext, products);
+            FeedWishListProductAdapter adapter = new FeedWishListProductAdapter(mContext, products);
             vh.twoWayView.setAdapter(adapter);
         }
 
