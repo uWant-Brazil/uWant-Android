@@ -37,6 +37,7 @@ public class UserDatabase extends BaseDatabase<User> {
         cv.put(Key.LOGIN, data.getLogin());
         cv.put(Key.BIRTHDAY, DateUtil.format(data.getBirthday(), DateUtil.DATE_PATTERN));
         cv.put(Key.GENDER, (data.getGender() != null) ? data.getGender().ordinal() : null);
+        cv.put(Key.MAIL, data.getMail());
 
         Multimedia picture = data.getPicture();
         if (picture != null) {
