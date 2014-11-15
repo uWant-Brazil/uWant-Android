@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -30,9 +31,11 @@ import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.CommentModel;
 import br.com.uwant.models.cloud.models.ListCommentsModel;
+import br.com.uwant.models.cloud.models.WantModel;
 import br.com.uwant.utils.KeyboardUtil;
 
-public class FeedCommentFragment extends Fragment implements View.OnClickListener, IRequest.OnRequestListener<Action> {
+public class FeedCommentFragment extends Fragment implements View.OnClickListener,
+        IRequest.OnRequestListener<Action>, AdapterView.OnItemClickListener {
 
     public static final String TAG = "feed_comment";
 
@@ -43,6 +46,23 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
     private ListView mListView;
     private EditText mEditTextComment;
     private boolean isPrimeiraVez;
+
+    private final IRequest.OnRequestListener<Action> LISTENER_WANT = new IRequest.OnRequestListener<Action>() {
+
+        @Override
+        public void onPreExecute() {
+        }
+
+        @Override
+        public void onExecute(Action action) {
+        }
+
+        @Override
+        public void onError(RequestError error) {
+            // TODO ... Caso de erro? Voltar? Rollback?
+        }
+
+    };
 
     public static FeedCommentFragment newInstance(Action action) {
         FeedCommentFragment f = new FeedCommentFragment();
@@ -69,6 +89,7 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
         mListView = (ListView) view.findViewById(R.id.feed_comment_listView);
         mListView.setAdapter(this.mAdapter);
         mListView.setEmptyView(view.findViewById(R.id.contacts_gridView_loading));
+        mListView.setOnItemClickListener(this);
 
         mEditTextComment = (EditText) view.findViewById(R.id.feed_comment_editText);
 
@@ -146,7 +167,7 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
         String comment = mEditTextComment.getText().toString();
         if (comment != null && !comment.isEmpty()) {
             KeyboardUtil.hide(mEditTextComment);
-            
+
             CommentModel model = new CommentModel();
             model.setAction(this.mAction);
             model.setComment(comment);
@@ -165,6 +186,10 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
     @Override
     public void onExecute(Action action) {
         if (this.mComments != null && this.mAdapter != null) {
+            if (this.mComments.size() > 0) {
+                toggleProgress();
+            }
+
             this.mComments.clear();
 
             LinearLayout linearLayoutTop = (LinearLayout) getView().findViewById(R.id.feed_comment_linearLayout_top);
@@ -180,8 +205,6 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
 
             this.mAdapter.notifyDataSetChanged();
         }
-
-        toggleProgress();
     }
 
     @Override
@@ -189,4 +212,28 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
         Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
         toggleProgress();
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Comment comment = this.mComments.get(position);
+        if (comment != null) {
+            WantModel wantModel = new WantModel();
+            wantModel.setComment(comment);
+
+            Requester.executeAsync(wantModel, LISTENER_WANT);
+
+            toggleWant(comment);
+        }
+    }
+
+    private void toggleWant(Comment comment) {
+        boolean isWanted = comment.isuWant();
+        int count = comment.getUWantsCount();
+        if (!isWanted || count > 0) { // Equivalente a [!isWanted || (count > 0 && isWanted)]
+            comment.setUWantsCount(isWanted ? --count : ++count);
+            comment.setuWant(!isWanted);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
 }

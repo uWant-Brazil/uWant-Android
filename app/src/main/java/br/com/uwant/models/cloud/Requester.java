@@ -75,6 +75,7 @@ public abstract class Requester {
         public static final String FIRST_NAME = "first_name";
         public static final String LAST_NAME = "last_name";
         public static final String DATA = "data";
+        public static final String COMMENT_ID = "commentId";
     }
 
     /**

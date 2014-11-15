@@ -28,6 +28,9 @@ public class Comment implements Serializable {
      */
     private Date since;
 
+    private boolean uWant;
+    private int UWantsCount;
+
     public long getId() {
         return id;
     }
@@ -58,5 +61,21 @@ public class Comment implements Serializable {
 
     public void setWho(Person who) {
         this.who = who;
+    }
+
+    public boolean isuWant() {
+        return uWant;
+    }
+
+    public void setuWant(boolean uWant) {
+        this.uWant = uWant;
+    }
+
+    public int getUWantsCount() {
+        return UWantsCount;
+    }
+
+    public void setUWantsCount(int UWantsCount) {
+        this.UWantsCount = UWantsCount;
     }
 }

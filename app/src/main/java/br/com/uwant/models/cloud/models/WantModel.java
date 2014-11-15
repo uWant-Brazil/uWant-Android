@@ -3,6 +3,7 @@ package br.com.uwant.models.cloud.models;
 import com.google.gson.JsonObject;
 
 import br.com.uwant.models.classes.Action;
+import br.com.uwant.models.classes.Comment;
 import br.com.uwant.models.cloud.AbstractJSONRequestModel;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
@@ -13,6 +14,7 @@ import br.com.uwant.models.cloud.Requester;
 public class WantModel extends AbstractJSONRequestModel {
 
     private Action action;
+    private Comment comment;
 
     public void setAction(Action action) {
         this.action = action;
@@ -22,10 +24,22 @@ public class WantModel extends AbstractJSONRequestModel {
         return action;
     }
 
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
     @Override
     protected JsonObject toJson() {
         JsonObject json = new JsonObject();
-        json.addProperty(Requester.ParameterKey.ACTION_ID, this.action.getId());
+        if (this.action != null) {
+            json.addProperty(Requester.ParameterKey.ACTION_ID, this.action.getId());
+        } else if (this.comment != null) {
+            json.addProperty(Requester.ParameterKey.COMMENT_ID, this.comment.getId());
+        }
         return json;
     }
 

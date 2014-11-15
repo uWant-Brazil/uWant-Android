@@ -78,6 +78,8 @@ public class FeedCommentsAdapter extends BaseAdapter {
             holder.hTextViewName = (TextView) convertView.findViewById(R.id.adapter_feed_comment_textView_user);
             holder.hTextViewComment = (TextView) convertView.findViewById(R.id.adapter_feed_comment_textView_comment);
             holder.hTextViewSince = (TextView) convertView.findViewById(R.id.adapter_feed_comment_textView_since);
+            holder.hTextViewUWantCount = (TextView) convertView.findViewById(R.id.adapter_feed_comment_textView_uwant);
+            holder.hImageViewUWant = (ImageView) convertView.findViewById(R.id.adapter_feed_comment_imageView_uwant);
             holder.hImageViewPicture = (ImageView) convertView.findViewById(R.id.adapter_feed_comment_imageView_picture);
             holder.hImageViewPictureDetail = (ImageView) convertView.findViewById(R.id.adapter_feed_comment_imageView_pictureDetail);
 
@@ -94,10 +96,13 @@ public class FeedCommentsAdapter extends BaseAdapter {
         String text = comment.getText();
         String name = who.getName();
         String when = DateUtil.getTimeAgo(this.mContext, since);
+        int count = comment.getUWantsCount();
 
         holder.hTextViewName.setText(name);
         holder.hTextViewComment.setText(text);
         holder.hTextViewSince.setText(when);
+        holder.hTextViewUWantCount.setText(count > 0 ? String.format("+%d", count) : ":-(");
+        holder.hImageViewUWant.setImageResource(comment.isuWant() ? R.drawable.ic_feed_wantar_on : R.drawable.ic_comentario_wantar_cinza);
 
         populatePicture(holder.hImageViewPicture, holder.hImageViewPictureDetail, picture);
 
@@ -157,6 +162,8 @@ public class FeedCommentsAdapter extends BaseAdapter {
         TextView hTextViewName;
         TextView hTextViewComment;
         TextView hTextViewSince;
+        TextView hTextViewUWantCount;
+        ImageView hImageViewUWant;
         ImageView hImageViewPicture;
         ImageView hImageViewPictureDetail;
     }
