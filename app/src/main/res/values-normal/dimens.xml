@@ -3,6 +3,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="cardview_default_margin_bottom">10dp</dimen>
-    <dimen name="wishilistproduct_imageview_horizontal_margin">10dp</dimen>
-    <dimen name="wishilistproduct_imageview_vertical_margin">10dp</dimen>
+    <dimen name="wishilistproduct_imageview_horizontal_margin">12dp</dimen>
+    <dimen name="wishilistproduct_imageview_vertical_margin">12dp</dimen>
 </resources>

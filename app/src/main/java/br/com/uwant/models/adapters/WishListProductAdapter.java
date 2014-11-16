@@ -1,10 +1,13 @@
 package br.com.uwant.models.adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.renderscript.Short4;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +64,8 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
         this.mOptions = new DisplayImageOptions.Builder()
                 .resetViewBeforeLoading(true)
                 .cacheOnDisk(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
+//                .imageScaleType(ImageScaleType.EXACTLY)
+                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .considerExifParams(true)
                 .displayer(new FadeInBitmapDisplayer(300))
@@ -100,6 +104,15 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
         } else {
             holder = (ViewHolder) view.getTag();
         }
+
+        //Tratamento de visualização para diferentes resoluções
+        Resources res = this.mContext.getResources();
+        ViewGroup.LayoutParams params = holder.hImageViewProduct.getLayoutParams();
+        params.width = (int) res.getDimension(R.dimen.wishilistproduct_imageview_horizontal_margin);
+        Log.i("PARAM", " width >>> " + String.valueOf(res.getDimension(R.dimen.wishilistproduct_imageview_horizontal_margin)));
+        params.height = (int) res.getDimension(R.dimen.wishilistproduct_imageview_vertical_margin);
+        Log.i("PARAM", " height >>> " + String.valueOf(res.getDimension(R.dimen.wishilistproduct_imageview_vertical_margin)));
+        holder.hImageViewProduct.setLayoutParams(params);
 
         holder.hButtonRemove.setTag(i);
         Product product = getItem(i);
