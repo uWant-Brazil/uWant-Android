@@ -62,58 +62,73 @@ public class ActionSendCommentRequest extends AbstractRequest<Action> implements
                     for (int i = 0; i < arrayComments.size(); i++) {
                         JsonElement jsonComment = arrayComments.get(i);
                         if (jsonComment.isJsonObject()) {
-                            JsonObject jsonCommentObj = jsonComment.getAsJsonObject();
+                            JsonObject jsonCommentsObj = jsonComment.getAsJsonObject();
 
-                            if (jsonCommentObj.has(Requester.ParameterKey.USER)) {
-                                JsonElement jsonElementPerson = jsonCommentObj.get(Requester.ParameterKey.USER);
-                                if (jsonElementPerson.isJsonObject()) {
-                                    JsonObject jsonFriendObj = jsonElementPerson.getAsJsonObject();
+                            if (jsonCommentsObj.has(Requester.ParameterKey.COMMENT)) {
+                                JsonObject jsonCommentObj = jsonCommentsObj.getAsJsonObject(Requester.ParameterKey.COMMENT);
+                                if (jsonCommentObj.has(Requester.ParameterKey.USER)) {
+                                    JsonElement jsonElementPerson = jsonCommentObj.get(Requester.ParameterKey.USER);
+                                    if (jsonElementPerson.isJsonObject()) {
+                                        JsonObject jsonFriendObj = jsonElementPerson.getAsJsonObject();
 
-                                    if (jsonFriendObj.has(Requester.ParameterKey.LOGIN)
-                                            && jsonFriendObj.has(Requester.ParameterKey.NAME)
-                                            && jsonFriendObj.has(Requester.ParameterKey.ID)) {
-                                        long userId = jsonFriendObj.get(Requester.ParameterKey.ID).getAsLong();
-                                        String login = jsonFriendObj.get(Requester.ParameterKey.LOGIN).getAsString();
-                                        String name = jsonFriendObj.get(Requester.ParameterKey.NAME).getAsString();
+                                        if (jsonFriendObj.has(Requester.ParameterKey.LOGIN)
+                                                && jsonFriendObj.has(Requester.ParameterKey.NAME)
+                                                && jsonFriendObj.has(Requester.ParameterKey.ID)) {
+                                            long userId = jsonFriendObj.get(Requester.ParameterKey.ID).getAsLong();
+                                            String login = jsonFriendObj.get(Requester.ParameterKey.LOGIN).getAsString();
+                                            String name = jsonFriendObj.get(Requester.ParameterKey.NAME).getAsString();
 
-                                        Person who = new Person(userId, login, name);
+                                            Person who = new Person(userId, login, name);
 
-                                        if (jsonFriendObj.has(Requester.ParameterKey.PICTURE)) {
-                                            JsonElement jsonElementPicture = jsonFriendObj.get(Requester.ParameterKey.PICTURE);
-                                            if (!jsonElementPicture.isJsonNull()) {
-                                                JsonObject jsonPicture = jsonElementPicture.getAsJsonObject();
-                                                if (jsonPicture.has(Requester.ParameterKey.URL)) {
-                                                    String url = jsonPicture.get(Requester.ParameterKey.URL).getAsString();
+                                            if (jsonFriendObj.has(Requester.ParameterKey.PICTURE)) {
+                                                JsonElement jsonElementPicture = jsonFriendObj.get(Requester.ParameterKey.PICTURE);
+                                                if (!jsonElementPicture.isJsonNull()) {
+                                                    JsonObject jsonPicture = jsonElementPicture.getAsJsonObject();
+                                                    if (jsonPicture.has(Requester.ParameterKey.URL)) {
+                                                        String url = jsonPicture.get(Requester.ParameterKey.URL).getAsString();
 
-                                                    Multimedia picture = new Multimedia();
-                                                    picture.setUrl(url);
+                                                        Multimedia picture = new Multimedia();
+                                                        picture.setUrl(url);
 
-                                                    who.setPicture(picture);
+                                                        who.setPicture(picture);
+                                                    }
                                                 }
                                             }
-                                        }
 
-                                        if (jsonCommentObj.has(Requester.ParameterKey.ID)
-                                                && jsonCommentObj.has(Requester.ParameterKey.TEXT)
-                                                && jsonCommentObj.has(Requester.ParameterKey.SINCE)) {
-                                            long id = jsonCommentObj.get(Requester.ParameterKey.ID).getAsLong();
-                                            String text = jsonCommentObj.get(Requester.ParameterKey.TEXT).getAsString();
-                                            String sinceStr = jsonCommentObj.get(Requester.ParameterKey.SINCE).getAsString();
-                                            Date since;
-                                            try {
-                                                since = DateUtil.parse(sinceStr, DateUtil.DATE_HOUR_PATTERN);
-                                            } catch (ParseException e) {
-                                                e.printStackTrace();
-                                                since = new Date();
+                                            if (jsonCommentObj.has(Requester.ParameterKey.ID)
+                                                    && jsonCommentObj.has(Requester.ParameterKey.TEXT)
+                                                    && jsonCommentObj.has(Requester.ParameterKey.SINCE)) {
+                                                long id = jsonCommentObj.get(Requester.ParameterKey.ID).getAsLong();
+                                                String text = jsonCommentObj.get(Requester.ParameterKey.TEXT).getAsString();
+                                                String sinceStr = jsonCommentObj.get(Requester.ParameterKey.SINCE).getAsString();
+                                                Date since;
+                                                try {
+                                                    since = DateUtil.parse(sinceStr, DateUtil.DATE_HOUR_PATTERN);
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                    since = new Date();
+                                                }
+
+                                                Comment comment = new Comment();
+                                                comment.setId(id);
+                                                comment.setText(text);
+                                                comment.setWho(who);
+                                                comment.setSince(since);
+
+                                                boolean uWant = false;
+                                                if (jsonCommentsObj.has(Requester.ParameterKey.UWANT)) {
+                                                    uWant = jsonCommentsObj.get(Requester.ParameterKey.UWANT).getAsBoolean();
+                                                }
+                                                comment.setuWant(uWant);
+
+                                                int count = 0;
+                                                if (jsonCommentsObj.has(Requester.ParameterKey.COUNT)) {
+                                                    count = jsonCommentsObj.get(Requester.ParameterKey.COUNT).getAsInt();
+                                                }
+                                                comment.setUWantsCount(count);
+
+                                                comments.add(comment);
                                             }
-
-                                            Comment comment = new Comment();
-                                            comment.setId(id);
-                                            comment.setText(text);
-                                            comment.setWho(who);
-                                            comment.setSince(since);
-
-                                            comments.add(comment);
                                         }
                                     }
                                 }
