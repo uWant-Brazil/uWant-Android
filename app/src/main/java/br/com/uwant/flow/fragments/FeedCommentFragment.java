@@ -19,6 +19,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import br.com.uwant.R;
@@ -46,6 +48,15 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
     private ListView mListView;
     private EditText mEditTextComment;
     private boolean isPrimeiraVez;
+
+    private static final Comparator<Comment> COMMENT_COMPARATOR = new Comparator<Comment>() {
+
+        @Override
+        public int compare(Comment lhs, Comment rhs) {
+            return lhs.getSince().compareTo(rhs.getSince());
+        }
+
+    };
 
     private final IRequest.OnRequestListener<Action> LISTENER_WANT = new IRequest.OnRequestListener<Action>() {
 
@@ -196,6 +207,9 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
             List<Comment> comments = action.getComments();
             if (comments != null && comments.size() > 0) {
                 linearLayoutTop.setVisibility(View.VISIBLE);
+
+                Collections.sort(comments, COMMENT_COMPARATOR);
+
                 this.mComments.addAll(comments);
             } else {
                 linearLayoutTop.setVisibility(View.GONE);
@@ -204,6 +218,7 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
             }
 
             this.mAdapter.notifyDataSetChanged();
+            scrollToBottom();
         }
     }
 
@@ -211,6 +226,15 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
     public void onError(RequestError error) {
         Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
         toggleProgress();
+    }
+
+    private void scrollToBottom() {
+        mListView.post(new Runnable() {
+            @Override
+            public void run() {
+                mListView.setSelection(mAdapter.getCount() - 1);
+            }
+        });
     }
 
     @Override
