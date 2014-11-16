@@ -52,8 +52,8 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
         AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private static final int EMPTY_WISH_LIST_COUNT = 4;
-    private static final int DEFAULT_START_INDEX = 0;
-    private static final int DEFAULT_END_INDEX = 20;
+    private static int DEFAULT_START_INDEX = 0;
+    private static int DEFAULT_END_INDEX = 4;
 
     private boolean mIsFeed;
     private List<WishList> mWishLists;
@@ -256,8 +256,10 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
                 break;
 
             case R.id.wishList_imageButton_create:
-                Intent it = new Intent(getActivity(), WishListActivity.class);
-                startActivity(it);
+                int aux = DEFAULT_END_INDEX;
+                DEFAULT_START_INDEX += aux;
+                DEFAULT_END_INDEX += aux;
+                refresh();
                 break;
 
             case R.id.perfil_imageView_feed:

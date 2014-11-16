@@ -47,6 +47,7 @@ import br.com.uwant.flow.fragments.AlertFragmentDialog;
 import br.com.uwant.flow.fragments.FeedCommentFragment;
 import br.com.uwant.flow.fragments.FeedsFragment;
 import br.com.uwant.flow.fragments.ProgressFragmentDialog;
+import br.com.uwant.flow.fragments.WishListButtonFragment;
 import br.com.uwant.models.adapters.DrawerAdapter;
 import br.com.uwant.models.adapters.FriendsCircleAdapter;
 import br.com.uwant.models.classes.Multimedia;
@@ -66,7 +67,9 @@ import br.com.uwant.utils.PictureUtil;
 public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     public static final String EXIT_DIALOG = "Exit_Dialog";
+
     private FeedsFragment mFeedsFragment;
+    private WishListButtonFragment mWishListButtonFragment;
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -101,7 +104,10 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
 
         mFeedsFragment = new FeedsFragment();
+        mWishListButtonFragment = new WishListButtonFragment();
+
         getSupportFragmentManager().beginTransaction().replace(R.id.main_frameLayout_content, mFeedsFragment, FeedsFragment.TAG).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.feed_frameLayout_root, mWishListButtonFragment, WishListButtonFragment.TAG).commit();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
