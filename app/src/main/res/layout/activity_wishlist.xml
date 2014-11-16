@@ -3,10 +3,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="15dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginBottom="5dp"
+    android:paddingTop="15dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="5dp"
     android:background="@color/GRAY_BACKGROUND">
 
     <LinearLayout
@@ -19,8 +19,9 @@
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
             android:hint="Fale sobre os seus desejos"
-            android:gravity="left|top"
+            android:gravity="start|top"
             style="@style/UWEditText"
+            android:imeOptions="actionNext"
             android:ems="10"
             android:id="@+id/wishList_editText_comment"
             android:layout_weight="1" />
@@ -35,7 +36,7 @@
             android:singleLine="true"
             android:lines="1"
             android:maxLines="1"
-            android:imeOptions="actionNext|actionDone"
+            android:imeOptions="actionNext"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp" />
 
@@ -48,7 +49,7 @@
             android:singleLine="true"
             android:lines="1"
             android:maxLines="1"
-            android:imeOptions="actionNext|actionDone"
+            android:imeOptions="actionNext"
             style="@style/UWEditText" />
 
         <LinearLayout
@@ -82,7 +83,7 @@
             <org.lucasr.twowayview.TwoWayView
                 android:id="@+id/wishList_twoWayView"
                 android:layout_width="match_parent"
-                android:layout_height="175dp"
+                android:layout_height="match_parent"
                 android:visibility="invisible"
                 android:drawSelectorOnTop="false"
                 android:layout_weight="1"/>

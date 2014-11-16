@@ -183,7 +183,9 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
                             mAdapter.notifyDataSetChanged();
                         }
 
-                        WishListUtil.loadPicturesFromProducts(getResources(), mAdapter, wl);
+                        if (!isDetached()) {
+                            WishListUtil.loadPicturesFromProducts(getResources(), mAdapter, wl);
+                        }
                     }
 
                     @Override

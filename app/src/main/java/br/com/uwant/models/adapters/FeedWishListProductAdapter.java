@@ -83,7 +83,6 @@ public class FeedWishListProductAdapter extends BaseAdapter {
             view = LayoutInflater.from(this.mContext).inflate(R.layout.adapter_feed_wish_list_product, viewGroup, false);
             holder.hImageViewProduct = (ImageView) view.findViewById(R.id.adapter_feedWishlistProduct_imageView);
             holder.mProgressBar = (ProgressBar) view.findViewById(R.id.adapter_feedWishlist_product_loading);
-            holder.hPosition = i;
 
             TwoWayView.LayoutParams params = new TwoWayView.LayoutParams(TwoWayView.LayoutParams.MATCH_PARENT, TwoWayView.LayoutParams.WRAP_CONTENT);
 
@@ -98,7 +97,9 @@ public class FeedWishListProductAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
 
+        holder.hPosition = i;
         Product product = getItem(i);
+
         final Multimedia picture = product.getPicture();
         Uri uri = picture.getUri();
         String url = picture.getUrl();

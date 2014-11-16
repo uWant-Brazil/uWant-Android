@@ -37,7 +37,7 @@ import br.com.uwant.utils.PictureUtil;
 
 public class WishListProductAdapter extends BaseAdapter implements View.OnClickListener {
 
-    private static final int SIZE = 300;
+    private static int SIZE;
     private final Context mContext;
     private final DisplayImageOptions mOptions;
     private final ImageSize mTargetSize;
@@ -45,6 +45,9 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
     private WishListActivity.OnProductListener onProductListener;
 
     public WishListProductAdapter(Context context, List<Product> products) {
+        Resources res = context.getResources();
+        SIZE = (res.getDisplayMetrics().heightPixels) / 3;
+
         this.mContext = context;
         this.mProducts = products;
         this.mOptions = new DisplayImageOptions.Builder()
@@ -59,19 +62,20 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
     }
 
     public WishListProductAdapter(Context context, List<Product> products, WishListActivity.OnProductListener onProductListener) {
+        Resources res = context.getResources();
+        SIZE = (res.getDisplayMetrics().heightPixels) / 3;
+
         this.mContext = context;
         this.mProducts = products;
         this.mOptions = new DisplayImageOptions.Builder()
                 .resetViewBeforeLoading(true)
                 .cacheOnDisk(true)
-//                .imageScaleType(ImageScaleType.EXACTLY)
-                .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+                .imageScaleType(ImageScaleType.EXACTLY)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .considerExifParams(true)
                 .displayer(new FadeInBitmapDisplayer(300))
                 .build();
         this.mTargetSize = new ImageSize(SIZE, SIZE);
-        this.onProductListener = onProductListener;
     }
 
     @Override
@@ -99,23 +103,17 @@ public class WishListProductAdapter extends BaseAdapter implements View.OnClickL
             holder.hButtonRemove = (ImageButton) view.findViewById(R.id.adapter_wishlistProduct_button_remove);
             holder.mProgressBar = (ProgressBar) view.findViewById(R.id.adapter_wishlist_product_loading);
             holder.hButtonRemove.setOnClickListener(this);
-            holder.hPosition = i;
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
         }
 
         //Tratamento de visualização para diferentes resoluções
-        Resources res = this.mContext.getResources();
-        ViewGroup.LayoutParams params = holder.hImageViewProduct.getLayoutParams();
-        params.width = (int) res.getDimension(R.dimen.wishilistproduct_imageview_horizontal_margin);
-        Log.i("PARAM", " width >>> " + String.valueOf(res.getDimension(R.dimen.wishilistproduct_imageview_horizontal_margin)));
-        params.height = (int) res.getDimension(R.dimen.wishilistproduct_imageview_vertical_margin);
-        Log.i("PARAM", " height >>> " + String.valueOf(res.getDimension(R.dimen.wishilistproduct_imageview_vertical_margin)));
-        holder.hImageViewProduct.setLayoutParams(params);
 
+        holder.hPosition = i;
         holder.hButtonRemove.setTag(i);
         Product product = getItem(i);
+
         final Multimedia picture = product.getPicture();
         Uri uri = picture.getUri();
         String url = picture.getUrl();
