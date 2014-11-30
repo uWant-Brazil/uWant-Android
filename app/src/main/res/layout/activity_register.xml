@@ -64,10 +64,22 @@
             android:inputType="textPassword"
             android:ems="10"
             android:hint="@string/text_password"
-            android:imeOptions="actionDone"
+            android:imeOptions="actionNext"
             style="@style/UWEditText"
             android:layout_margin="2.5dp"
             android:id="@+id/register_editText_password"
+            android:layout_gravity="center_horizontal" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:hint="@string/text_confirm_password"
+            android:imeOptions="actionDone"
+            style="@style/UWEditText"
+            android:layout_margin="2.5dp"
+            android:id="@+id/register_editText_confirm_password"
             android:layout_gravity="center_horizontal" />
 
         <RadioGroup
@@ -101,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:imeOptions="actionNext"
+            android:imeOptions="actionDone"
             style="@style/UWEditText"
             android:layout_margin="2.5dp"
             android:hint="@string/text_name_plus_last_name"

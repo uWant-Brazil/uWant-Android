@@ -90,6 +90,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     private EditText mEditTextName;
     private EditText mEditTextMail;
     private EditText mEditTextPassword;
+    private EditText mEditTextConfirmPassword;
     private TextView mTextViewBirthday;
     private ImageView mImageViewPicture;
     private ImageView mImageViewPictureDetail;
@@ -117,12 +118,13 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         mEditTextName = (EditText) findViewById(R.id.register_editText_name);
         mEditTextMail = (EditText) findViewById(R.id.register_editText_mail);
         mEditTextPassword = (EditText) findViewById(R.id.register_editText_password);
-        mEditTextPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mEditTextConfirmPassword = (EditText) findViewById(R.id.register_editText_confirm_password);
+        mEditTextConfirmPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_DONE) {
-                    KeyboardUtil.hide(mEditTextPassword);
+                    KeyboardUtil.hide(mEditTextConfirmPassword);
                     return true;
                 }
                 return false;
@@ -151,6 +153,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             fill(user);
 
             mEditTextPassword.setVisibility(View.GONE);
+            mEditTextConfirmPassword.setVisibility(View.GONE);
             mEditTextMail.setEnabled(true);
         }
     }
@@ -466,7 +469,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     }
 
     private void executeRegister() {
-        KeyboardUtil.hide(mEditTextMail);
+        KeyboardUtil.hide(mEditTextConfirmPassword);
 
         String mail = mEditTextMail.getText().toString();
         if (mail.isEmpty()) {
@@ -480,12 +483,22 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
 
             Requester.executeAsync(model, this);
         } else {
+            KeyboardUtil.hide(mEditTextMail);
             KeyboardUtil.hide(mEditTextPassword);
             KeyboardUtil.hide(mEditTextName);
             KeyboardUtil.hide(mEditTextLogin);
 
-            String login = mEditTextLogin.getText().toString();
             String password = mEditTextPassword.getText().toString();
+            String confirmPassword = mEditTextConfirmPassword.getText().toString();
+            if (!password.equals(confirmPassword)) {
+                Toast.makeText(this, "Your password confirmation is wrong! Please, fill the password correctly!", Toast.LENGTH_LONG).show();
+                mEditTextPassword.setText("");
+                mEditTextConfirmPassword.setText("");
+                mEditTextPassword.requestFocus();
+                return;
+            }
+
+            String login = mEditTextLogin.getText().toString();
             String name = mEditTextName.getText().toString();
             String birthday = mTextViewBirthday.getText().toString();
 

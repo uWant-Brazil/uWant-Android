@@ -79,5 +79,6 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_first_comment">Faça o primeiro comentário</string>
     <string name="text_alert_comment_empty">Digite o texto a ser enviado...</string>
     <string name="text_comment_top">Exibir comentários anteriores</string>
+    <string name="text_confirm_password">Confirm password</string>
 
 </resources>
