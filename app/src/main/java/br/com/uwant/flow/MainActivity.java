@@ -34,7 +34,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.security.MessageDigest;
@@ -121,39 +125,6 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
 
         final LinearLayout linearLayoutPerfil = (LinearLayout) view.findViewById(R.id.drawer_linearLayout_perfil);
         linearLayoutPerfil.setOnClickListener(this);
-
-        User user = User.getInstance();
-        String name = user.getName();
-        if (name != null) {
-            mTextViewUserName.setText(name);
-        }
-
-        final Multimedia picture = user.getPicture();
-        if (picture != null) {
-            Bitmap bitmap = picture.getBitmap();
-            String url = picture.getUrl();
-            if (bitmap != null) {
-                mImageViewPicture.setImageBitmap(bitmap);
-                mImageViewPictureDetail.setVisibility(View.VISIBLE);
-            } else if (url != null && !url.isEmpty()) {
-                ImageLoader imageLoader = ImageLoader.getInstance();
-                imageLoader.loadImage(url, new SimpleImageLoadingListener() {
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        loadedImage = PictureUtil.cropToFit(loadedImage);
-                        loadedImage = PictureUtil.scale(loadedImage, mImageViewPicture);
-                        loadedImage = PictureUtil.circle(loadedImage);
-
-                        mImageViewPicture.setImageBitmap(loadedImage);
-                        mImageViewPictureDetail.setVisibility(View.VISIBLE);
-
-                        picture.setBitmap(loadedImage);
-                    }
-
-                });
-            }
-        }
 
         mDrawerAdapter = new DrawerAdapter(this);
         mDrawerList.setAdapter(mDrawerAdapter);
@@ -247,6 +218,59 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
             }
 
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUser();
+    }
+
+    private void updateUser() {
+        User user = User.getInstance();
+        String name = user.getName();
+        if (name != null) {
+            mTextViewUserName.setText(name);
+        }
+
+        final Multimedia picture = user.getPicture();
+        if (picture != null) {
+            Bitmap bitmap = picture.getBitmap();
+            String url = picture.getUrl();
+            if (bitmap != null) {
+                mImageViewPicture.setImageBitmap(bitmap);
+                mImageViewPictureDetail.setVisibility(View.VISIBLE);
+            } else if (url != null && !url.isEmpty()) {
+                float dpi = getResources().getDisplayMetrics().density;
+                int size = (int) (dpi * 76);
+                DisplayImageOptions options = new DisplayImageOptions.Builder()
+                        .resetViewBeforeLoading(true)
+                        .cacheOnDisk(true)
+                        .imageScaleType(ImageScaleType.EXACTLY)
+                        .bitmapConfig(Bitmap.Config.RGB_565)
+                        .considerExifParams(true)
+                        .displayer(new FadeInBitmapDisplayer(300))
+                        .build();
+                ImageSize imageSize = new ImageSize(size, size);
+
+                ImageLoader imageLoader = ImageLoader.getInstance();
+                imageLoader.loadImage(url, imageSize, options, new SimpleImageLoadingListener() {
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        loadedImage = PictureUtil.cropToFit(loadedImage);
+                        loadedImage = PictureUtil.scale(loadedImage, mImageViewPicture);
+                        loadedImage = PictureUtil.circle(loadedImage);
+
+                        mImageViewPicture.setImageBitmap(loadedImage);
+                        mImageViewPictureDetail.setVisibility(View.VISIBLE);
+
+                        picture.setBitmap(loadedImage);
+                    }
+
+                });
+            }
+        }
     }
 
     @Override

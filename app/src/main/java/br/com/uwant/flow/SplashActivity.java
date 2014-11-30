@@ -32,10 +32,10 @@ public class SplashActivity extends Activity implements Runnable {
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
                 .diskCacheExtraOptions(480, 800, null)
                 .denyCacheImageMultipleSizesInMemory()
-                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-                .memoryCacheSize(2 * 1024 * 1024)
-                .diskCacheSize(50 * 1024 * 1024)
-                .diskCacheFileCount(100)
+                .memoryCache(new LruMemoryCache(4 * 1024 * 1024))
+                .memoryCacheSize(4 * 1024 * 1024)
+                .diskCacheSize(100 * 1024 * 1024)
+                .diskCacheFileCount(200)
                 .writeDebugLogs()
                 .build();
         ImageLoader.getInstance().init(config);

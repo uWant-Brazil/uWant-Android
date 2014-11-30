@@ -17,6 +17,16 @@ import java.io.File;
 
 public abstract class PictureUtil {
 
+    public static Bitmap decodeBitmap(Bitmap bitmap, ImageView imageViewPicture) {
+        bitmap = cropToFit(bitmap);
+        bitmap = scale(bitmap, imageViewPicture);
+        bitmap = circle(bitmap);
+
+        imageViewPicture.setImageBitmap(bitmap);
+
+        return bitmap;
+    }
+
     public static Bitmap decodePicture(File picture, ImageView imageViewPicture) {
         // Obtém o tamanho da ImageView
         int targetW = imageViewPicture.getWidth();
@@ -42,13 +52,7 @@ public abstract class PictureUtil {
         bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(picture.getAbsolutePath(), bmOptions);
-        bitmap = cropToFit(bitmap);
-        bitmap = scale(bitmap, imageViewPicture);
-        bitmap = circle(bitmap);
-
-        imageViewPicture.setImageBitmap(bitmap);
-
-        return bitmap;
+        return decodeBitmap(bitmap, imageViewPicture);
     }
 
     public static Bitmap scale(Bitmap bitmap, ImageView imageViewPicture) {
@@ -96,10 +100,10 @@ public abstract class PictureUtil {
         activity.startActivityForResult(intent, requestCode);
     }
 
-    public static void takePicture(Activity activity, File picture, int requestCode) {
-        Intent intentPicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intentPicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(picture));
-        activity.startActivityForResult(intentPicture, requestCode);
+    public static void takePicture(Activity activity, int requestCode) {
+        Intent i = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        activity.startActivityForResult(i, requestCode);
     }
 
 }

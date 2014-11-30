@@ -8,7 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -35,8 +37,16 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.utils.DiskCacheUtils;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -88,6 +98,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     private RadioGroup mRadioGroupGender;
     private ProgressFragmentDialog mProgressDialog;
     private NotificationCompat.Builder mBuilder;
+    private Uri mUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,47 +201,146 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                 mImageViewPictureDetail.setVisibility(View.VISIBLE);
                 mImageViewPicture.setImageBitmap(bitmap);
             } else if (url != null) {
-                float dpi = getResources().getDisplayMetrics().density;
-                int size = (int) (dpi * 76);
-                DisplayImageOptions options = new DisplayImageOptions.Builder()
-                        .resetViewBeforeLoading(true)
-                        .cacheOnDisk(true)
-                        .imageScaleType(ImageScaleType.EXACTLY)
-                        .bitmapConfig(Bitmap.Config.RGB_565)
-                        .considerExifParams(true)
-                        .displayer(new FadeInBitmapDisplayer(300))
-                        .build();
-                ImageSize imageSize = new ImageSize(size, size);
-
-                final ImageLoader imageLoader = ImageLoader.getInstance();
-                imageLoader.loadImage(url, imageSize, options, new ImageLoadingListener() {
-
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
-                        bitmap = PictureUtil.cropToFit(bitmap);
-                        bitmap = PictureUtil.scale(bitmap, mImageViewPicture);
-                        bitmap = PictureUtil.circle(bitmap);
-                        mImageViewPictureDetail.setVisibility(View.VISIBLE);
-                        mImageViewPicture.setImageBitmap(bitmap);
-
-                        picture.setBitmap(bitmap);
-                    }
-
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
-                    }
-
-                });
+                loadPictureAsync(picture, url);
             }
         }
+    }
+
+    private void loadPictureAsync(Uri uri) {
+        new AsyncTask<Object, Void, Bitmap>() {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
+            }
+
+            @Override
+            protected Bitmap doInBackground(Object... objects) {
+                Uri uri = (Uri) objects[0];
+
+                try {
+                    Bitmap bitmap = Picasso.with(RegisterActivity.this)
+                            .load(uri)
+                            .placeholder(R.drawable.ic_semfoto).get();
+
+                    return bitmap;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                if (bitmap != null) {
+                    bitmap = PictureUtil.cropToFit(bitmap);
+                    bitmap = PictureUtil.scale(bitmap, mImageViewPicture);
+                    bitmap = PictureUtil.circle(bitmap);
+
+                    mImageViewPictureDetail.setVisibility(View.VISIBLE);
+                    mImageViewPicture.setImageBitmap(bitmap);
+
+                    mBitmap = bitmap;
+                }
+                mProgressDialog.dismiss();
+            }
+
+        }.execute(uri);
+    }
+
+    private void loadPictureAsync(final Multimedia picture, String url) {
+        float dpi = getResources().getDisplayMetrics().density;
+        int size = (int) (dpi * 76);
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .resetViewBeforeLoading(true)
+                .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .considerExifParams(true)
+                .displayer(new FadeInBitmapDisplayer(300))
+                .build();
+        ImageSize imageSize = new ImageSize(size, size);
+
+        final ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.loadImage(url, imageSize, options, new ImageLoadingListener() {
+
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+                bitmap = PictureUtil.cropToFit(bitmap);
+                bitmap = PictureUtil.scale(bitmap, mImageViewPicture);
+                bitmap = PictureUtil.circle(bitmap);
+                mImageViewPictureDetail.setVisibility(View.VISIBLE);
+                mImageViewPicture.setImageBitmap(bitmap);
+
+                picture.setBitmap(bitmap);
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+            }
+
+        });
+    }
+
+    private void loadPictureAsync(final String url) {
+        float dpi = getResources().getDisplayMetrics().density;
+        int size = (int) (dpi * 76);
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .resetViewBeforeLoading(true)
+                .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .considerExifParams(true)
+                .displayer(new FadeInBitmapDisplayer(300))
+                .build();
+        ImageSize imageSize = new ImageSize(size, size);
+
+        final ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.loadImage(url, imageSize, options, new ImageLoadingListener() {
+
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                mProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+                File file = DiskCacheUtils.findInCache(url, imageLoader.getDiskCache());
+                mUri = Uri.fromFile(file);
+
+                bitmap = PictureUtil.cropToFit(bitmap);
+                bitmap = PictureUtil.scale(bitmap, mImageViewPicture);
+                bitmap = PictureUtil.circle(bitmap);
+
+                mImageViewPictureDetail.setVisibility(View.VISIBLE);
+                mImageViewPicture.setImageBitmap(bitmap);
+
+                mBitmap = bitmap;
+                mProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+                mProgressDialog.dismiss();
+            }
+
+        });
     }
 
 //    private void retrieveFacebookPicture(final String url) {
@@ -289,7 +399,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                     mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
                             Environment.DIRECTORY_PICTURES),
                             "uwant_picture");
-                    PictureUtil.takePicture(RegisterActivity.this, mPicturePath, PICTURE_REQUEST_CODE);
+                    PictureUtil.takePicture(RegisterActivity.this, PICTURE_REQUEST_CODE);
                 }
             }
 
@@ -432,19 +542,19 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK && data != null) {
             if (requestCode == PICTURE_REQUEST_CODE) {
                 mPictureUpdated = true;
                 mImageViewPictureDetail.setVisibility(View.VISIBLE);
                 mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPicture);
             } else if (requestCode == GALLERY_REQUEST_CODE) {
                 mPictureUpdated = true;
-                Uri selectedImage = data.getData();
+                mUri = data.getData();
                 String[] filePathColumn = {
                         MediaStore.Images.Media.DATA };
 
                 Cursor cursor = getContentResolver().query(
-                        selectedImage, filePathColumn, null, null, null);
+                        mUri, filePathColumn, null, null, null);
                 cursor.moveToFirst();
 
                 int columnIndex = cursor.getColumnIndex(
@@ -452,9 +562,35 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                 String filePath = cursor.getString(columnIndex);
                 cursor.close();
 
-                mPicturePath = new File(filePath);
-                mImageViewPictureDetail.setVisibility(View.VISIBLE);
-                mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPicture);
+                if ((filePath == null || filePath.isEmpty())
+                        && data.getType().startsWith("image/")
+                        && data.getData() != null
+                        && data.getDataString() != null && data.getDataString().contains("docs.file")) {
+                    try {
+                        mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES),
+                                "uwant_picture");
+
+                        InputStream inputStream = getContentResolver().openInputStream(mUri);
+                        byte[] buffer = new byte[inputStream.available()];
+                        inputStream.read(buffer);
+
+                        OutputStream outStream = new FileOutputStream(mPicturePath);
+                        outStream.write(buffer);
+                        mUri = Uri.fromFile(mPicturePath);
+
+                        loadPictureAsync(mUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (filePath.startsWith("http")) {
+                    loadPictureAsync(filePath);
+                } else {
+                    mPicturePath = new File(filePath);
+                    mUri = Uri.fromFile(mPicturePath);
+                    mImageViewPictureDetail.setVisibility(View.VISIBLE);
+                    mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPicture);
+                }
             }
         }
     }
@@ -487,17 +623,17 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         }
 
         if (this.mPictureUpdated
-                && this.mPicturePath != null
-                && this.mPicturePath.exists()) {
+                && this.mUri != null) {
             Multimedia multimedia = new Multimedia();
-            multimedia.setUri(Uri.fromFile(this.mPicturePath));
+            multimedia.setUri(this.mUri);
             multimedia.setBitmap(mBitmap);
+
             result.setPicture(multimedia);
 
             RegisterPictureModel model = new RegisterPictureModel();
             model.setUser(result);
             model.setListener(this);
-            Requester.executeAsync(model, new IRequest.OnRequestListener<Multimedia>() {
+            Requester.executeAsync(model, new IRequest.OnRequestListener() {
 
                 @Override
                 public void onPreExecute() {
@@ -505,20 +641,21 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                 }
 
                 @Override
-                public void onExecute(Multimedia picture) {
-                    picture.setBitmap(mBitmap);
-                    result.setPicture(picture);
-                    UserDatabase db = new UserDatabase(getApplicationContext());
-                    db.update(result);
+                public void onExecute(Object result) {
+
                 }
 
                 @Override
                 public void onError(RequestError error) {
-
+                    NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    mNotifyMgr.cancel(NOTIFICATION_ID);
+                    mBuilder = null;
                 }
 
             });
         }
+
+        User.newInstance(result);
 
         DialogInterface.OnClickListener lp = new DialogInterface.OnClickListener() {
 
@@ -555,6 +692,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         mBuilder =
                 new NotificationCompat.Builder(this)
                         .setAutoCancel(false)
+                        .setOngoing(true)
                         .setSmallIcon(R.drawable.ic_action_uwant)
                         .setContentTitle(getString(R.string.app_name))
                         .setProgress(totalAmount, 0, false)

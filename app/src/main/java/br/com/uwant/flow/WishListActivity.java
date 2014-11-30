@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -32,13 +33,17 @@ import android.widget.Toast;
 import com.facebook.AccessToken;
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.squareup.picasso.Picasso;
 
 import org.lucasr.twowayview.TwoWayView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -77,6 +82,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
     private static final String CONST_LINK_TAG = "link_tag";
     private final List<String> FACEBOOK_PERMISSIONS = Arrays.asList("publish_actions");
     private Multimedia mMultimedia;
+    private Uri mUri;
 
     public static enum EXTRA_MODE{CREATE, EDIT, DELETE}
 
@@ -269,49 +275,95 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case RQ_OPEN_CAMERA:
-                if (resultCode == RESULT_OK
-                        && this.mLastProductPicture != null
-                        && this.mLastProductPicture.exists()) {
+        if (resultCode == RESULT_OK && data != null) {
+            if (requestCode == RQ_OPEN_CAMERA) {
+                saveProduct(this.mLastProductPicture);
+                this.mLastProductPicture = null;
+            } else if (requestCode == RQ_OPEN_GALLERY) {
+                mUri = data.getData();
+                String[] filePathColumn = {
+                        MediaStore.Images.Media.DATA };
+
+                Cursor cursor = getContentResolver().query(
+                        mUri, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(
+                        filePathColumn[0]);
+                String filePath = cursor.getString(columnIndex);
+                cursor.close();
+
+                if ((filePath == null || filePath.isEmpty())
+                        && data.getType().startsWith("image/")
+                        && data.getData() != null
+                        && data.getDataString() != null && data.getDataString().contains("docs.file")) {
+                    try {
+                        InputStream inputStream = getContentResolver().openInputStream(mUri);
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                        Multimedia multimedia = new Multimedia();
+                        multimedia.setBitmap(bitmap);
+                        fillProduct(multimedia);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        mLastProductPicture = new File(Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES),
+                                String.format("uw-product-%d.jpg", System.currentTimeMillis()));
+
+                        InputStream inputStream = getContentResolver().openInputStream(mUri);
+                        byte[] buffer = new byte[inputStream.available()];
+                        inputStream.read(buffer);
+
+                        OutputStream outStream = new FileOutputStream(mLastProductPicture);
+                        outStream.write(buffer);
+                        mUri = Uri.fromFile(mLastProductPicture);
+
+                        saveProduct(mLastProductPicture);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (filePath.startsWith("http")) {
+                    saveProduct(filePath);
+                } else {
+                    this.mLastProductPicture = new File(filePath);
                     saveProduct(this.mLastProductPicture);
-
-                    this.mLastProductPicture = null;
                 }
-                break;
+            }
+        }
 
-            case RQ_OPEN_GALLERY:
-                if (resultCode == RESULT_OK) {
-                    Uri selectedImage = data.getData();
-                    String[] filePathColumn = {
-                            MediaStore.Images.Media.DATA};
+        if (resultCode == RESULT_OK) {
+            if (requestCode == RQ_OPEN_CAMERA) {
+                saveProduct(this.mLastProductPicture);
+                this.mLastProductPicture = null;
+            } else if (requestCode == RQ_OPEN_GALLERY) {
+                Uri selectedImage = data.getData();
+                String[] filePathColumn = {
+                        MediaStore.Images.Media.DATA};
 
-                    Cursor cursor = getContentResolver().query(
-                            selectedImage, filePathColumn, null, null, null);
-                    cursor.moveToFirst();
+                Cursor cursor = getContentResolver().query(
+                        selectedImage, filePathColumn, null, null, null);
+                cursor.moveToFirst();
 
-                    int columnIndex = cursor.getColumnIndex(
-                            filePathColumn[0]);
-                    String filePath = cursor.getString(columnIndex);
-                    cursor.close();
+                int columnIndex = cursor.getColumnIndex(
+                        filePathColumn[0]);
+                String filePath = cursor.getString(columnIndex);
+                cursor.close();
 
-                    File pictureFile = new File(filePath);
-                    saveProduct(pictureFile);
-                }
-                break;
-
-            case RQ_FACEBOOK_LINK:
-                if (resultCode != RESULT_OK || !UserUtil.hasFacebook()) {
-                    mSwitchView.setChecked(false);
-                }
-                break;
-
-            default:
+                this.mLastProductPicture = new File(filePath);
+                saveProduct(this.mLastProductPicture);
+            }
+        } else {
+            if ((resultCode != RESULT_OK || !UserUtil.hasFacebook()) && requestCode == RQ_FACEBOOK_LINK) {
+                mSwitchView.setChecked(false);
+            } else {
                 Session session = Session.getActiveSession();
                 if (session != null) {
                     session.onActivityResult(this, requestCode, resultCode, data);
                 }
-                break;
+            }
         }
     }
 
@@ -391,7 +443,7 @@ public class WishListActivity extends ActionBarActivity implements View.OnClickL
                         Environment.DIRECTORY_PICTURES),
                         String.format("uw-product-%d.jpg", System.currentTimeMillis()));
 
-                PictureUtil.takePicture(this, this.mLastProductPicture, RQ_OPEN_CAMERA);
+                PictureUtil.takePicture(this, RQ_OPEN_CAMERA);
                 break;
 
             case R.id.wishList_imageButton_gallery:
