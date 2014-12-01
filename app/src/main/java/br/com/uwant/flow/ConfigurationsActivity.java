@@ -49,6 +49,7 @@ import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.ExcludeAccountModel;
 import br.com.uwant.models.cloud.models.SocialLinkModel;
+import br.com.uwant.models.cloud.models.SocialRegisterModel;
 import br.com.uwant.models.databases.UserDatabase;
 
 public class ConfigurationsActivity extends PreferenceActivity {
@@ -75,15 +76,12 @@ public class ConfigurationsActivity extends PreferenceActivity {
                             final String id = graphUser.getId();
 
                             final String login = graphUser.getUsername();
-                            //final String name = graphUser.getName();
-                            //final String birthday = graphUser.getBirthday();
                             final String mail = (String) graphUser.getProperty("email");
-                            final String token = session.getAccessToken();
 
                             final SocialLinkModel model = new SocialLinkModel();
                             model.setLogin(login == null ? mail : login);
                             model.setProvider(SocialProvider.FACEBOOK);
-                            model.setToken(token);
+                            model.setToken(session.getAccessToken());
                             model.setFacebookId(id);
 
                             Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
@@ -95,7 +93,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
                                 @Override
                                 public void onExecute(Boolean linked) {
                                     dismissProgress();
-                                    updateUserFacebookToken(linked, token);
+                                    updateUserFacebookToken(linked, model.getToken());
                                 }
 
                                 @Override
@@ -359,15 +357,12 @@ public class ConfigurationsActivity extends PreferenceActivity {
                                 final String id = graphUser.getId();
 
                                 final String login = graphUser.getUsername();
-                                //final String name = graphUser.getName();
-                                //final String birthday = graphUser.getBirthday();
                                 final String mail = (String) graphUser.getProperty("email");
-                                final String token = session.getAccessToken();
 
                                 final SocialLinkModel model = new SocialLinkModel();
                                 model.setLogin(login == null ? mail : login);
                                 model.setProvider(SocialProvider.FACEBOOK);
-                                model.setToken(token);
+                                model.setToken(session.getAccessToken());
                                 model.setFacebookId(id);
 
                                 Requester.executeAsync(model, new IRequest.OnRequestListener<Boolean>() {
@@ -379,7 +374,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
                                     @Override
                                     public void onExecute(Boolean linked) {
                                         dismissProgress();
-                                        updateUserFacebookToken(linked, token);
+                                        updateUserFacebookToken(linked, model.getToken());
                                     }
 
                                     @Override
