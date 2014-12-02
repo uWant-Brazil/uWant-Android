@@ -132,6 +132,10 @@ public class FeedWishListProductAdapter extends BaseAdapter {
             protected void onPostExecute(Bitmap bitmap) {
                 super.onPostExecute(bitmap);
                 if (bitmap != null) {
+                    Product product = getItem(position);
+                    Multimedia multimedia = product.getPicture();
+                    multimedia.setBitmap(bitmap);
+
                     if (viewHolder.hPosition == position) {
                         viewHolder.hImageViewProduct.setImageBitmap(bitmap);
                         viewHolder.hImageViewProduct.setVisibility(View.VISIBLE);
@@ -172,6 +176,10 @@ public class FeedWishListProductAdapter extends BaseAdapter {
             protected void onPostExecute(Bitmap bitmap) {
                 super.onPostExecute(bitmap);
                 if (bitmap != null) {
+                    Product product = getItem(position);
+                    Multimedia multimedia = product.getPicture();
+                    multimedia.setBitmap(bitmap);
+
                     if (viewHolder.hPosition == position) {
                         viewHolder.hImageViewProduct.setImageBitmap(bitmap);
                         viewHolder.hImageViewProduct.setVisibility(View.VISIBLE);

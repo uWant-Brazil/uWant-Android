@@ -94,6 +94,10 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
                                 @Override
                                 public void onExecute(Boolean registered) {
                                     if (registered) {
+                                        User user = User.getInstance();
+                                        user.setFacebookId(id);
+                                        user.setFacebookToken(session.getAccessToken());
+
                                         final List<Person> persons = new ArrayList<Person>(200);
 
                                         Bundle params = new Bundle();
@@ -137,11 +141,13 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
                                             }
                                         }
 
-                                        User user = new User();
+                                        User user = User.getInstance();
                                         user.setLogin(login == null ? mail : login);
                                         user.setName(name);
                                         user.setMail(mail);
                                         user.setGender(gender);
+                                        user.setFacebookId(id);
+                                        user.setFacebookToken(session.getAccessToken());
 
                                         if (birthday != null) {
                                             try {

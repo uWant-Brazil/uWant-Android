@@ -17,6 +17,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.Session;
+import com.facebook.SessionState;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +27,7 @@ import br.com.uwant.R;
 import br.com.uwant.flow.ContactsActivity;
 import br.com.uwant.models.adapters.FeedsAdapter;
 import br.com.uwant.models.classes.Action;
+import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.classes.WishList;
@@ -36,6 +40,7 @@ import br.com.uwant.models.cloud.models.ExcludeFriendModel;
 import br.com.uwant.models.cloud.models.FeedsModel;
 import br.com.uwant.models.cloud.models.ShareModel;
 import br.com.uwant.models.cloud.models.WantModel;
+import br.com.uwant.utils.UserUtil;
 
 public class FeedsFragment extends Fragment implements View.OnClickListener,
         IRequest.OnRequestListener<List<Action>>, PopupMenu.OnMenuItemClickListener, FragmentManager.OnBackStackChangedListener {
@@ -44,6 +49,21 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     private static final int DEFAULT_START_INDEX = 0;
     private static final int DEFAULT_END_INDEX = 20;
     private static final int RQ_ADD_CONTACTS = 2139;
+
+    private final Session.StatusCallback callback = new Session.StatusCallback() {
+
+        @Override
+        public void call(final Session session, SessionState state, Exception exception) {
+            if (session.isOpened()) {
+                UserUtil.shareFacebook(getActivity(), this, mProgressDialog, mActionSelected.getWishList(), mMultimedia);
+            } else if (session.isClosed() && !session.isOpened()) {
+                if (mProgressDialog != null) {
+                    mProgressDialog.dismiss();
+                }
+            }
+        }
+
+    };
 
     private final IRequest.OnRequestListener<Action> LISTENER_WANT = new IRequest.OnRequestListener<Action>() {
 
@@ -127,15 +147,23 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     private List<Action> mActions;
     private Action mActionSelected;
     private WishList mWishList;
+    private Multimedia mMultimedia;
     private Person mPerson;
     private FeedsAdapter mFeedsAdapter;
 
+    private ProgressFragmentDialog mProgressDialog;
     private GridView mGridView;
     private View mFadeView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Session session = Session.getActiveSession();
+        if (session == null && savedInstanceState != null) {
+            session = Session.restoreSession(getActivity(), null, callback, savedInstanceState);
+            Session.setActiveSession(session);
+        }
+
         getFragmentManager().addOnBackStackChangedListener(FeedsFragment.this);
         mActions = new ArrayList<Action>(25);
     }
@@ -232,11 +260,11 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.adapter_feeds_button_shares:
-                ShareModel shareModel = new ShareModel();
-                shareModel.setAction(action);
-
-                Requester.executeAsync(shareModel, LISTENER_SHARE);
-                toggleShare(action);
+                if (UserUtil.hasFacebook()) {
+                    performShare(action);
+                } else {
+                    UserUtil.showFacebookDialog(getActivity());
+                }
                 break;
 
             case R.id.adapter_feeds_imageButton:
@@ -254,11 +282,34 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         }
     }
 
+    private void performShare(Action action) {
+        shareOnFacebook(action);
+
+        ShareModel shareModel = new ShareModel();
+        shareModel.setAction(action);
+
+        Requester.executeAsync(shareModel, LISTENER_SHARE);
+        toggleShare(action);
+    }
+
+    private void shareOnFacebook(Action action) {
+        this.mProgressDialog = ProgressFragmentDialog.show(R.string.text_sharing, getFragmentManager());
+
+        this.mActionSelected = action;
+        this.mMultimedia = action.getWishList().getProducts().get(0).getPicture();
+        UserUtil.shareFacebook(getActivity(), callback, mProgressDialog, mActionSelected.getWishList(), mMultimedia);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RQ_ADD_CONTACTS && resultCode == Activity.RESULT_OK) {
             Toast.makeText(getActivity(), R.string.text_perfil_friends_circle_add_contacts, Toast.LENGTH_SHORT).show();
+        } else {
+            Session session = Session.getActiveSession();
+            if (session != null) {
+                session.onActivityResult(getActivity(), requestCode, resultCode, data);
+            }
         }
     }
 
@@ -287,14 +338,11 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     }
 
     private void toggleShare(Action action) {
-        boolean isShared = action.isuShare();
-        if (!isShared) {
-            int count = action.getSharesCount();
-            if (count >= 0) {
-                action.setSharesCount(++count);
-                action.setuShare(true);
-                mFeedsAdapter.notifyDataSetChanged();
-            }
+        int count = action.getSharesCount();
+        if (count >= 0) {
+            action.setSharesCount(++count);
+            action.setuShare(true);
+            mFeedsAdapter.notifyDataSetChanged();
         }
     }
 

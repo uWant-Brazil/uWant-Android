@@ -80,5 +80,6 @@
     <string name="text_alert_comment_empty">Digite o texto a ser enviado...</string>
     <string name="text_comment_top">Exibir comentários anteriores</string>
     <string name="text_confirm_password">Confirm password</string>
+    <string name="text_sharing">Compartilhando...</string>
 
 </resources>

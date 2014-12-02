@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
@@ -24,6 +25,8 @@ import com.facebook.Settings;
 import com.facebook.model.GraphObject;
 import com.facebook.model.OpenGraphAction;
 import com.facebook.model.OpenGraphObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -43,9 +46,12 @@ import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.models.adapters.WishListAdapter;
+import br.com.uwant.models.classes.Manufacturer;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Product;
 import br.com.uwant.models.classes.WishList;
+import br.com.uwant.models.cloud.Requester;
+import br.com.uwant.models.cloud.models.WishListUpdateModel;
 
 public abstract class WishListUtil {
 
@@ -58,13 +64,19 @@ public abstract class WishListUtil {
                                 .displayer(new FadeInBitmapDisplayer(500))
                                 .build();
 
-    public synchronized static void share(WishList wishList, Multimedia multimedia) {
+    public synchronized static void share(final Context context, WishList wishList, Multimedia multimedia) {
         Bundle postParams = new Bundle();
         postParams.putString("name", wishList.getDescription());
         postParams.putParcelable("picture", multimedia.getBitmap());
 
         Request.Callback callback= new Request.Callback() {
             public void onCompleted(Response response) {
+                FacebookRequestError error = response.getError();
+                if (error != null) {
+                    DebugUtil.error(error.getErrorMessage());
+                } else {
+                    Toast.makeText(context, "O compartilhamento foi efetuado!", Toast.LENGTH_LONG).show();
+                }
             }
         };
 
@@ -72,7 +84,7 @@ public abstract class WishListUtil {
                 HttpMethod.POST, callback).executeAsync();
     }
 
-    public synchronized static void shareAction(WishList wishList, Multimedia multimedia) {
+    public synchronized static void shareAction(final Context context, WishList wishList, Multimedia multimedia) {
         Settings.addLoggingBehavior(LoggingBehavior.REQUESTS);
 
         OpenGraphObject share = OpenGraphObject.Factory.createForPost("uwant-social:wish");
@@ -94,6 +106,8 @@ public abstract class WishListUtil {
                 FacebookRequestError error = response.getError();
                 if (error != null) {
                     DebugUtil.error(error.getErrorMessage());
+                } else {
+                    Toast.makeText(context, "O compartilhamento foi efetuado!", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -217,6 +231,34 @@ public abstract class WishListUtil {
 
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    public static JsonArray listProductsToJson(WishListUpdateModel.Type type, List<Product> products){
+        JsonArray arrayProducts = new JsonArray();
+
+        if (products != null) {
+            for (Product product : products) {
+                JsonObject jsonProduct = new JsonObject();
+
+                switch (type){
+                    case DELETE:
+                        jsonProduct.addProperty(Requester.ParameterKey.ID, product.getId());
+                        break;
+                    case INSERT:
+                        Manufacturer manufacturer = product.getManufacturer();
+                        JsonObject jsonManufacturer = new JsonObject();
+                        jsonManufacturer.addProperty(Requester.ParameterKey.NAME, manufacturer.getName());
+
+                        jsonProduct.addProperty(Requester.ParameterKey.NAME, product.getName());
+                        jsonProduct.addProperty(Requester.ParameterKey.NICK_NAME, product.getName());
+                        jsonProduct.add(Requester.ParameterKey.MANUFACTURER, jsonManufacturer);
+                }
+                arrayProducts.add(jsonProduct);
+            }
+
+        }
+
+        return arrayProducts;
     }
 
 }

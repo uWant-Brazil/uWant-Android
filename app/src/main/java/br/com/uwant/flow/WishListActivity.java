@@ -75,12 +75,10 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
 
     private static final int RQ_OPEN_CAMERA = 984;
     private static final int RQ_OPEN_GALLERY = 989;
-    private static final int RQ_FACEBOOK_LINK = 823;
     private static final int NOTIFICATION_ID = 0x200;
-    private static final String CONST_SWITCH_FACEBOOK_DIALOG = "SwitchFacebookDialog";
     private static final String CONST_HEADS_UP_WIHLIST = "heads_up_wihlist";
     private static final String CONST_LINK_TAG = "link_tag";
-    private final List<String> FACEBOOK_PERMISSIONS = Arrays.asList("publish_actions");
+
     private Multimedia mMultimedia;
     private Uri mUri;
 
@@ -114,11 +112,7 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
         @Override
         public void call(final Session session, SessionState state, Exception exception) {
             if (session.isOpened()) {
-                if (mProgressDialog != null) {
-                    mProgressDialog.dismiss();
-                }
-
-                shareFacebook(mMultimedia);
+                UserUtil.shareFacebook(WishListActivity.this, this, mProgressDialog, mWishList, mMultimedia);
             } else if (session.isClosed() && !session.isOpened()) {
                 if (mProgressDialog != null) {
                     mProgressDialog.dismiss();
@@ -356,7 +350,7 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                 saveProduct(this.mLastProductPicture);
             }
         } else {
-            if ((resultCode != RESULT_OK || !UserUtil.hasFacebook()) && requestCode == RQ_FACEBOOK_LINK) {
+            if ((resultCode != RESULT_OK || !UserUtil.hasFacebook()) && requestCode == UserUtil.RQ_FACEBOOK_LINK) {
                 mSwitchView.setChecked(false);
             } else {
                 Session session = Session.getActiveSession();
@@ -556,7 +550,8 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                             @Override
                             public void onExecute(Multimedia result) {
                                 // close notification...
-                                shareFacebook(product.getPicture());
+                                mMultimedia = product.getPicture();
+                                UserUtil.shareFacebook(WishListActivity.this, callback, mProgressDialog, mWishList, product.getPicture());
                             }
 
                             @Override
@@ -602,16 +597,7 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
     public void onCheckedChanged(final CompoundButton compoundButton, boolean checked) {
         if (compoundButton == mSwitchView && checked) {
             if (!UserUtil.hasFacebook()) {
-                DialogInterface.OnClickListener lp = new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent it = new Intent(WishListActivity.this, ConfigurationsActivity.class);
-                        startActivityForResult(it, RQ_FACEBOOK_LINK);
-                    }
-
-                };
-                DialogInterface.OnClickListener ln = new DialogInterface.OnClickListener() {
+                DialogInterface.OnClickListener negative = new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -620,8 +606,7 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
 
                 };
 
-                AlertFragmentDialog afd = AlertFragmentDialog.create(getString(R.string.text_attention), getString(R.string.text_facebook_link), getString(R.string.text_yes, lp, getString(R.string.text_no), ln), lp, getString(R.string.text_no), ln);
-                afd.show(getSupportFragmentManager(), CONST_SWITCH_FACEBOOK_DIALOG);
+                UserUtil.showFacebookDialog(this, negative);
             }
         }
     }
@@ -651,37 +636,6 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
             mNotifyMgr.cancel(NOTIFICATION_ID);
             mBuilder = null;
         }
-    }
-
-    private void shareFacebook(Multimedia result) {
-        mMultimedia = result;
-
-        Session session = Session.getActiveSession();
-        if (session != null) {
-            // Check for publish permissions
-            List<String> permissions = session.getPermissions();
-            if (!isSubsetOf(FACEBOOK_PERMISSIONS, permissions)) {
-                Session.NewPermissionsRequest newPermissionsRequest = new Session
-                        .NewPermissionsRequest(WishListActivity.this, FACEBOOK_PERMISSIONS);
-                session.requestNewPublishPermissions(newPermissionsRequest);
-            } else {
-                //WishListUtil.shareAction(WishListActivity.this.mWishList, result);
-                WishListUtil.share(mWishList, result);
-            }
-        } else {
-            User user = User.getInstance();
-            AccessToken accessToken = AccessToken.createFromExistingAccessToken(user.getFacebookToken(), null, null, null, FACEBOOK_PERMISSIONS);
-            Session.openActiveSessionWithAccessToken(WishListActivity.this, accessToken, callback);
-        }
-    }
-
-    private boolean isSubsetOf(Collection<String> subset, Collection<String> superset) {
-        for (String string : subset) {
-            if (!superset.contains(string)) {
-                return false;
-            }
-        }
-        return true;
     }
 
 }
