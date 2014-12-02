@@ -93,7 +93,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
                                 @Override
                                 public void onExecute(Boolean linked) {
                                     dismissProgress();
-                                    updateUserFacebookToken(linked, model.getToken());
+                                    updateUserFacebookToken(linked, model.getToken(), model.getFacebookId());
                                 }
 
                                 @Override
@@ -121,15 +121,17 @@ public class ConfigurationsActivity extends PreferenceActivity {
 
     };
 
-    private void updateUserFacebookToken(Boolean linked, String token) {
+    private void updateUserFacebookToken(Boolean linked, String token, String id) {
         User user = User.getInstance();
         if (linked) {
             setResult(RESULT_OK);
 
             user.setFacebookToken(token);
+            user.setFacebookId(id);
             Toast.makeText(this, R.string.text_link_facebook, Toast.LENGTH_LONG).show();
         } else {
             user.setFacebookToken(null);
+            user.setFacebookId(null);
             Toast.makeText(this, R.string.text_unlink_facebook, Toast.LENGTH_LONG).show();
         }
 
@@ -374,7 +376,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
                                     @Override
                                     public void onExecute(Boolean linked) {
                                         dismissProgress();
-                                        updateUserFacebookToken(linked, model.getToken());
+                                        updateUserFacebookToken(linked, model.getToken(), model.getFacebookId());
                                     }
 
                                     @Override
@@ -408,13 +410,15 @@ public class ConfigurationsActivity extends PreferenceActivity {
             }
         }
 
-        private void updateUserFacebookToken(Boolean linked, String token) {
+        private void updateUserFacebookToken(Boolean linked, String token, String id) {
             User user = User.getInstance();
             if (linked) {
                 user.setFacebookToken(token);
+                user.setFacebookId(id);
                 Toast.makeText(getActivity(), R.string.text_link_facebook, Toast.LENGTH_LONG).show();
             } else {
                 user.setFacebookToken(null);
+                user.setFacebookId(null);
                 Toast.makeText(getActivity(), R.string.text_unlink_facebook, Toast.LENGTH_LONG).show();
             }
 
