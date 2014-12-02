@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -68,7 +69,7 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
         mListView.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.view_friends_circle_invite, mListView, false));
         mListView.setAdapter(mAdapter); // TODO Adapter correto...
         mListView.setOnItemClickListener(this);
-        mListView.setTextFilterEnabled(true);
+        mListView.setTextFilterEnabled(false);
         mListView.setEmptyView(view.findViewById(R.id.contacts_gridView_loading));
 
         final TextView textView = (TextView) view.findViewById(R.id.feed_textView_empty);
@@ -147,10 +148,11 @@ public class FriendsCircleFragment extends Fragment implements IRequest.OnReques
     @Override
     public boolean onQueryTextChange(String newText) {
         if (mListView != null) {
+            Filter f =  mAdapter.getFilter();
             if (TextUtils.isEmpty(newText)) {
-                mListView.clearTextFilter();
+                f.filter(null);
             } else {
-                mListView.setFilterText(newText.toString());
+                f.filter(newText);
             }
             return true;
         }

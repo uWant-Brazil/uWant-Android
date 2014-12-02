@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Filter;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -120,7 +121,7 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
         mGridView.setEmptyView(view.findViewById(R.id.contacts_gridView_loading));
         mGridView.setAdapter(mAdapter); // TODO Adapter correto...
         mGridView.setOnItemClickListener(this);
-        mGridView.setTextFilterEnabled(true);
+        mGridView.setTextFilterEnabled(false);
 
         final ImageView imageFeed = (ImageView) view.findViewById(R.id.perfil_imageView_feed);
         imageFeed.setOnClickListener(this);
@@ -229,16 +230,17 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
 
     @Override
     public boolean onQueryTextSubmit(String s) {
-        return false;
+        return onQueryTextChange(s);
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
         if (mGridView != null) {
+            Filter f =  mAdapter.getFilter();
             if (TextUtils.isEmpty(newText)) {
-                mGridView.clearTextFilter();
+                f.filter(null);
             } else {
-                mGridView.setFilterText(newText.toString());
+                f.filter(newText);
             }
             return true;
         }

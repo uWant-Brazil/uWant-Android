@@ -14,6 +14,7 @@ import android.support.v7.widget.SearchView;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.FriendsCircleFragment;
@@ -21,7 +22,7 @@ import br.com.uwant.flow.fragments.WishListFragment;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
 
-public class PerfilActivity extends ActionBarActivity {
+public class PerfilActivity extends ActionBarActivity implements MenuItem.OnActionExpandListener {
 
     private static final int RQ_UPDATE_USER = 914;
 
@@ -63,6 +64,8 @@ public class PerfilActivity extends ActionBarActivity {
 
             @Override
             public void onPageSelected(int i) {
+                resetSearchView();
+                
                 mCurrentFragment = (SearchView.OnQueryTextListener) mAdapter.getItem(i);
                 actionBar.setSelectedNavigationItem(i);
                 supportInvalidateOptionsMenu();
@@ -78,6 +81,8 @@ public class PerfilActivity extends ActionBarActivity {
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
 
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+                resetSearchView();
+
                 mCurrentFragment = (SearchView.OnQueryTextListener) mAdapter.getItem(tab.getPosition());
                 viewPager.setCurrentItem(tab.getPosition());
                 supportInvalidateOptionsMenu();
@@ -105,6 +110,7 @@ public class PerfilActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.perfil_menu, menu);
 
         MenuItem searchItem = menu.findItem(R.id.menu_perfil_search);
+        searchItem.setOnActionExpandListener(this);
         searchItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM
                 | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
@@ -116,6 +122,7 @@ public class PerfilActivity extends ActionBarActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         setupSearchView();
+        MenuItemCompat.collapseActionView(menu.findItem(R.id.menu_perfil_search));
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -137,6 +144,13 @@ public class PerfilActivity extends ActionBarActivity {
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void resetSearchView() {
+        if (mSearchView != null) {
+            mSearchView.setQuery("", true);
+            mSearchView.clearFocus();
         }
     }
 
@@ -162,10 +176,22 @@ public class PerfilActivity extends ActionBarActivity {
         mSearchView.setIconifiedByDefault(false);
         mSearchView.setSubmitButtonEnabled(false);
         mSearchView.setIconified(true);
-        mSearchView.clearFocus();
         mSearchView.setQuery("", false);
         mSearchView.setOnQueryTextListener(mCurrentFragment);
         mSearchView.setQueryHint(getString(R.string.text_hint_perfil_search));
+        resetSearchView();
+    }
+
+    @Override
+    public boolean onMenuItemActionExpand(MenuItem item) {
+        resetSearchView();
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemActionCollapse(MenuItem item) {
+        resetSearchView();
+        return true;
     }
 
     private class PerfilPagerAdapter extends FragmentStatePagerAdapter {
