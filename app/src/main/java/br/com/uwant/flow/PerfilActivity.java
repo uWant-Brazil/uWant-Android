@@ -1,7 +1,6 @@
 package br.com.uwant.flow;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,22 +14,12 @@ import android.support.v7.widget.SearchView;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.FriendsCircleFragment;
 import br.com.uwant.flow.fragments.WishListFragment;
-import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
-import br.com.uwant.utils.PictureUtil;
 
 public class PerfilActivity extends ActionBarActivity {
 
@@ -77,10 +66,6 @@ public class PerfilActivity extends ActionBarActivity {
                 mCurrentFragment = (SearchView.OnQueryTextListener) mAdapter.getItem(i);
                 actionBar.setSelectedNavigationItem(i);
                 supportInvalidateOptionsMenu();
-
-                if (mSearchView != null) {
-                    mSearchView.clearFocus();
-                }
             }
 
             @Override
@@ -96,10 +81,6 @@ public class PerfilActivity extends ActionBarActivity {
                 mCurrentFragment = (SearchView.OnQueryTextListener) mAdapter.getItem(tab.getPosition());
                 viewPager.setCurrentItem(tab.getPosition());
                 supportInvalidateOptionsMenu();
-
-                if (mSearchView != null) {
-                    mSearchView.clearFocus();
-                }
             }
 
             public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
@@ -180,7 +161,9 @@ public class PerfilActivity extends ActionBarActivity {
     private void setupSearchView() {
         mSearchView.setIconifiedByDefault(false);
         mSearchView.setSubmitButtonEnabled(false);
-        mSearchView.setIconified(false);
+        mSearchView.setIconified(true);
+        mSearchView.clearFocus();
+        mSearchView.setQuery("", false);
         mSearchView.setOnQueryTextListener(mCurrentFragment);
         mSearchView.setQueryHint(getString(R.string.text_hint_perfil_search));
     }
