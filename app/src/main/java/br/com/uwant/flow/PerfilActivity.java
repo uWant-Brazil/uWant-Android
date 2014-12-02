@@ -22,7 +22,7 @@ import br.com.uwant.flow.fragments.WishListFragment;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
 
-public class PerfilActivity extends ActionBarActivity implements MenuItem.OnActionExpandListener {
+public class PerfilActivity extends UWActivity implements MenuItem.OnActionExpandListener {
 
     private static final int RQ_UPDATE_USER = 914;
 
@@ -65,7 +65,7 @@ public class PerfilActivity extends ActionBarActivity implements MenuItem.OnActi
             @Override
             public void onPageSelected(int i) {
                 resetSearchView();
-                
+
                 mCurrentFragment = (SearchView.OnQueryTextListener) mAdapter.getItem(i);
                 actionBar.setSelectedNavigationItem(i);
                 supportInvalidateOptionsMenu();

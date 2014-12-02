@@ -38,6 +38,8 @@ public class UserDatabase extends BaseDatabase<User> {
         cv.put(Key.BIRTHDAY, DateUtil.format(data.getBirthday(), DateUtil.DATE_PATTERN));
         cv.put(Key.GENDER, (data.getGender() != null) ? data.getGender().ordinal() : null);
         cv.put(Key.MAIL, data.getMail());
+        cv.put(Key.FACEBOOK_TOKEN, data.getFacebookToken());
+        cv.put(Key.FACEBOOK_ID, data.getFacebookId());
 
         Multimedia picture = data.getPicture();
         if (picture != null) {
@@ -62,6 +64,8 @@ public class UserDatabase extends BaseDatabase<User> {
         String mail = cursor.getString(cursor.getColumnIndex(Key.MAIL));
         String birthdayStr = cursor.getString(cursor.getColumnIndex(Key.BIRTHDAY));
         Integer genderOrdinal = cursor.getInt(cursor.getColumnIndex(Key.GENDER));
+        String facebookToken = cursor.getString(cursor.getColumnIndex(Key.FACEBOOK_TOKEN));
+        String facebookId = cursor.getString(cursor.getColumnIndex(Key.FACEBOOK_ID));
 
         Person.Gender gender = null;
         if (genderOrdinal != null) {
@@ -82,8 +86,6 @@ public class UserDatabase extends BaseDatabase<User> {
             picture.setUrl(url);
         }
 
-        String facebookToken = cursor.getString(cursor.getColumnIndex(Key.FACEBOOK_TOKEN));
-
         User user = User.getInstance();
         user.setToken(token);
         user.setName(name);
@@ -93,6 +95,7 @@ public class UserDatabase extends BaseDatabase<User> {
         user.setGender(gender);
         user.setPicture(picture);
         user.setFacebookToken(facebookToken);
+        user.setFacebookId(facebookId);
 
         return user;
     }

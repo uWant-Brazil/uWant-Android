@@ -1,6 +1,5 @@
 package br.com.uwant.flow;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -16,7 +15,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -48,9 +46,7 @@ import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AlertFragmentDialog;
-import br.com.uwant.flow.fragments.FeedCommentFragment;
 import br.com.uwant.flow.fragments.FeedsFragment;
-import br.com.uwant.flow.fragments.ProgressFragmentDialog;
 import br.com.uwant.flow.fragments.WishListButtonFragment;
 import br.com.uwant.models.adapters.DrawerAdapter;
 import br.com.uwant.models.adapters.FriendsCircleAdapter;
@@ -60,15 +56,13 @@ import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
-import br.com.uwant.models.cloud.models.LogoffModel;
 import br.com.uwant.models.cloud.models.UserSearchModel;
-import br.com.uwant.models.databases.UserDatabase;
 import br.com.uwant.utils.DebugUtil;
 import br.com.uwant.utils.GoogleCloudMessageUtil;
 import br.com.uwant.utils.KeyboardUtil;
 import br.com.uwant.utils.PictureUtil;
 
-public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
+public class MainActivity extends UWActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     public static final String EXIT_DIALOG = "Exit_Dialog";
 
@@ -342,47 +336,6 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         };
         AlertFragmentDialog afd = AlertFragmentDialog.create(title, message, positiveText, positiveListener, negativeText, null);
         afd.show(getSupportFragmentManager(), EXIT_DIALOG);
-    }
-
-    private void performLogoff() {
-        LogoffModel model = new LogoffModel();
-        Requester.executeAsync(model, new IRequest.OnRequestListener() {
-
-            public ProgressFragmentDialog progressFragmentDialog;
-
-            @Override
-            public void onPreExecute() {
-                progressFragmentDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
-            }
-
-            @Override
-            public void onExecute(Object result) {
-                if (progressFragmentDialog != null) {
-                    progressFragmentDialog.dismiss();
-                }
-
-                UserDatabase db = new UserDatabase(MainActivity.this);
-                db.removeAll();
-                User.clearInstance();
-                GoogleCloudMessageUtil.clear(MainActivity.this);
-
-                Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
-                startActivity(intent);
-                finish();
-            }
-
-            @Override
-            public void onError(RequestError error) {
-                if (progressFragmentDialog != null) {
-                    progressFragmentDialog.dismiss();
-                }
-
-                Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
-                startActivity(intent);
-                finish();
-            }
-
-        });
     }
 
     @Override

@@ -70,7 +70,7 @@ import br.com.uwant.utils.PictureUtil;
 import br.com.uwant.utils.UserUtil;
 import br.com.uwant.utils.WishListUtil;
 
-public class WishListActivity extends ActionBarActivity implements View.OnClickListener,
+public class WishListActivity extends UWActivity implements View.OnClickListener,
         IRequest.OnRequestListener<List<Product>>, CompoundButton.OnCheckedChangeListener, UWFileBodyListener {
 
     private static final int RQ_OPEN_CAMERA = 984;

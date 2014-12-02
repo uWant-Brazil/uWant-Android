@@ -28,7 +28,7 @@ import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.models.ContactsModel;
 
-public class ContactsActivity extends ActionBarActivity implements View.OnClickListener {
+public class ContactsActivity extends UWActivity implements View.OnClickListener {
 
     private static String[] TABS;
 
