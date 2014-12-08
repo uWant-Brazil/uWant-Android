@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/drawer_editText_search"
         style="@style/UWEditText"
-        android:hint="Pesquisar"
+        android:hint="@string/text_find_friends"
         android:drawableRight="@drawable/ic_panel_lupa"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp" />
@@ -51,7 +51,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User Name"
+            android:text=""
             android:id="@+id/drawer_textView_userName"
             android:layout_marginLeft="15dp"
             android:textColor="@color/GRAY_TEXT"
