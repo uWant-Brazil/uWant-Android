@@ -9,6 +9,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:imeOptions="actionSearch"
         android:id="@+id/drawer_editText_search"
         style="@style/UWEditText"
         android:hint="@string/text_find_friends"

@@ -24,6 +24,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -192,21 +193,30 @@ public class MainActivity extends UWActivity implements AdapterView.OnItemClickL
 
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                String s = mEditTextSearch.getText().toString();
-                if (s.length() > 2) {
-                    mIsCanceled = false;
-                    mSearchFriends.clear();
-                    mSearchAdapter.notifyDataSetChanged();
+                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        actionId == EditorInfo.IME_ACTION_DONE ||
+                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    if (!event.isShiftPressed()) {
+                        String s = mEditTextSearch.getText().toString();
+                        if (s.length() > 2) {
+                            mIsCanceled = false;
+                            mSearchFriends.clear();
+                            mSearchAdapter.notifyDataSetChanged();
 
-                    UserSearchModel model = new UserSearchModel();
-                    model.setQuery(mEditTextSearch.getText().toString());
-                    Requester.executeAsync(model, searchListener);
-                } else {
-                    mIsCanceled = true;
-                    Toast.makeText(MainActivity.this, R.string.text_fill_three_characteres, Toast.LENGTH_LONG).show();
+                            UserSearchModel model = new UserSearchModel();
+                            model.setQuery(mEditTextSearch.getText().toString());
+                            Requester.executeAsync(model, searchListener);
+                        } else {
+                            mIsCanceled = true;
+                            Toast.makeText(MainActivity.this, R.string.text_fill_three_characteres, Toast.LENGTH_LONG).show();
+                        }
+
+                        return true;
+                    }
                 }
 
-                return true;
+                return false;
             }
 
         });
