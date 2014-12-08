@@ -19,7 +19,7 @@
             android:paddingTop="5dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:id="@+id/frameLayout">
+            android:id="@+id/adapter_feeds_frameLayout_picture">
 
             <ImageView
                 android:layout_width="76dp"

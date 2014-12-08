@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -147,6 +148,14 @@ public class FeedsAdapter extends BaseAdapter {
             vh.twoWayView.setOrientation(TwoWayView.Orientation.HORIZONTAL);
             vh.twoWayView.setItemMargin(10);
 
+            FrameLayout frameLayout = (FrameLayout) convertView.findViewById(R.id.adapter_feeds_frameLayout_picture);
+            frameLayout.setOnClickListener(this.mClickListener);
+
+            vh.buttonUWants.setOnClickListener(this.mClickListener);
+            vh.buttonComments.setOnClickListener(this.mClickListener);
+            vh.buttonShares.setOnClickListener(this.mClickListener);
+            vh.imageButtonMenu.setOnClickListener(this.mClickListener);
+
             convertView.setTag(vh);
         } else {
             vh = (ViewHolder)convertView.getTag();
@@ -184,11 +193,6 @@ public class FeedsAdapter extends BaseAdapter {
         vh.buttonComments.setTag(position);
         vh.buttonShares.setTag(position);
         vh.imageButtonMenu.setTag(position);
-
-        vh.buttonUWants.setOnClickListener(this.mClickListener);
-        vh.buttonComments.setOnClickListener(this.mClickListener);
-        vh.buttonShares.setOnClickListener(this.mClickListener);
-        vh.imageButtonMenu.setOnClickListener(this.mClickListener);
 
         Drawable drawableLeftUWant;
         if (uWant) {

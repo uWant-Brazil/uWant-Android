@@ -25,6 +25,7 @@ import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.ContactsActivity;
+import br.com.uwant.flow.PerfilActivity;
 import br.com.uwant.models.adapters.FeedsAdapter;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Multimedia;
@@ -275,6 +276,12 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
                 Intent intent = new Intent(getActivity(), ContactsActivity.class);
                 intent.putExtra(User.EXTRA_ADD_CONTACTS, true);
                 startActivityForResult(intent, RQ_ADD_CONTACTS);
+                break;
+
+            case R.id.adapter_feeds_frameLayout_picture:
+                Intent intentPerfil = new Intent(getActivity(), PerfilActivity.class);
+                intentPerfil.putExtra(Person.EXTRA, action.getFrom());
+                startActivity(intentPerfil);
                 break;
 
             default:
