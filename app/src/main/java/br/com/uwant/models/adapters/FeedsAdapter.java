@@ -21,6 +21,7 @@ package br.com.uwant.models.adapters;/*
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
@@ -125,6 +126,7 @@ public class FeedsAdapter extends BaseAdapter {
             params.setMargins(0, 0, 0, DEFAULT_MARGIN_BOTTOM);
 
             CardView cardView = new CardView(this.mContext);
+            cardView.setBackgroundColor(Color.WHITE);
             cardView.setLayoutParams(params);
             cardView.setRadius(DEFAULT_RADIUS);
             linearLayout.addView(cardView);

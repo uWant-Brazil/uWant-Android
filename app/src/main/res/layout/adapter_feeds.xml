@@ -16,9 +16,7 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
+            android:padding="5dp"
             android:id="@+id/adapter_feeds_frameLayout_picture">
 
             <ImageView
@@ -43,13 +41,15 @@
             android:layout_height="match_parent">
 
             <ImageButton
-                android:layout_marginRight="3dp"
-                android:layout_marginTop="10dp"
-                android:layout_gravity="right"
+                android:layout_marginEnd="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:src="@drawable/abc_ic_menu_moreoverflow_normal_holo_light"
                 android:id="@+id/adapter_feeds_imageButton" />
@@ -59,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="User Name adicionou um desejo da loja Americana.User Name adicionou um desejo da loja Americana.User Name adicionou um desejo da loja Americana."
+                android:layout_toStartOf="@+id/adapter_feeds_imageButton"
                 android:layout_toLeftOf="@+id/adapter_feeds_imageButton"
                 android:id="@+id/adapter_feeds_textView_systemMessage"
                 android:lines="4"
@@ -91,12 +91,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/adapter_feeds_textView_userMessage"
-            android:layout_margin="5dp"
-            android:gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:gravity="start|center_vertical"
             android:maxLength="140"
             android:ellipsize="end"
-            android:layout_weight="0"
-            android:text="O meu já está velho, estou aceitando de presente! Viu, Rodrigo? HAHAHAHAHAHAHAHAHAHAHEHEHEHEHEHEHIHIHIHIHIHIHIHI" />
+            android:layout_weight="0" />
     </LinearLayout>
 
     <TextView
@@ -119,20 +118,21 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_feed_wantar"
             android:drawableLeft="@drawable/ic_feed_wantar"
             android:padding="10dp"
-            android:text="1"
             android:id="@+id/adapter_feeds_button_uwants"
             android:layout_weight="1"
             android:background="@drawable/button_feeds"
+            android:layout_marginEnd="1dp"
             android:layout_marginRight="1dp" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_feed_comentar"
             android:drawableLeft="@drawable/ic_feed_comentar"
             android:padding="10dp"
-            android:text="2"
             android:id="@+id/adapter_feeds_button_comments"
             android:layout_weight="1"
             android:background="@drawable/button_feeds"
@@ -142,12 +142,13 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_feed_compartilhar"
             android:drawableLeft="@drawable/ic_feed_compartilhar"
             android:padding="10dp"
-            android:text="3"
             android:id="@+id/adapter_feeds_button_shares"
             android:layout_weight="1"
             android:background="@drawable/button_feeds"
+            android:layout_marginStart="1dp"
             android:layout_marginLeft="1dp" />
     </LinearLayout>
 
