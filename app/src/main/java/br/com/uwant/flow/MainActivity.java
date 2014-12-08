@@ -8,6 +8,7 @@ import android.content.pm.Signature;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,6 +17,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -67,6 +69,7 @@ public class MainActivity extends UWActivity implements AdapterView.OnItemClickL
 
     public static final String EXIT_DIALOG = "Exit_Dialog";
 
+    private boolean mIsCanceled;
     private FeedsFragment mFeedsFragment;
     private WishListButtonFragment mWishListButtonFragment;
 
@@ -157,9 +160,8 @@ public class MainActivity extends UWActivity implements AdapterView.OnItemClickL
 
         });
 
-        mEditTextSearch.addTextChangedListener(new TextWatcher() {
+        mEditTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
-            private boolean mIsCanceled;
             private List<Person> mSearchFriends = new ArrayList<Person>();
             private FriendsCircleAdapter mSearchAdapter = new FriendsCircleAdapter(MainActivity.this, mSearchFriends);
 
@@ -189,23 +191,36 @@ public class MainActivity extends UWActivity implements AdapterView.OnItemClickL
             };
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 0) {
-                    mIsCanceled = true;
-                    mDrawerList.setAdapter(mDrawerAdapter);
-                } else {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                String s = mEditTextSearch.getText().toString();
+                if (s.length() > 2) {
                     mIsCanceled = false;
                     mSearchFriends.clear();
                     mSearchAdapter.notifyDataSetChanged();
 
                     UserSearchModel model = new UserSearchModel();
-                    model.setQuery(s.toString());
-                    Requester.executeAsync(model, this.searchListener);
+                    model.setQuery(mEditTextSearch.getText().toString());
+                    Requester.executeAsync(model, searchListener);
+                } else {
+                    mIsCanceled = true;
+                    Toast.makeText(MainActivity.this, R.string.text_fill_three_characteres, Toast.LENGTH_LONG).show();
+                }
 
+                return true;
+            }
+
+        });
+
+        mEditTextSearch.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(final CharSequence s, int start, int before, int count) {
+                if (s.length() == 0) {
+                    mDrawerList.setAdapter(mDrawerAdapter);
                     mEditTextSearch.requestFocus();
                 }
             }

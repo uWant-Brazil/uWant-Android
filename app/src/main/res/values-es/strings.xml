@@ -85,5 +85,6 @@
     <string name="text_alter_data">Alterar dados</string>
     <string name="text_update">Atualizar</string>
     <string name="text_find_friends">Encontrar Amigos</string>
+    <string name="text_fill_three_characteres">Você precisa digitar, no mínimo, 3 caracteres.</string>
 
 </resources>
