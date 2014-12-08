@@ -148,8 +148,8 @@ public class FeedsAdapter extends BaseAdapter {
             vh.twoWayView.setOrientation(TwoWayView.Orientation.HORIZONTAL);
             vh.twoWayView.setItemMargin(10);
 
-            FrameLayout frameLayout = (FrameLayout) convertView.findViewById(R.id.adapter_feeds_frameLayout_picture);
-            frameLayout.setOnClickListener(this.mClickListener);
+            vh.hFrameLayoutPicture = (FrameLayout) convertView.findViewById(R.id.adapter_feeds_frameLayout_picture);
+            vh.hFrameLayoutPicture.setOnClickListener(this.mClickListener);
 
             vh.buttonUWants.setOnClickListener(this.mClickListener);
             vh.buttonComments.setOnClickListener(this.mClickListener);
@@ -193,6 +193,7 @@ public class FeedsAdapter extends BaseAdapter {
         vh.buttonComments.setTag(position);
         vh.buttonShares.setTag(position);
         vh.imageButtonMenu.setTag(position);
+        vh.hFrameLayoutPicture.setTag(position);
 
         Drawable drawableLeftUWant;
         if (uWant) {
@@ -264,6 +265,7 @@ public class FeedsAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
+        FrameLayout hFrameLayoutPicture;
         ImageView imageViewPicture;
         ImageView imageViewPictureDetail;
         ImageButton imageButtonMenu;

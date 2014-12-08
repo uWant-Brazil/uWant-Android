@@ -13,6 +13,7 @@
         android:layout_height="wrap_content" >
 
         <FrameLayout
+            android:id="@+id/adapter_feed_comment_frameLayout_picture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 

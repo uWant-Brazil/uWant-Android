@@ -1,6 +1,7 @@
 package br.com.uwant.flow.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,9 +26,11 @@ import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.MainActivity;
+import br.com.uwant.flow.PerfilActivity;
 import br.com.uwant.models.adapters.FeedCommentsAdapter;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Comment;
+import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
@@ -86,7 +89,7 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
         super.onCreate(savedInstanceState);
         isPrimeiraVez = true;
         this.mComments = new ArrayList<Comment>(25);
-        this.mAdapter = new FeedCommentsAdapter(getActivity(), this.mComments);
+        this.mAdapter = new FeedCommentsAdapter(getActivity(), this, this.mComments);
     }
 
     @Override
@@ -148,6 +151,15 @@ public class FeedCommentFragment extends Fragment implements View.OnClickListene
 
             case R.id.feed_comment_linearLayout_top:
                 toggleProgress();
+                break;
+
+            case R.id.adapter_feed_comment_frameLayout_picture:
+                Integer position = (Integer) v.getTag();
+                Comment comment = this.mComments.get(position);
+
+                Intent intentPerfil = new Intent(getActivity(), PerfilActivity.class);
+                intentPerfil.putExtra(Person.EXTRA, comment.getWho());
+                startActivity(intentPerfil);
                 break;
 
             default:

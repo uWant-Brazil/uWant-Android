@@ -1,11 +1,13 @@
 package br.com.uwant.models.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,11 +36,13 @@ public class FeedCommentsAdapter extends BaseAdapter {
     private final int WDP;
     private final int HDP;
     private final Context mContext;
+    private final View.OnClickListener mClickListener;
     private final List<Comment> mComments;
     private final DisplayImageOptions mOptions;
 
-    public FeedCommentsAdapter(Context context, List<Comment> comments) {
+    public FeedCommentsAdapter(Context context, View.OnClickListener listener, List<Comment> comments) {
         this.mContext = context;
+        this.mClickListener = listener;
         this.mComments = comments;
         this.mOptions = new DisplayImageOptions.Builder()
                 .resetViewBeforeLoading(true)
@@ -83,6 +87,9 @@ public class FeedCommentsAdapter extends BaseAdapter {
             holder.hImageViewPicture = (ImageView) convertView.findViewById(R.id.adapter_feed_comment_imageView_picture);
             holder.hImageViewPictureDetail = (ImageView) convertView.findViewById(R.id.adapter_feed_comment_imageView_pictureDetail);
 
+            holder.hFrameLayoutPicture = (FrameLayout) convertView.findViewById(R.id.adapter_feed_comment_frameLayout_picture);
+            holder.hFrameLayoutPicture.setOnClickListener(this.mClickListener);
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -105,6 +112,8 @@ public class FeedCommentsAdapter extends BaseAdapter {
         holder.hImageViewUWant.setImageResource(comment.isuWant() ? R.drawable.ic_feed_wantar_on : R.drawable.ic_comentario_wantar_cinza);
 
         populatePicture(holder.hImageViewPicture, holder.hImageViewPictureDetail, picture);
+
+        holder.hFrameLayoutPicture.setTag(position);
 
         return convertView;
     }
@@ -159,6 +168,7 @@ public class FeedCommentsAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
+        FrameLayout hFrameLayoutPicture;
         TextView hTextViewName;
         TextView hTextViewComment;
         TextView hTextViewSince;
