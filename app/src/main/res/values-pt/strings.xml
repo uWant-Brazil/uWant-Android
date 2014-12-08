@@ -81,5 +81,8 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_comment_top">Exibir comentários anteriores</string>
     <string name="text_confirm_password">Confirm password</string>
     <string name="text_sharing">Compartilhando...</string>
+    <string name="text_wishes">Desejos</string>
+    <string name="text_alter_data">Alterar dados</string>
+    <string name="text_update">Atualizar</string>
 
 </resources>

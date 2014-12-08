@@ -149,6 +149,9 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         } else if (it.hasExtra(User.EXTRA_UPDATE)) {
             mUserUpdated = true;
 
+            actionBar.setTitle(R.string.text_alter_data);
+            buttonRegister.setText(R.string.text_update);
+
             User user = User.getInstance();
             fill(user);
 
