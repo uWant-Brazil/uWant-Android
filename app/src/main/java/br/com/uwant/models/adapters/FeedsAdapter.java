@@ -126,7 +126,8 @@ public class FeedsAdapter extends BaseAdapter {
             params.setMargins(0, 0, 0, DEFAULT_MARGIN_BOTTOM);
 
             CardView cardView = new CardView(this.mContext);
-            cardView.setBackgroundColor(Color.WHITE);
+            //FIXME Não está funcionando a cor do CardView?
+            //cardView.setBackgroundColor(Color.WHITE);
             cardView.setLayoutParams(params);
             cardView.setRadius(DEFAULT_RADIUS);
             linearLayout.addView(cardView);
