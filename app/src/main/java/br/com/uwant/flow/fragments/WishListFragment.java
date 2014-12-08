@@ -154,12 +154,8 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
         mWishLists.clear();
 
         if (result.size() == 0) {
-            final String emptyDefaultTitle = getString(R.string.text_wish_list_empty_default_title);
-            final WishList wishListDefault = new WishList(WishList.EMPTY_DEFAULT_ID, emptyDefaultTitle);
-            mWishLists.add(wishListDefault);
-
             final String emptyTitle = getString(R.string.text_wish_list_empty_title);
-            for (int i = 0;i < EMPTY_WISH_LIST_COUNT - 1;i++) {
+            for (int i = 0;i < EMPTY_WISH_LIST_COUNT;i++) {
                 final WishList wishList = new WishList(WishList.EMPTY_ID, emptyTitle);
                 mWishLists.add(wishList);
             }
@@ -218,13 +214,19 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         WishList wishListSelected = mAdapter.getItem(i);
         if (wishListSelected != null) {
-            FeedsFragment f = FeedsFragment.newInstance(wishListSelected);
-            getFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top, R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
-                    .replace(android.R.id.content, f, FeedsFragment.TAG)
-                    .addToBackStack(FeedsFragment.TAG)
-                    .commit();
+            if (wishListSelected.getId() != WishList.EMPTY_ID) {
+                FeedsFragment f = FeedsFragment.newInstance(wishListSelected);
+                getFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top, R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom)
+                        .replace(android.R.id.content, f, FeedsFragment.TAG)
+                        .addToBackStack(FeedsFragment.TAG)
+                        .commit();
+            } else {
+                // Criando a primeira lista de desejos...
+                Intent it = new Intent(getActivity(), WishListActivity.class);
+                startActivity(it);
+            }
         }
     }
 

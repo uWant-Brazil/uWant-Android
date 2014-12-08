@@ -71,22 +71,11 @@ public class WishListAdapter extends BaseAdapter implements Filterable {
             holder.hProgressBar = (ProgressBar) view.findViewById(R.id.adapter_wishlist_progressBar);
             holder.hImageViewProducts = (ImageView) view.findViewById(R.id.adapter_wishlist_imageView_products);
             holder.hImageViewPopUp = (ImageView) view.findViewById(R.id.adapter_wishlist_imageView_popup);
+
+            holder.hImageViewPopUp.setOnClickListener(this.mPopUpListener);
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
-        }
-
-        if (itsMe) {
-            if (holder.hImageViewPopUp.getVisibility() != View.VISIBLE) {
-                holder.hImageViewPopUp.setVisibility(View.VISIBLE);
-            }
-
-            holder.hImageViewPopUp.setOnClickListener(this.mPopUpListener);
-            holder.hImageViewPopUp.setTag(i);
-        } else {
-            if (holder.hImageViewPopUp.getVisibility() == View.VISIBLE) {
-                holder.hImageViewPopUp.setVisibility(View.GONE);
-            }
         }
 
         WishList wishList = getItem(i);
@@ -105,6 +94,20 @@ public class WishListAdapter extends BaseAdapter implements Filterable {
             }
             if (holder.hImageViewProducts.getVisibility() == View.VISIBLE) {
                 holder.hImageViewProducts.setVisibility(View.GONE);
+            }
+        }
+
+        if (itsMe) {
+            if (holder.hImageViewPopUp.getVisibility() != View.VISIBLE) {
+                if (wishList.getId() != WishList.EMPTY_ID) {
+                    holder.hImageViewPopUp.setVisibility(View.VISIBLE);
+                }
+            }
+
+            holder.hImageViewPopUp.setTag(i);
+        } else {
+            if (holder.hImageViewPopUp.getVisibility() == View.VISIBLE) {
+                holder.hImageViewPopUp.setVisibility(View.GONE);
             }
         }
 

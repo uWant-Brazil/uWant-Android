@@ -127,7 +127,7 @@ public abstract class WishListUtil {
         for (Product product : products) {
             Multimedia multimedia = product.getPicture();
             if (multimedia != null) {
-                Bitmap bitmap = (Bitmap)multimedia.getBitmap();
+                Bitmap bitmap = multimedia.getBitmap();
                 if (bitmap != null) {
                     productsWithPictures.add(product);
                 }
@@ -151,7 +151,7 @@ public abstract class WishListUtil {
                 if(indexes.size() == 0)
                     continue;
 
-                int randomIndex = ((int)Math.random() * indexes.size());
+                int randomIndex = (int)(Math.random() * indexes.size());
                 int index = indexes.get(randomIndex);
                 indexes.remove(randomIndex);
 
@@ -174,7 +174,7 @@ public abstract class WishListUtil {
                 }
 
                 final ImageView imageView = (ImageView) gridLayout.findViewById(id);
-                imageView.setImageBitmap((Bitmap) multimedia.getBitmap());
+                imageView.setImageBitmap(multimedia.getBitmap());
             }
         }
     }
