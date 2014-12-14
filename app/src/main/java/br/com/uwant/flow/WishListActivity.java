@@ -320,11 +320,13 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                } else if (filePath.startsWith("http")) {
-                    saveProduct(filePath);
-                } else {
-                    this.mLastProductPicture = new File(filePath);
-                    saveProduct(this.mLastProductPicture);
+                } else if (filePath != null) {
+                    if (filePath.startsWith("http")) {
+                        saveProduct(filePath);
+                    } else {
+                        this.mLastProductPicture = new File(filePath);
+                        saveProduct(this.mLastProductPicture);
+                    }
                 }
             }
         } else if ((resultCode != RESULT_OK || !UserUtil.hasFacebook())
@@ -514,6 +516,7 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                 for (int i = 0;i < result.size();i++) {
                     final Product product = result.get(i);
                     WishListProductPictureModel model = new WishListProductPictureModel();
+                    model.setWishList(mWishList);
                     model.setProduct(product);
                     model.setListener(WishListActivity.this);
                     if (i == 0) {
