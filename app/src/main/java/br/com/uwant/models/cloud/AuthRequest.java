@@ -67,7 +67,7 @@ public class AuthRequest extends AbstractRequest<User> implements IRequest<AuthM
                 }
 
                 if (jsonUser.has(Requester.ParameterKey.BIRTHDAY)) {
-                    String birthdayStr = jsonUser.get(Requester.ParameterKey.NAME).getAsString();
+                    String birthdayStr = jsonUser.get(Requester.ParameterKey.BIRTHDAY).getAsString();
                     Date birthday = null;
                     try {
                         birthday = DateUtil.parse(birthdayStr, DateUtil.DATE_PATTERN);

@@ -10,6 +10,11 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.BaseAdapter;
 
+import com.android.internal.util.Predicate;
+
+import java.util.Collections;
+import java.util.Comparator;
+
 import br.com.uwant.models.adapters.ContactsAdapter;
 import br.com.uwant.models.classes.Multimedia;
 import br.com.uwant.models.classes.Person;
@@ -54,7 +59,9 @@ public class AgendaFragment extends ContactsFragment {
                                 person.setPicture(multimedia);
                             }
 
-                            mPersons.add(person);
+                            if (!mPersons.contains(person)) {
+                                mPersons.add(person);
+                            }
                         }
                         cursorCommons.moveToNext();
                     }

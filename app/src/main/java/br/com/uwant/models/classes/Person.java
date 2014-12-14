@@ -126,6 +126,32 @@ public class Person implements Serializable {
         this.facebookId = id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+
+        if (o instanceof Person) {
+            Person person = (Person) o;
+
+            if (!mail.equals(person.mail)) return false;
+            if (mail.equals(person.mail)
+                    && !name.equals(person.name)) return true;
+            if (mail.equals(person.mail)
+                    && (person.mail.equals(person.name) || mail.equals(name))) return true;
+
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 31 * name.hashCode();
+        result = 31 * result + mail.hashCode();
+        return result;
+    }
+
     public long getId() {
         return id;
     }
