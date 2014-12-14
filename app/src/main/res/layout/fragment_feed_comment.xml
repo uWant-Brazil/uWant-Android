@@ -33,7 +33,9 @@
             <LinearLayout
                 android:id="@+id/feed_comment_linearLayout_top"
                 android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:orientation="horizontal"
                 android:padding="5dp"
@@ -70,7 +72,7 @@
 
             <View
                 android:id="@+id/view_line_2"
-                android:layout_below="@+id/feed_comment_linearLayout_top"
+                android:layout_below="@+id/feed_comment_view_top"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:alpha="0.5"

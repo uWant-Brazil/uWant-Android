@@ -279,8 +279,14 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.adapter_feeds_frameLayout_picture:
+                Person from = action.getFrom();
+                Multimedia multimedia = from.getPicture();
+                if (multimedia != null && multimedia.getBitmap() != null) {
+                    multimedia.setBitmap(null);
+                }
+
                 Intent intentPerfil = new Intent(getActivity(), PerfilActivity.class);
-                intentPerfil.putExtra(Person.EXTRA, action.getFrom());
+                intentPerfil.putExtra(Person.EXTRA, from);
                 startActivity(intentPerfil);
                 break;
 
