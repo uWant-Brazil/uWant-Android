@@ -89,5 +89,7 @@
     <string name="text_update">Atualizar</string>
     <string name="text_find_friends">Encontrar Amigos</string>
     <string name="text_fill_three_characteres">Você precisa digitar, no mínimo, 3 caracteres.</string>
+    <string name="text_image_capture_warning">Não estamos conseguindo abrir a camera do seu aparelho. Por favor, tente importar a foto da galeria!</string>
+    <string name="text_capture_picture_warning">Não estamos conseguindo abrir a galeria do seu aparelho. Por favor, tente tirar a foto pela camera!</string>
 
 </resources>

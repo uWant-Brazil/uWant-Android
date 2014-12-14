@@ -12,8 +12,11 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
+
+import br.com.uwant.R;
 
 public abstract class PictureUtil {
 
@@ -97,13 +100,21 @@ public abstract class PictureUtil {
         Intent intent = new Intent(
                 Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
-        activity.startActivityForResult(intent, requestCode);
+
+        if (intent.resolveActivity(activity.getPackageManager()) != null) {
+            activity.startActivityForResult(intent, requestCode);
+        } else {
+            Toast.makeText(activity, R.string.text_capture_picture_warning, Toast.LENGTH_LONG).show();
+        }
     }
 
     public static void takePicture(Activity activity, int requestCode) {
-        Intent i = new Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        activity.startActivityForResult(i, requestCode);
+        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (i.resolveActivity(activity.getPackageManager()) != null) {
+            activity.startActivityForResult(i, requestCode);
+        } else {
+            Toast.makeText(activity, R.string.text_image_capture_warning, Toast.LENGTH_LONG).show();
+        }
     }
 
 }
