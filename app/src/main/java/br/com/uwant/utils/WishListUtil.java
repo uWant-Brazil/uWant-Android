@@ -142,7 +142,7 @@ public abstract class WishListUtil {
         int x = 2;
         int y = 2;
 
-        for (int i = 0;i < products.size();i++) {
+        for (int i = 0;i < productsWithPictures.size();i++) {
             indexes.add(i);
         }
 
@@ -155,7 +155,7 @@ public abstract class WishListUtil {
                 int index = indexes.get(randomIndex);
                 indexes.remove(randomIndex);
 
-                Product product = products.get(index);
+                Product product = productsWithPictures.get(index);
                 Multimedia multimedia = product.getPicture();
 
                 int id;

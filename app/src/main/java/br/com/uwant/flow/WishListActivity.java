@@ -290,7 +290,8 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                 if ((filePath == null || filePath.isEmpty())
                         && data.getType().startsWith("image/")
                         && data.getData() != null
-                        && data.getDataString() != null && data.getDataString().contains("docs.file")) {
+                        && data.getDataString() != null
+                        && data.getDataString().contains("docs.file")) {
                     try {
                         InputStream inputStream = getContentResolver().openInputStream(mUri);
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
@@ -326,37 +327,13 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                     saveProduct(this.mLastProductPicture);
                 }
             }
-        }
-
-        if (resultCode == RESULT_OK) {
-            if (requestCode == RQ_OPEN_CAMERA) {
-                saveProduct(this.mLastProductPicture);
-                this.mLastProductPicture = null;
-            } else if (requestCode == RQ_OPEN_GALLERY) {
-                Uri selectedImage = data.getData();
-                String[] filePathColumn = {
-                        MediaStore.Images.Media.DATA};
-
-                Cursor cursor = getContentResolver().query(
-                        selectedImage, filePathColumn, null, null, null);
-                cursor.moveToFirst();
-
-                int columnIndex = cursor.getColumnIndex(
-                        filePathColumn[0]);
-                String filePath = cursor.getString(columnIndex);
-                cursor.close();
-
-                this.mLastProductPicture = new File(filePath);
-                saveProduct(this.mLastProductPicture);
-            }
+        } else if ((resultCode != RESULT_OK || !UserUtil.hasFacebook())
+                && requestCode == UserUtil.RQ_FACEBOOK_LINK) {
+            mSwitchView.setChecked(false);
         } else {
-            if ((resultCode != RESULT_OK || !UserUtil.hasFacebook()) && requestCode == UserUtil.RQ_FACEBOOK_LINK) {
-                mSwitchView.setChecked(false);
-            } else {
-                Session session = Session.getActiveSession();
-                if (session != null) {
-                    session.onActivityResult(this, requestCode, resultCode, data);
-                }
+            Session session = Session.getActiveSession();
+            if (session != null) {
+                session.onActivityResult(this, requestCode, resultCode, data);
             }
         }
     }
