@@ -40,34 +40,32 @@ public class SplashActivity extends Activity implements Runnable {
                 .build();
         ImageLoader.getInstance().init(config);
 
-        setContentView(R.layout.activity_splash);
-
-        final ImageView imageView = (ImageView) findViewById(R.id.splash_imageView);
-
-        mHandler = new Handler() {
-
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                int resource = msg.what;
-                if (resource != 0) {
-                    imageView.setImageResource(resource);
-                } else {
-                    Intent intent = new Intent(SplashActivity.this, isLogged ? MainActivity.class : AuthenticationActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-
-        };
-
-        final Thread thread = new Thread(this);
-        thread.start();
-
         UserDatabase db = new UserDatabase(this);
         isLogged = db.existAnything();
         if (isLogged) {
             User.newInstance(db.selectAll().get(0));
+            navigate();
+        } else {
+            setContentView(R.layout.activity_splash);
+
+            final ImageView imageView = (ImageView) findViewById(R.id.splash_imageView);
+            mHandler = new Handler() {
+
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    int resource = msg.what;
+                    if (resource != 0) {
+                        imageView.setImageResource(resource);
+                    } else {
+                        navigate();
+                    }
+                }
+
+            };
+
+            final Thread thread = new Thread(this);
+            thread.start();
         }
     }
 
@@ -125,4 +123,11 @@ public class SplashActivity extends Activity implements Runnable {
             mHandler.sendEmptyMessage(resource);
         }
     }
+
+    private void navigate() {
+        Intent intent = new Intent(this, isLogged ? MainActivity.class : AuthenticationActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 }
