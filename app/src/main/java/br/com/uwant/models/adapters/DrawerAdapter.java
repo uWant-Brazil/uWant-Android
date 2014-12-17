@@ -1,22 +1,4 @@
-package br.com.uwant.models.adapters;/*
- * Copyright (C) 2013 InfocusWeb
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * @author Cleibson Gomes
- * @date {08/08/14}
- *
- */
+package br.com.uwant.models.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -78,23 +60,24 @@ public class DrawerAdapter extends BaseAdapter {
     private int getIcon(int position) {
         int icon;
         switch (position) {
+//            ISSUE #53 - https://github.com/uWant-Brazil/uWant-Android/issues/53
+//            case 0:
+//                // Loja
+//                icon = R.drawable.ic_panel_lojas;
+//                break;
+//            case 1:
+//                // Ofertas
+//                icon = R.drawable.ic_panel_ofertas;
+//                break;
             case 0:
-                // Loja
-                icon = R.drawable.ic_panel_lojas;
-                break;
-            case 1:
-                // Ofertas
-                icon = R.drawable.ic_panel_ofertas;
-                break;
-            case 2:
                 // Configuracoes
                 icon = R.drawable.ic_panel_conf;
                 break;
-            case 3:
+            case 1:
                 // Sobre
                 icon = R.drawable.ic_panel_sobre;
                 break;
-            case 4:
+            case 2:
                 // Sair
                 icon = R.drawable.ic_panel_sair;
                 break;

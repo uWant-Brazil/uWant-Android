@@ -323,15 +323,15 @@ public class MainActivity extends UWActivity implements AdapterView.OnItemClickL
                 it.putExtra(Person.EXTRA, person);
             } else {
                 switch (position) {
-                    case 3:
+                    case 1:
                         it = new Intent(this, ConfigurationsActivity.class);
                         break;
 
-                    case 4:
+                    case 2:
                         it = new Intent(this, AboutActivity.class);
                         break;
 
-                    case 5:
+                    case 3:
                         askForLogoff();
                         // Deixar sem break para que a intent seja nula!
 

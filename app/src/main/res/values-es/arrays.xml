@@ -19,8 +19,6 @@
         <item>AMIGOS</item>
     </string-array>
     <string-array name="options_drawer">
-        <item>Lojas</item>
-        <item>Ofertas</item>
         <item>Configurações</item>
         <item>Sobre</item>
         <item>Sair</item>
