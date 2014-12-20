@@ -113,6 +113,15 @@
             android:screenOrientation="portrait"
             android:label="@string/text_add_wishes">
         </activity>
+        <activity
+            android:icon="@drawable/ic_action_uwant"
+            android:theme="@style/AppThemeActionBar"
+            android:name=".flow.WishListProductActivity"
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:label="@string/text_add_wishes">
+        </activity>
 
         <receiver
             android:name=".GCMBroadcastReceiver"
