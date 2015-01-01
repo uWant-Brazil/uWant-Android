@@ -72,7 +72,7 @@ public class WishListProductActivity extends UWActivity implements View.OnClickL
                 int mode = intent.getIntExtra(EXTRA_MODE, CAMERA);
                 switch (mode) {
                     case GALLERY:
-                        PictureUtil.openGallery(this, RQ_GALLERY);
+                        PictureUtil.openGallery(this, RQ_GALLERY, true);
                         break;
 
                     default:
@@ -152,49 +152,8 @@ public class WishListProductActivity extends UWActivity implements View.OnClickL
     }
 
     private void getGalleryData(Intent data) {
-        Uri uri = data.getData();
-        String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-        Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-        cursor.moveToFirst();
-
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        String filePath = cursor.getString(columnIndex);
-        cursor.close();
-
-        if ((filePath == null || filePath.isEmpty())
-                && data.getType().startsWith("image/")
-                && data.getData() != null
-                && data.getDataString() != null
-                && data.getDataString().contains("docs.file")) {
-            try {
-                InputStream inputStream = getContentResolver().openInputStream(uri);
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                Multimedia multimedia = new Multimedia();
-                multimedia.setBitmap(bitmap);
-                fillProduct(multimedia);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                File pictureFile = new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES),
-                        String.format("uw-product-%d.jpg", System.currentTimeMillis()));
-
-                InputStream inputStream = getContentResolver().openInputStream(uri);
-                byte[] buffer = new byte[inputStream.available()];
-                inputStream.read(buffer);
-
-                OutputStream outStream = new FileOutputStream(pictureFile);
-                outStream.write(buffer);
-
-                saveProduct(pictureFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if (filePath != null) {
+        List<String> images = (List<String>) data.getSerializableExtra(Product.EXTRA);
+        for (String filePath : images) {
             if (filePath.startsWith("http")) {
                 saveProduct(filePath);
             } else {
