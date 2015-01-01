@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -53,6 +54,9 @@ public class WishListProductActivity extends UWActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wishlist_product);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mProducts = new ArrayList<Product>(5);
         mAdapter = new ProductAdapter(this, mProducts, this);
@@ -127,21 +131,7 @@ public class WishListProductActivity extends UWActivity implements View.OnClickL
                 break;
 
             case android.R.id.home:
-                DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        setResult(RESULT_CANCELED);
-                        finish();
-                    }
-
-                };
-
-                AlertFragmentDialog alertDialog = AlertFragmentDialog.create(
-                        getString(R.string.text_attention),
-                        getString(R.string.text_cancel_product),
-                        listener);
-                alertDialog.show(getSupportFragmentManager(), CONST_HEADS_UP_WIHLIST);
+                finish();
                 break;
 
             default:

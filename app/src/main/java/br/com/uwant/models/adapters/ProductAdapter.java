@@ -87,7 +87,7 @@ public class ProductAdapter extends BaseAdapter {
             linearLayout.setGravity(Gravity.CENTER);
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, 0, 0, DEFAULT_MARGIN_BOTTOM);
+            params.setMargins(DEFAULT_MARGIN_BOTTOM, DEFAULT_MARGIN_BOTTOM, DEFAULT_MARGIN_BOTTOM, DEFAULT_MARGIN_BOTTOM);
 
             CardView cardView = new CardView(this.mContext);
             //FIXME Não está funcionando a cor do CardView?
