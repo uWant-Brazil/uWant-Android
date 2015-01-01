@@ -376,7 +376,6 @@ public class WishListFragment extends Fragment implements IRequest.OnRequestList
 
         for (int i = 0; i < wishList.getProducts().size() ; i++) {
             wishList.getProducts().get(i).getPicture().setBitmap(null);
-            wishList.getProducts().get(i).getPicture().setUri(null);
         }
 
         it.putExtra(WishList.EXTRA, wishList);

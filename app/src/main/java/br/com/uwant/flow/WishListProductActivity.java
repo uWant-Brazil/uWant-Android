@@ -36,16 +36,17 @@ import br.com.uwant.utils.PictureUtil;
 
 public class WishListProductActivity extends UWActivity implements View.OnClickListener {
 
-    public static final int CAMERA = 0x199;
-    public static final int GALLERY = 0x399;
+    public static final int CAMERA = 199;
+    public static final int GALLERY = 399;
     public static final String EXTRA_MODE = "extra_mode";
 
-    private static final int RQ_GALLERY = 0x9382;
-    private static final int RQ_CAMERA = 0x9322;
+    private static final int RQ_GALLERY = 9382;
+    private static final int RQ_CAMERA = 9322;
     private static final String CONST_HEADS_UP_WIHLIST = "heads_up_wihlist";
+    private static final String TAG_CLOSE_DIALOG = "Close_Dialog";
 
     private boolean mIsFirstTime = true;
-    private List<Product> mProducts = Collections.emptyList();
+    private List<Product> mProducts;
     private ProductAdapter mAdapter;
 
     @Override
@@ -53,6 +54,7 @@ public class WishListProductActivity extends UWActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wishlist_product);
 
+        mProducts = new ArrayList<Product>(5);
         mAdapter = new ProductAdapter(this, mProducts, this);
 
         final ListView listView = (ListView) findViewById(R.id.wishlist_product_listView);
@@ -99,6 +101,7 @@ public class WishListProductActivity extends UWActivity implements View.OnClickL
                     break;
 
                 default:
+                    finish();
                     break;
             }
         } else {
@@ -239,16 +242,40 @@ public class WishListProductActivity extends UWActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        Integer position = (Integer) v.getTag();
+        final Integer position = (Integer) v.getTag();
 
         switch (v.getId()) {
             case R.id.adapter_product_imageView_close:
-                mProducts.remove(position);
-                mAdapter.notifyDataSetChanged();
+                closePicture(position);
                 break;
 
             default:
                 break;
         }
+    }
+
+    private void closePicture(final Integer position) {
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mProducts.remove(position);
+
+                if (mProducts.size() > 0) {
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    finish();
+                }
+            }
+
+        };
+
+        String msg = String.format("%s%s", "Você deseja realmente remover?", (mProducts.size() > 1 ? "" : " Como esta é sua única imagem, você estará cancelando o compartilhamento."));
+        AlertFragmentDialog afd = AlertFragmentDialog.create(
+                getString(R.string.text_attention),
+                msg,
+                listener
+        );
+        afd.show(getSupportFragmentManager(), TAG_CLOSE_DIALOG);
     }
 }

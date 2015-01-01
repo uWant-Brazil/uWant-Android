@@ -5,9 +5,10 @@
     android:background="@color/GRAY_BACKGROUND" >
 
     <ListView
+        android:id="@+id/wishlist_product_listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/wishlist_product_listView"
+        android:descendantFocusability="afterDescendants"
         android:choiceMode="none"
         android:divider="#00000000"
         android:cacheColorHint="#00000000" />

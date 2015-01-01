@@ -73,9 +73,9 @@ import br.com.uwant.utils.WishListUtil;
 public class WishListActivity extends UWActivity implements View.OnClickListener,
         IRequest.OnRequestListener<List<Product>>, CompoundButton.OnCheckedChangeListener, UWFileBodyListener {
 
-    private static final int NOTIFICATION_ID = 0x200;
-    private static final int RQ_CAMERA = 0x300;
-    private static final int RQ_GALLERY = 0x400;
+    private static final int NOTIFICATION_ID = 200;
+    private static final int RQ_CAMERA = 300;
+    private static final int RQ_GALLERY = 400;
     private static final String CONST_HEADS_UP_WIHLIST = "heads_up_wihlist";
     private static final String CONST_LINK_TAG = "link_tag";
 
@@ -267,7 +267,19 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if ((resultCode != RESULT_OK || !UserUtil.hasFacebook())
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case RQ_CAMERA:
+                case RQ_GALLERY:
+                    List<Product> products = (List<Product>) data.getSerializableExtra(Product.EXTRA);
+                    mProducts.addAll(products);
+                    mAdapter.notifyDataSetChanged();
+                    break;
+
+                default:
+                    break;
+            }
+        } else if ((resultCode != RESULT_OK || !UserUtil.hasFacebook())
                 && requestCode == UserUtil.RQ_FACEBOOK_LINK) {
             mSwitchView.setChecked(false);
         } else {
