@@ -9,10 +9,12 @@
     <string-array name="options_contacts_with_facebook">
         <item>Agenda</item>
         <item>Facebook</item>
+        <item>uWant</item>
     </string-array>
 
     <string-array name="options_contacts">
         <item>Agenda</item>
+        <item>uWant</item>
     </string-array>
     <string-array name="options_perfil">
         <item>DESEJOS</item>

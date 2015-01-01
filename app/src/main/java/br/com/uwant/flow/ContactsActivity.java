@@ -31,7 +31,7 @@ import br.com.uwant.models.cloud.models.ContactsModel;
 
 public class ContactsActivity extends UWActivity implements View.OnClickListener {
 
-    private List<String> TABS;
+    private String[] TABS;
 
     private ContactsPagerAdapter mAdapter;
     private ViewPager mViewPager;
@@ -46,23 +46,16 @@ public class ContactsActivity extends UWActivity implements View.OnClickListener
 
         Intent it = getIntent();
 
-        String[] tabs;
         if (it.hasExtra(Person.EXTRA)) {
             this.mFacebookPersons = (ArrayList<Person>) it.getSerializableExtra(Person.EXTRA);
-            tabs = getResources().getStringArray(R.array.options_contacts_with_facebook);
+            TABS = getResources().getStringArray(R.array.options_contacts_with_facebook);
         } else {
-            tabs = getResources().getStringArray(R.array.options_contacts);
-        }
-
-        TABS = new ArrayList<String>(tabs.length + 5);
-        for (String tab : tabs) {
-            TABS.add(tab);
+            TABS = getResources().getStringArray(R.array.options_contacts);
         }
 
         mIsFromPerfil = it.getBooleanExtra(User.EXTRA_ADD_CONTACTS, false);
         if (mIsFromPerfil) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            TABS.add("uWant");
         }
 
         setContentView(R.layout.activity_contacts);
@@ -165,7 +158,7 @@ public class ContactsActivity extends UWActivity implements View.OnClickListener
     private void sendContacts() {
         boolean canSkip = false;
         List<Person> contacts = new ArrayList<Person>();
-        for (int i = 0;i < TABS.size();i++) {
+        for (int i = 0;i < TABS.length;i++) {
             Fragment f = mAdapter.getItem(i);
             if (f instanceof ContactsFragment) {
                 ContactsFragment cf = (ContactsFragment) f;
@@ -209,7 +202,7 @@ public class ContactsActivity extends UWActivity implements View.OnClickListener
 
         @Override
         public int getCount() {
-            return TABS.size();
+            return TABS.length;
         }
 
         @Override
@@ -221,7 +214,7 @@ public class ContactsActivity extends UWActivity implements View.OnClickListener
                         fragment = new AgendaFragment();
                         break;
 
-                    default:
+                    case 1:
                         String title = getPageTitle(i).toString();
                         if (title.equals("Facebook")) {
                             fragment = FacebookFragment.newInstance(mFacebookPersons);
@@ -231,6 +224,13 @@ public class ContactsActivity extends UWActivity implements View.OnClickListener
                             throw new RuntimeException();
                         }
                         break;
+
+                    case 2:
+                        fragment = new UWantFragment();
+                        break;
+
+                    default:
+                        throw new RuntimeException();
                 }
 
                 this.mFragments.put(i, fragment);
@@ -240,14 +240,14 @@ public class ContactsActivity extends UWActivity implements View.OnClickListener
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return TABS.get(position);
+            return TABS[position];
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        for (int i = 0;i < TABS.size();i++) {
+        for (int i = 0;i < TABS.length;i++) {
             Fragment f = mAdapter.getItem(i);
             if (f instanceof ContactsFragment) {
                 ContactsFragment cf = (ContactsFragment) f;

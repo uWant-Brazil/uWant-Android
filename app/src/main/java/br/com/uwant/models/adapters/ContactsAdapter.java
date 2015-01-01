@@ -134,7 +134,6 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
         if (position == 0) {
             holder.hTextViewMail.setVisibility(View.GONE);
             holder.hImageViewPicture.setVisibility(View.GONE);
-            holder.hImageViewPictureCircle.setVisibility(View.GONE);
             holder.hCheckBox.setVisibility(View.GONE);
             holder.hTextViewName.setText(R.string.text_invite_all_friends);
         } else {
