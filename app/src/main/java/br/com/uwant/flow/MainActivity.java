@@ -197,7 +197,7 @@ public class MainActivity extends UWActivity implements AdapterView.OnItemClickL
                         actionId == EditorInfo.IME_ACTION_DONE ||
                         event.getAction() == KeyEvent.ACTION_DOWN &&
                                 event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                    if (!event.isShiftPressed()) {
+                    if (event == null || !event.isShiftPressed()) {
                         String s = mEditTextSearch.getText().toString();
                         if (s.length() > 2) {
                             mIsCanceled = false;

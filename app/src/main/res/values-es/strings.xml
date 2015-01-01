@@ -91,5 +91,8 @@
     <string name="text_cancel_product">As fotos não serão carregadas na lista de desejos. Você deseja realmente continuar?</string>
     <string name="text_hint_description">Digite a descrição aqui</string>
     <string name="text_choose_images">Escolha as imagens</string>
+    <string name="text_no_contacts">Você não possui nenhum contato disponível nesta modalidade.</string>
+    <string name="text_loading">Carregando...</string>
+    <string name="text_hint_find_user">Digite o nome, e-mail ou login do usuário</string>
 
 </resources>
