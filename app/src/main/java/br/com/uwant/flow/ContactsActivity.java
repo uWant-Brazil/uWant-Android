@@ -218,10 +218,8 @@ public class ContactsActivity extends UWActivity implements View.OnClickListener
                         String title = getPageTitle(i).toString();
                         if (title.equals("Facebook")) {
                             fragment = FacebookFragment.newInstance(mFacebookPersons);
-                        } else if (mIsFromPerfil) {
-                            fragment = new UWantFragment();
                         } else {
-                            throw new RuntimeException();
+                            fragment = new UWantFragment();
                         }
                         break;
 
