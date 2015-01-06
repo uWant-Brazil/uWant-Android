@@ -31,23 +31,31 @@ public class SpannableTagBuilder extends SpannableStringBuilder {
         this.mPerson = person;
 
         String tag = getTag(mPerson);
-        this.mSpannableTag = String.format("<uw id='%d'>%s</uw>", identifier, tag);
+        this.mSpannableTag = String.format("<uwt id='%d'>%s</uwt>", identifier, tag);
 
         TextView textView = createTag(tag);
         BitmapDrawable bitmapDrawable = convertToDrawable(textView);
         ImageSpan imageSpan = createImageSpan(bitmapDrawable);
 
         append(mSpannableTag);
-        setSpan(imageSpan, 0, length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        setSpan(imageSpan, 0, length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        Editable editable = mEditText.getEditableText();
+        Editable editable = mEditText.getText();
+        if (editable.length() < end) {
+            String appendable = tag.substring(editable.length() - start);
+            editable.append(appendable);
+        }
         editable.replace(start, end, this);
 
-        mEditText.setSelection(mEditText.getSelectionEnd() - 1);
+        mEditText.setSelection(mEditText.getSelectionEnd());
     }
 
-    private String getTag(Person person) {
+    public String getTag(Person person) {
         return String.format("@%s", person.getLogin());
+    }
+
+    public int getIdentifier() {
+        return this.mIdentifier;
     }
 
     private ImageSpan createImageSpan(BitmapDrawable bitmapDrawable) {
