@@ -25,7 +25,7 @@
             android:layout_height="wrap_content" />
     </FrameLayout>
 
-    <br.com.uwant.models.views.TagEditText
+    <br.com.uwant.models.views.tag.TagEditText
         android:id="@+id/adapter_product_editText_description"
         android:layout_weight="0"
         android:hint="@string/text_hint_description"

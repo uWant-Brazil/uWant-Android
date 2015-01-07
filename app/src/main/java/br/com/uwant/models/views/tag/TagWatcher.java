@@ -1,8 +1,9 @@
-package br.com.uwant.models.views;
+package br.com.uwant.models.views.tag;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.models.UserSearchModel;
-import br.com.uwant.utils.DebugUtil;
 
 public class TagWatcher implements TextWatcher {
 
@@ -24,6 +24,7 @@ public class TagWatcher implements TextWatcher {
     private int mStartIndex;
     private List<ImageSpan> mSpansToRemove;
     private TextView mTextView;
+    private EditText mEditText;
     private IRequest.OnRequestListener<List<Person>> mListener;
 
     public TagWatcher(TextView textView) {
@@ -34,6 +35,20 @@ public class TagWatcher implements TextWatcher {
 
         if (textView instanceof IRequest.OnRequestListener) {
             this.mListener = (IRequest.OnRequestListener<List<Person>>) textView;
+        } else {
+            throw new IllegalArgumentException("Your editable must implements OnRequestListener.");
+        }
+    }
+
+    public TagWatcher(EditText editText) {
+        this.mIsUpdating = false;
+        this.mStartIndex = -1;
+        this.mSpansToRemove = new ArrayList<ImageSpan>(10);
+        this.mEditText = editText;
+        this.mTextView = editText;
+
+        if (editText instanceof IRequest.OnRequestListener) {
+            this.mListener = (IRequest.OnRequestListener<List<Person>>) editText;
         } else {
             throw new IllegalArgumentException("Your editable must implements OnRequestListener.");
         }
@@ -83,9 +98,26 @@ public class TagWatcher implements TextWatcher {
 
         Matcher matcher = PATTERN.matcher(s);
         while (matcher.find()) {
+            String tagged = matcher.group(1);
             String untagged = matcher.group(2);
 
-            if (untagged != null) {
+            if (tagged != null && this.mEditText == null) {
+                this.mIsUpdating = true;
+
+                this.mStartIndex = matcher.start(1);
+
+                long id = Long.parseLong(tagged.substring(tagged.indexOf("'") + 1, tagged.lastIndexOf("'")));
+                String login = tagged.substring(tagged.indexOf("@") + 1, tagged.indexOf("</uwt>")).trim();
+
+                Person person = new Person();
+                person.setId(id);
+                person.setLogin(login);
+
+                List<Person> persons = new ArrayList<Person>();
+                persons.add(person);
+
+                this.mListener.onExecute(persons);
+            } if (untagged != null && this.mEditText != null) {
                 this.mIsUpdating = true;
 
                 this.mStartIndex = matcher.start(2);

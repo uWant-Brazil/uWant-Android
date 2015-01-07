@@ -51,7 +51,7 @@
                 android:ellipsize="end"
                 android:id="@+id/adapter_feed_comment_textView_user" />
 
-            <br.com.uwant.models.views.TagTextView
+            <br.com.uwant.models.views.tag.TagTextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

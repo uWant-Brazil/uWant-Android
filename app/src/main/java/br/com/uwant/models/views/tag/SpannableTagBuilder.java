@@ -1,4 +1,4 @@
-package br.com.uwant.models.views;
+package br.com.uwant.models.views.tag;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

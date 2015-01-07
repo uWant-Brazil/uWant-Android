@@ -1,7 +1,6 @@
-package br.com.uwant.models.views;
+package br.com.uwant.models.views.tag;
 
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
