@@ -1,6 +1,5 @@
 package br.com.uwant.flow;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -8,12 +7,10 @@ import android.content.pm.Signature;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -49,7 +46,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.uwant.R;
-import br.com.uwant.flow.fragments.AlertFragmentDialog;
 import br.com.uwant.flow.fragments.FeedsFragment;
 import br.com.uwant.flow.fragments.WishListButtonFragment;
 import br.com.uwant.models.adapters.DrawerAdapter;
@@ -68,7 +64,7 @@ import br.com.uwant.utils.PictureUtil;
 
 public class MainActivity extends UWActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
 
-    public static final String EXIT_DIALOG = "Exit_Dialog";
+    private static final int RQ_DRAWER = 924;
 
     private boolean mIsCanceled;
     private FeedsFragment mFeedsFragment;
@@ -248,6 +244,16 @@ public class MainActivity extends UWActivity implements AdapterView.OnItemClickL
         updateUser();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RQ_DRAWER) {
+            if (resultCode == RESULT_FIRST_USER) {
+                performLogoff();
+            }
+        }
+    }
+
     private void updateUser() {
         User user = User.getInstance();
         String name = user.getName();
@@ -323,17 +329,16 @@ public class MainActivity extends UWActivity implements AdapterView.OnItemClickL
                 it.putExtra(Person.EXTRA, person);
             } else {
                 switch (position) {
+                    case 1:
+                        // Minhas Listas
+                    case 2:
+                        // Amigos
+                        Toast.makeText(this, "Desativado...", Toast.LENGTH_SHORT).show();
+                        break;
+
                     case 3:
                         it = new Intent(this, ConfigurationsActivity.class);
                         break;
-
-                    case 4:
-                        it = new Intent(this, AboutActivity.class);
-                        break;
-
-                    case 5:
-                        askForLogoff();
-                        // Deixar sem break para que a intent seja nula!
 
                     default:
                         it = null;
@@ -343,27 +348,10 @@ public class MainActivity extends UWActivity implements AdapterView.OnItemClickL
         }
 
         if (it != null) {
-            startActivity(it);
+            startActivityForResult(it, RQ_DRAWER);
         }
 
         mDrawerLayout.closeDrawer(mDrawerList);
-    }
-
-    private void askForLogoff() {
-        String title = getString(R.string.text_attention);
-        String message = getString(R.string.text_exit_message);
-        String positiveText = getString(R.string.text_yes);
-        String negativeText = getString(R.string.text_no);
-        DialogInterface.OnClickListener positiveListener = new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                performLogoff();
-            }
-
-        };
-        AlertFragmentDialog afd = AlertFragmentDialog.create(title, message, positiveText, positiveListener, negativeText, null);
-        afd.show(getSupportFragmentManager(), EXIT_DIALOG);
     }
 
     @Override
@@ -392,6 +380,8 @@ public class MainActivity extends UWActivity implements AdapterView.OnItemClickL
             case R.id.drawer_linearLayout_perfil:
                 Intent it = new Intent(this, PerfilActivity.class);
                 startActivity(it);
+
+                mDrawerLayout.closeDrawer(mDrawerList);
                 break;
 
             default:

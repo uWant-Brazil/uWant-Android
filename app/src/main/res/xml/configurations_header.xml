@@ -4,7 +4,20 @@
 
     <header android:fragment="br.com.uwant.flow.ConfigurationsActivity$ConfigurationsFragment"
         android:icon="@android:drawable/ic_menu_sort_by_size"
-        android:title="Conta" >
-    </header>
+        android:title="@string/text_account" />
+
+    <header android:fragment="br.com.uwant.flow.ConfigurationsActivity$InformationsFragment"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="@string/text_informations" />
+
+    <header
+        android:id="@+id/header_configuration_about"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/text_about" />
+
+    <header
+        android:id="@+id/header_configuration_about"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:title="@string/text_exit" />
 
 </preference-headers>

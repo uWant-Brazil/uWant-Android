@@ -10,6 +10,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import br.com.uwant.R;
@@ -17,37 +18,42 @@ import br.com.uwant.models.classes.Person;
 
 public class SpannableTagBuilder extends SpannableStringBuilder {
 
+    private static final int TEXT_SIZE_SP = 18;
+
     private int mIdentifier;
     private String mSpannableTag;
     private Person mPerson;
-    private final TagEditText mEditText;
+    private TextView mTextView;
 
-    public SpannableTagBuilder(TagEditText editText) {
-        this.mEditText = editText;
+    public SpannableTagBuilder(TextView editText) {
+        this.mTextView = editText;
     }
 
     public void addTag(int identifier, int start, int end, Person person) {
         this.mIdentifier = identifier;
         this.mPerson = person;
 
-        String tag = getTag(mPerson);
+        String tag = getTag(this.mPerson);
         this.mSpannableTag = String.format("<uwt id='%d'>%s</uwt>", identifier, tag);
 
         TextView textView = createTag(tag);
         BitmapDrawable bitmapDrawable = convertToDrawable(textView);
         ImageSpan imageSpan = createImageSpan(bitmapDrawable);
 
-        append(mSpannableTag);
+        append(this.mSpannableTag);
         setSpan(imageSpan, 0, length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        Editable editable = mEditText.getText();
+        Editable editable = this.mTextView.getEditableText();
         if (editable.length() < end) {
             String appendable = tag.substring(editable.length() - start);
             editable.append(appendable);
         }
         editable.replace(start, end, this);
 
-        mEditText.setSelection(mEditText.getSelectionEnd());
+        if (this.mTextView instanceof EditText) {
+            EditText editText = (EditText) this.mTextView;
+            editText.setSelection(this.mTextView.getSelectionEnd());
+        }
     }
 
     public String getTag(Person person) {
@@ -62,16 +68,16 @@ public class SpannableTagBuilder extends SpannableStringBuilder {
         return new ImageSpan(bitmapDrawable);
     }
 
-    public TextView createTag(String tag) {
-        TextView textView = new TextView(mEditText.getContext());
+    private TextView createTag(String tag) {
+        TextView textView = new TextView(this.mTextView.getContext());
         textView.setText(tag.trim());
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TEXT_SIZE_SP);
         textView.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         textView.setBackgroundResource(R.drawable.uwant_list_pressed_holo_light);
         return textView;
     }
 
-    public BitmapDrawable convertToDrawable(TextView textView) {
+    private BitmapDrawable convertToDrawable(TextView textView) {
         int spec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         textView.measure(spec, spec);
         textView.layout(0, 0, textView.getMeasuredWidth(), textView.getMeasuredHeight());
@@ -92,7 +98,7 @@ public class SpannableTagBuilder extends SpannableStringBuilder {
 
         textView.destroyDrawingCache();
 
-        BitmapDrawable bitmapDrawable = new BitmapDrawable(mEditText.getResources(), viewBmp);
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(this.mTextView.getResources(), viewBmp);
         bitmapDrawable.setBounds(0, 0, bitmapDrawable.getIntrinsicWidth(), bitmapDrawable.getIntrinsicHeight());
 
         return bitmapDrawable;

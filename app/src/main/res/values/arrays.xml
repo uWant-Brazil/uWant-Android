@@ -21,11 +21,9 @@
         <item>AMIGOS</item>
     </string-array>
     <string-array name="options_drawer">
-        <item>Lojas</item>
-        <item>Ofertas</item>
+        <item>Minhas listas</item>
+        <item>Amigos</item>
         <item>Configurações</item>
-        <item>Sobre</item>
-        <item>Sair</item>
     </string-array>
     <string-array name="options_configurations_account">
         <item>H1</item>

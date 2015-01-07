@@ -20,14 +20,22 @@ package br.com.uwant.flow;/*
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Request;
@@ -42,6 +50,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import br.com.uwant.R;
+import br.com.uwant.flow.fragments.AlertFragmentDialog;
 import br.com.uwant.models.classes.SocialProvider;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.IRequest;
@@ -49,15 +58,18 @@ import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.errors.RequestError;
 import br.com.uwant.models.cloud.models.ExcludeAccountModel;
 import br.com.uwant.models.cloud.models.SocialLinkModel;
-import br.com.uwant.models.cloud.models.SocialRegisterModel;
 import br.com.uwant.models.databases.UserDatabase;
 
 public class ConfigurationsActivity extends PreferenceActivity {
 
+    private static final String EXIT_DIALOG = "Exit_Dialog";
     private static final String CONST_HAS_HEADERS = "hasHeaders";
     private static final String CONST_LOAD_HEADERS_FROM_RESOURCE = "loadHeadersFromResource";
     private static final String ID_BUTTON_EXCLUDE = "buttonExclude";
     private static final String ID_BUTTON_FACEBOOK = "buttonFacebook";
+    private static final String ID_PREFERENCE_VERSION = "preferenceVersion";
+    private static final String ID_PREFERENCE_SUPPORT = "preferenceSupport";
+    private static final String ID_PREFERENCE_SITE = "preferenceSite";
     private static final List<String> FACEBOOK_PERMISSIONS = Arrays.asList("public_profile", "email", "user_birthday", "user_friends");
 
     final Session.StatusCallback callback = new Session.StatusCallback() {
@@ -184,7 +196,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
     }
 
     private void mapEarlierThenV11() {
-        addPreferencesFromResource(R.layout.activity_preferences);
+        addPreferencesFromResource(R.layout.preferences_account);
 
         Preference button = findPreference(ID_BUTTON_EXCLUDE);
         button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -297,6 +309,17 @@ public class ConfigurationsActivity extends PreferenceActivity {
     }
 
     @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        if (position == 2) {
+            Intent it = new Intent(this, AboutActivity.class);
+            startActivity(it);
+        } else if (position == 3) {
+            askForLogoff();
+        }
+    }
+
+    @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         int id = item.getItemId();
         switch (id) {
@@ -307,6 +330,37 @@ public class ConfigurationsActivity extends PreferenceActivity {
             default:
                 return super.onMenuItemSelected(featureId, item);
         }
+    }
+
+    private void askForLogoff() {
+        DialogInterface.OnClickListener positiveListener = new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                setResult(RESULT_FIRST_USER);
+                finish();
+            }
+
+        };
+
+        View contentView = LayoutInflater.from(this).inflate(R.layout.dialog_default, null);
+        TextView titleView = (TextView) contentView.findViewById(R.id.alertTitle);
+        titleView.setText(R.string.text_attention);
+        titleView.setTextColor(getResources().getColor(R.color.BLACK));
+
+        TextView messageView = (TextView) contentView.findViewById(R.id.message);
+        messageView.setText(R.string.text_exit_message);
+
+        final ImageView imageViewIcon = (ImageView) contentView.findViewById(R.id.icon);
+        imageViewIcon.setVisibility(View.GONE);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setView(contentView)
+                .setPositiveButton(R.string.text_yes, positiveListener)
+                .setNegativeButton(R.string.text_no, null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public boolean isNewV11Prefs() {
@@ -342,6 +396,9 @@ public class ConfigurationsActivity extends PreferenceActivity {
         }
     }
 
+    /**
+     * Configurations Fragment
+     */
     public static class ConfigurationsFragment extends PreferenceFragment {
 
         private ProgressDialog mProgressDialog;
@@ -429,7 +486,7 @@ public class ConfigurationsActivity extends PreferenceActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.layout.activity_preferences);
+            addPreferencesFromResource(R.layout.preferences_account);
 
             Preference preference = findPreference(ID_BUTTON_EXCLUDE);
             preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -526,5 +583,59 @@ public class ConfigurationsActivity extends PreferenceActivity {
         }
 
     }
+
+    /**
+     * Informations Fragment
+     */
+    public static class InformationsFragment extends PreferenceFragment {
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.layout.preferences_informations);
+
+            String versionName;
+            try {
+                 versionName = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+                versionName = "ERROR! :-(";
+            }
+
+            Preference preferenceVersion = findPreference(ID_PREFERENCE_VERSION);
+            preferenceVersion.setSummary(versionName);
+
+            Preference preferenceSupport = findPreference(ID_PREFERENCE_SUPPORT);
+            preferenceSupport.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setData(Uri.parse("mailto:"));
+                    intent.setType("message/rfc822");
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "[uWant] Android Support");
+                    intent.putExtra(Intent.EXTRA_EMAIL, new String[] { preference.getSummary().toString() });
+                    startActivity(Intent.createChooser(intent, "Suporte"));
+                    return true;
+                }
+
+            });
+
+            Preference preferenceSite = findPreference(ID_PREFERENCE_SITE);
+            preferenceSite.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(preference.getSummary().toString()));
+                    startActivity(intent);
+                    return true;
+                }
+
+            });
+        }
+
+    }
+
 
 }
