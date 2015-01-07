@@ -13,6 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
+import android.widget.AbsListView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -44,7 +48,7 @@ import br.com.uwant.models.cloud.models.WantModel;
 import br.com.uwant.utils.UserUtil;
 
 public class FeedsFragment extends Fragment implements View.OnClickListener,
-        IRequest.OnRequestListener<List<Action>>, PopupMenu.OnMenuItemClickListener, FragmentManager.OnBackStackChangedListener {
+        IRequest.OnRequestListener<List<Action>>, PopupMenu.OnMenuItemClickListener, FragmentManager.OnBackStackChangedListener, AbsListView.OnScrollListener {
 
     public static final String TAG = "feedsFragment";
     private static final int DEFAULT_START_INDEX = 0;
@@ -152,6 +156,7 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     private Person mPerson;
     private FeedsAdapter mFeedsAdapter;
 
+    private int mLastFirstVisibleItem = 0;
     private ProgressFragmentDialog mProgressDialog;
     private GridView mGridView;
     private View mFadeView;
@@ -183,6 +188,7 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
         mGridView.setAdapter(mFeedsAdapter);
         mGridView.setNumColumns(1);
         mGridView.setEmptyView(view.findViewById(R.id.contacts_gridView_loading));
+        mGridView.setOnScrollListener(this);
 
         final ImageView imageViewEmpty = (ImageView) view.findViewById(R.id.feed_imageView_empty);
         imageViewEmpty.setOnClickListener(this);
@@ -441,4 +447,33 @@ public class FeedsFragment extends Fragment implements View.OnClickListener,
     public void onBackStackChanged() {
         this.mFeedsAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (view.getId() == mGridView.getId()) {
+            Animation anim;
+            final int currentFirstVisibleItem = mGridView.getFirstVisiblePosition();
+            if (currentFirstVisibleItem > mLastFirstVisibleItem) {
+                // Para baixo
+                anim = AnimationUtils.makeOutAnimation(getActivity(), true);
+            } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
+                // Para cima
+                anim = AnimationUtils.makeInAnimation(getActivity(), false);
+            } else {
+                return;
+            }
+            anim.setDuration(250);
+            anim.setFillAfter(true);
+
+            View handler = getActivity().findViewById(R.id.wishListButton_main_create);
+            handler.startAnimation(anim);
+
+            mLastFirstVisibleItem = currentFirstVisibleItem;
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+    }
+
 }
