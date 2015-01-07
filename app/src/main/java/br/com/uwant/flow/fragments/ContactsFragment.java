@@ -38,7 +38,7 @@ public abstract class ContactsFragment extends Fragment implements AdapterView.O
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return LayoutInflater.from(getActivity()).inflate(R.layout.fragment_contacts, container, false);
+        return inflater.inflate(R.layout.fragment_contacts, container, false);
     }
 
     @Override
@@ -101,7 +101,7 @@ public abstract class ContactsFragment extends Fragment implements AdapterView.O
 
                 }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             } else {
-                if (mPersons.size() > 0) {
+                if (mPersons != null && mPersons.size() > 0) {
                     baseAdapter.notifyDataSetChanged();
                     mIsLoading = false;
                 } else {

@@ -9,21 +9,21 @@
     <string-array name="options_contacts_with_facebook">
         <item>Agenda</item>
         <item>Facebook</item>
+        <item>uWant</item>
     </string-array>
 
     <string-array name="options_contacts">
         <item>Agenda</item>
+        <item>uWant</item>
     </string-array>
     <string-array name="options_perfil">
         <item>DESEJOS</item>
         <item>AMIGOS</item>
     </string-array>
     <string-array name="options_drawer">
-        <item>Lojas</item>
-        <item>Ofertas</item>
+        <item>Minhas listas</item>
+        <item>Amigos</item>
         <item>Configurações</item>
-        <item>Sobre</item>
-        <item>Sair</item>
     </string-array>
     <string-array name="options_configurations_account">
         <item>H1</item>

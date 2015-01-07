@@ -27,19 +27,7 @@ public class SplashActivity extends Activity implements Runnable {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        Crashlytics.start(this);
         super.onCreate(savedInstanceState);
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-                .diskCacheExtraOptions(480, 800, null)
-                .denyCacheImageMultipleSizesInMemory()
-                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-                .memoryCacheSize(2 * 1024 * 1024)
-                .diskCacheSize(50 * 1024 * 1024)
-                .diskCacheFileCount(100)
-                .writeDebugLogs()
-                .build();
-        ImageLoader.getInstance().init(config);
-
         setContentView(R.layout.activity_splash);
 
         final ImageView imageView = (ImageView) findViewById(R.id.splash_imageView);

@@ -17,8 +17,11 @@ import android.widget.Toast;
 import java.io.File;
 
 import br.com.uwant.R;
+import br.com.uwant.flow.GalleryActivity;
 
 public abstract class PictureUtil {
+
+    public static final String MIME_IMAGE = "image/*";
 
     public static Bitmap decodeBitmap(Bitmap bitmap, ImageView imageViewPicture) {
         bitmap = cropToFit(bitmap);
@@ -96,15 +99,20 @@ public abstract class PictureUtil {
         return output;
     }
 
-    public static void openGallery(Activity activity, int requestCode) {
-        Intent intent = new Intent(
-                Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-
-        if (intent.resolveActivity(activity.getPackageManager()) != null) {
+    public static void openGallery(Activity activity, int requestCode, boolean allowMultiple) {
+        if (allowMultiple) {
+            Intent intent = new Intent(activity, GalleryActivity.class);
             activity.startActivityForResult(intent, requestCode);
         } else {
-            Toast.makeText(activity, R.string.text_capture_picture_warning, Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(
+                    Intent.ACTION_GET_CONTENT);
+            intent.setType(MIME_IMAGE);
+
+            if (intent.resolveActivity(activity.getPackageManager()) != null) {
+                activity.startActivityForResult(intent, requestCode);
+            } else {
+                Toast.makeText(activity, R.string.text_capture_picture_warning, Toast.LENGTH_LONG).show();
+            }
         }
     }
 

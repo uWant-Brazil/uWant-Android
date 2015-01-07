@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <PreferenceCategory
+        android:title="@string/text_informations" >
+
+        <Preference
+            android:key="preferenceVersion"
+            android:summary="v0.4-alpha.3"
+            android:title="@string/text_app_version" />
+
+        <Preference
+            android:key="preferenceSupport"
+            android:summary="support@uwant.com.br"
+            android:title="@string/text_support" />
+
+        <Preference
+            android:key="preferenceSite"
+            android:summary="https://www.uwant.com.br/"
+            android:title="@string/text_site" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

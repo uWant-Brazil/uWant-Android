@@ -73,14 +73,13 @@ import br.com.uwant.utils.WishListUtil;
 public class WishListActivity extends UWActivity implements View.OnClickListener,
         IRequest.OnRequestListener<List<Product>>, CompoundButton.OnCheckedChangeListener, UWFileBodyListener {
 
-    private static final int RQ_OPEN_CAMERA = 984;
-    private static final int RQ_OPEN_GALLERY = 989;
-    private static final int NOTIFICATION_ID = 0x200;
+    private static final int NOTIFICATION_ID = 200;
+    private static final int RQ_CAMERA = 300;
+    private static final int RQ_GALLERY = 400;
     private static final String CONST_HEADS_UP_WIHLIST = "heads_up_wihlist";
     private static final String CONST_LINK_TAG = "link_tag";
 
     private Multimedia mMultimedia;
-    private Uri mUri;
 
     public static enum EXTRA_MODE{CREATE, EDIT, DELETE}
 
@@ -88,7 +87,6 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
     private WishList mWishListExtra;
     private List<Product> mProducts;
     private WishListProductAdapter mAdapter;
-    private File mLastProductPicture;
 
     private Switch mSwitchView;
     private EditText mEditTextComment;
@@ -269,65 +267,17 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && data != null) {
-            if (requestCode == RQ_OPEN_CAMERA) {
-                saveProduct(this.mLastProductPicture);
-                this.mLastProductPicture = null;
-            } else if (requestCode == RQ_OPEN_GALLERY) {
-                mUri = data.getData();
-                String[] filePathColumn = {
-                        MediaStore.Images.Media.DATA };
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case RQ_CAMERA:
+                case RQ_GALLERY:
+                    List<Product> products = (List<Product>) data.getSerializableExtra(Product.EXTRA);
+                    mProducts.addAll(products);
+                    mAdapter.notifyDataSetChanged();
+                    break;
 
-                Cursor cursor = getContentResolver().query(
-                        mUri, filePathColumn, null, null, null);
-                cursor.moveToFirst();
-
-                int columnIndex = cursor.getColumnIndex(
-                        filePathColumn[0]);
-                String filePath = cursor.getString(columnIndex);
-                cursor.close();
-
-                if ((filePath == null || filePath.isEmpty())
-                        && data.getType().startsWith("image/")
-                        && data.getData() != null
-                        && data.getDataString() != null
-                        && data.getDataString().contains("docs.file")) {
-                    try {
-                        InputStream inputStream = getContentResolver().openInputStream(mUri);
-                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                        Multimedia multimedia = new Multimedia();
-                        multimedia.setBitmap(bitmap);
-                        fillProduct(multimedia);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        mLastProductPicture = new File(Environment.getExternalStoragePublicDirectory(
-                                Environment.DIRECTORY_PICTURES),
-                                String.format("uw-product-%d.jpg", System.currentTimeMillis()));
-
-                        InputStream inputStream = getContentResolver().openInputStream(mUri);
-                        byte[] buffer = new byte[inputStream.available()];
-                        inputStream.read(buffer);
-
-                        OutputStream outStream = new FileOutputStream(mLastProductPicture);
-                        outStream.write(buffer);
-                        mUri = Uri.fromFile(mLastProductPicture);
-
-                        saveProduct(mLastProductPicture);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else if (filePath != null) {
-                    if (filePath.startsWith("http")) {
-                        saveProduct(filePath);
-                    } else {
-                        this.mLastProductPicture = new File(filePath);
-                        saveProduct(this.mLastProductPicture);
-                    }
-                }
+                default:
+                    break;
             }
         } else if ((resultCode != RESULT_OK || !UserUtil.hasFacebook())
                 && requestCode == UserUtil.RQ_FACEBOOK_LINK) {
@@ -338,27 +288,6 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                 session.onActivityResult(this, requestCode, resultCode, data);
             }
         }
-    }
-
-    private void saveProduct(File pictureFile) {
-        Multimedia multimedia = new Multimedia();
-        Bitmap bitmap = BitmapFactory.decodeFile(pictureFile.getAbsolutePath());
-
-        try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bos);
-            byte[] bitmapData = bos.toByteArray();
-
-            FileOutputStream fos = new FileOutputStream(pictureFile);
-            fos.write(bitmapData);
-            fos.flush();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        multimedia.setUri(Uri.fromFile(pictureFile));
-        fillProduct(multimedia);
     }
 
     private void saveProduct(String url) {
@@ -386,11 +315,9 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                 mTwoWayView.setSelection(mAdapter.getCount());
             }
         });
-
     }
 
     private void fillProduct() {
-
         if (!mTwoWayView.isShown()) {
             mTwoWayView.setVisibility(View.VISIBLE);
             LinearLayout linearLayout = (LinearLayout) findViewById(R.id.wishList_linearLayout_present);
@@ -412,15 +339,15 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.wishList_imageButton_picture:
-                mLastProductPicture = new File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES),
-                        String.format("uw-product-%d.jpg", System.currentTimeMillis()));
-
-                PictureUtil.takePicture(this, RQ_OPEN_CAMERA);
+                Intent intent = new Intent(this, WishListProductActivity.class);
+                intent.putExtra(WishListProductActivity.EXTRA_MODE, WishListProductActivity.CAMERA);
+                startActivityForResult(intent, RQ_CAMERA);
                 break;
 
             case R.id.wishList_imageButton_gallery:
-                PictureUtil.openGallery(this, RQ_OPEN_GALLERY);
+                Intent intentG = new Intent(this, WishListProductActivity.class);
+                intentG.putExtra(WishListProductActivity.EXTRA_MODE, WishListProductActivity.GALLERY);
+                startActivityForResult(intentG, RQ_GALLERY);
                 break;
 
             case R.id.wishList_imageButton_link:

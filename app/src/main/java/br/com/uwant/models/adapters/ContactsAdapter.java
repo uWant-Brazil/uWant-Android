@@ -113,58 +113,65 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
 
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
-        ViewHolder vh;
+        ViewHolder holder;
         if (view == null) {
-            vh = new ViewHolder();
+            holder = new ViewHolder();
             view = LayoutInflater.from(this.mContext).inflate(R.layout.adapter_contacts, viewGroup, false);
-            vh.hImageViewPicture = (ImageView) view.findViewById(R.id.contacts_adapter_imageView_picture);
-            vh.hImageViewPictureCircle = (ImageView) view.findViewById(R.id.contacts_adapter_imageView_pictureCircle);
-            vh.hTextViewName = (TextView) view.findViewById(R.id.contacts_adapter_textView_name);
-            vh.hTextViewMail = (TextView) view.findViewById(R.id.contacts_adapter_textView_mail);
-            vh.hCheckBox = (CheckBox) view.findViewById(R.id.checkablelinearlayou_checkbox);
-            vh.hPosition = position;
+            holder.hImageViewPicture = (ImageView) view.findViewById(R.id.contacts_adapter_imageView_picture);
+            holder.hImageViewPictureCircle = (ImageView) view.findViewById(R.id.contacts_adapter_imageView_pictureCircle);
+            holder.hTextViewName = (TextView) view.findViewById(R.id.contacts_adapter_textView_name);
+            holder.hTextViewMail = (TextView) view.findViewById(R.id.contacts_adapter_textView_mail);
+            holder.hCheckBox = (CheckBox) view.findViewById(R.id.checkablelinearlayou_checkbox);
+            holder.hPosition = position;
 
-            view.setTag(vh);
+            view.setTag(holder);
         } else {
-            vh = (ViewHolder) view.getTag();
+            holder = (ViewHolder) view.getTag();
         }
 
-        vh.hImageViewPictureCircle.setVisibility(View.INVISIBLE);
+        holder.hImageViewPictureCircle.setVisibility(View.INVISIBLE);
 
         if (position == 0) {
-            vh.hTextViewMail.setVisibility(View.GONE);
-            vh.hImageViewPicture.setVisibility(View.GONE);
-            vh.hCheckBox.setVisibility(View.GONE);
-            vh.hTextViewName.setText(R.string.text_invite_all_friends);
+            holder.hTextViewMail.setVisibility(View.GONE);
+            holder.hImageViewPicture.setVisibility(View.GONE);
+            holder.hCheckBox.setVisibility(View.GONE);
+            holder.hTextViewName.setText(R.string.text_invite_all_friends);
         } else {
-            vh.hTextViewMail.setVisibility(View.VISIBLE);
-            vh.hImageViewPicture.setVisibility(View.VISIBLE);
-            vh.hCheckBox.setVisibility(View.VISIBLE);
+            holder.hTextViewMail.setVisibility(View.VISIBLE);
+            holder.hImageViewPicture.setVisibility(View.VISIBLE);
+            holder.hCheckBox.setVisibility(View.VISIBLE);
 
             boolean isChecked = mGridView.isItemChecked(position);
             CheckableLinearLayout cll = (CheckableLinearLayout) view;
             cll.setChecked(isChecked);
-            vh.hCheckBox.setChecked(isChecked);
+            holder.hCheckBox.setChecked(isChecked);
 
             Person person = getItem(position);
             String name = person.getName();
             String mail = person.getMail();
             final Multimedia multimedia = person.getPicture();
             if (multimedia != null) {
+                Bitmap bitmap = multimedia.getBitmap();
                 Uri uri = multimedia.getUri();
-                if (uri != null) {
-                    load(position, vh, uri);
+                String url = multimedia.getUrl();
+                if (bitmap != null) {
+                    holder.hImageViewPicture.setImageBitmap(bitmap);
+                    holder.hImageViewPictureCircle.setVisibility(View.VISIBLE);
+                } else if (uri != null) {
+                    load(position, holder, uri);
+                } else if (url != null) {
+                    load(position, holder, url);
                 } else {
-                    vh.hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
-                    vh.hImageViewPictureCircle.setVisibility(View.INVISIBLE);
+                    holder.hImageViewPicture.setImageResource(R.drawable.ic_contatos_semfoto);
+                    holder.hImageViewPictureCircle.setVisibility(View.INVISIBLE);
                 }
             } else {
-                vh.hImageViewPicture.setImageResource(R.drawable.ic_semfoto);
-                vh.hImageViewPictureCircle.setVisibility(View.INVISIBLE);
+                holder.hImageViewPicture.setImageResource(R.drawable.ic_contatos_semfoto);
+                holder.hImageViewPictureCircle.setVisibility(View.INVISIBLE);
             }
 
-            vh.hTextViewName.setText(name);
-            vh.hTextViewMail.setText(mail == null ? "" : mail);
+            holder.hTextViewName.setText(name);
+            holder.hTextViewMail.setText(mail == null ? "" : mail);
         }
 
         return view;
@@ -183,7 +190,7 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
                 try {
                     Bitmap bitmap = Picasso.with(mContext)
                             .load(uri)
-                            .placeholder(R.drawable.ic_semfoto).get();
+                            .placeholder(R.drawable.ic_contatos_semfoto).get();
 
                     bitmap = PictureUtil.cropToFit(bitmap);
                     bitmap = PictureUtil.scale(bitmap, viewHolder.hImageViewPicture);
@@ -209,6 +216,39 @@ public class ContactsAdapter extends BaseAdapter implements SectionIndexer {
             }
 
         }.execute(vh, uri);
+    }
+
+    private void load(final int position, ViewHolder vh, String url) {
+        new AsyncTask<Object, Void, Bitmap>() {
+
+            private ViewHolder viewHolder;
+
+            @Override
+            protected Bitmap doInBackground(Object... objects) {
+                viewHolder = (ViewHolder) objects[0];
+                String url = (String) objects[1];
+
+                Bitmap bitmap = ImageLoader.getInstance().loadImageSync(url, mOptions);
+
+                bitmap = PictureUtil.cropToFit(bitmap);
+                bitmap = PictureUtil.scale(bitmap, viewHolder.hImageViewPicture);
+                bitmap = PictureUtil.circle(bitmap);
+
+                return bitmap;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                if (bitmap != null) {
+                    if (viewHolder.hPosition == position) {
+                        viewHolder.hImageViewPicture.setImageBitmap(bitmap);
+                        viewHolder.hImageViewPictureCircle.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+        }.execute(vh, url);
     }
 
     @Override

@@ -23,6 +23,7 @@ import br.com.uwant.R;
 import br.com.uwant.flow.fragments.AgendaFragment;
 import br.com.uwant.flow.fragments.ContactsFragment;
 import br.com.uwant.flow.fragments.FacebookFragment;
+import br.com.uwant.flow.fragments.UWantFragment;
 import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.cloud.Requester;
@@ -30,13 +31,12 @@ import br.com.uwant.models.cloud.models.ContactsModel;
 
 public class ContactsActivity extends UWActivity implements View.OnClickListener {
 
-    private static String[] TABS;
+    private String[] TABS;
 
     private ContactsPagerAdapter mAdapter;
     private ViewPager mViewPager;
-    protected static List<Person> mFacebookPersons;
+    private List<Person> mFacebookPersons;
     private boolean mIsFromPerfil;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +45,10 @@ public class ContactsActivity extends UWActivity implements View.OnClickListener
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         Intent it = getIntent();
+
         if (it.hasExtra(Person.EXTRA)) {
-            TABS = getResources().getStringArray(R.array.options_contacts_with_facebook);
             this.mFacebookPersons = (ArrayList<Person>) it.getSerializableExtra(Person.EXTRA);
+            TABS = getResources().getStringArray(R.array.options_contacts_with_facebook);
         } else {
             TABS = getResources().getStringArray(R.array.options_contacts);
         }
@@ -190,13 +191,13 @@ public class ContactsActivity extends UWActivity implements View.OnClickListener
         }
     }
 
-    private static class ContactsPagerAdapter extends FragmentStatePagerAdapter {
+    private class ContactsPagerAdapter extends FragmentStatePagerAdapter {
 
-        private SparseArray<ContactsFragment> mFragments;
+        private SparseArray<Fragment> mFragments;
 
         public ContactsPagerAdapter(FragmentManager fm) {
             super(fm);
-            this.mFragments = new SparseArray<ContactsFragment>(getCount());
+            this.mFragments = new SparseArray<Fragment>(getCount());
         }
 
         @Override
@@ -206,7 +207,7 @@ public class ContactsActivity extends UWActivity implements View.OnClickListener
 
         @Override
         public Fragment getItem(int i) {
-            ContactsFragment fragment = this.mFragments.get(i);
+            Fragment fragment = this.mFragments.get(i);
             if (fragment == null) {
                 switch (i) {
                     case 0:
@@ -214,12 +215,22 @@ public class ContactsActivity extends UWActivity implements View.OnClickListener
                         break;
 
                     case 1:
-                        fragment = FacebookFragment.newInstance(mFacebookPersons);
+                        String title = getPageTitle(i).toString();
+                        if (title.equals("Facebook")) {
+                            fragment = FacebookFragment.newInstance(mFacebookPersons);
+                        } else {
+                            fragment = new UWantFragment();
+                        }
+                        break;
+
+                    case 2:
+                        fragment = new UWantFragment();
                         break;
 
                     default:
                         throw new RuntimeException();
                 }
+
                 this.mFragments.put(i, fragment);
             }
             return fragment;
