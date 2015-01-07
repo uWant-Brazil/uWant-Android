@@ -43,10 +43,8 @@ public class WishListProductActivity extends UWActivity implements View.OnClickL
 
     private static final int RQ_GALLERY = 9382;
     private static final int RQ_CAMERA = 9322;
-    private static final String CONST_HEADS_UP_WIHLIST = "heads_up_wihlist";
     private static final String TAG_CLOSE_DIALOG = "Close_Dialog";
 
-    private boolean mIsFirstTime = true;
     private List<Product> mProducts;
     private ProductAdapter mAdapter;
 
@@ -63,28 +61,25 @@ public class WishListProductActivity extends UWActivity implements View.OnClickL
 
         final ListView listView = (ListView) findViewById(R.id.wishlist_product_listView);
         listView.setAdapter(mAdapter);
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_MODE)) {
+            int mode = intent.getIntExtra(EXTRA_MODE, CAMERA);
+            switch (mode) {
+                case GALLERY:
+                    PictureUtil.openGallery(this, RQ_GALLERY, true);
+                    break;
+
+                default:
+                    PictureUtil.takePicture(this, RQ_CAMERA);
+                    break;
+            }
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (this.mIsFirstTime) {
-            this.mIsFirstTime = false;
-
-            Intent intent = getIntent();
-            if (intent.hasExtra(EXTRA_MODE)) {
-                int mode = intent.getIntExtra(EXTRA_MODE, CAMERA);
-                switch (mode) {
-                    case GALLERY:
-                        PictureUtil.openGallery(this, RQ_GALLERY, true);
-                        break;
-
-                    default:
-                        PictureUtil.takePicture(this, RQ_CAMERA);
-                        break;
-                }
-            }
-        }
     }
 
     @Override
@@ -219,7 +214,7 @@ public class WishListProductActivity extends UWActivity implements View.OnClickL
 
         };
 
-        String msg = String.format("%s%s", "Você deseja realmente remover?", (mProducts.size() > 1 ? "" : " Como esta é sua única imagem, você estará cancelando o compartilhamento."));
+        String msg = String.format("%s%s", getString(R.string.text_want_remove), (mProducts.size() > 1 ? "" : " " + getString(R.string.text_want_remove_2)));
         AlertFragmentDialog afd = AlertFragmentDialog.create(
                 getString(R.string.text_attention),
                 msg,

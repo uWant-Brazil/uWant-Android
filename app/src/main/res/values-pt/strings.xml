@@ -101,5 +101,7 @@ Por favor, realize um login para acessar o uWant!</string>
     <string name="text_account">Conta</string>
     <string name="text_exit">Sair</string>
     <string name="text_about">Sobre</string>
+    <string name="text_want_remove">Você deseja realmente remover?</string>
+    <string name="text_want_remove_2">" Como esta é sua única imagem, você estará cancelando o compartilhamento."</string>
 
 </resources>
