@@ -21,7 +21,6 @@ public class TagWatcher implements TextWatcher {
     private static final Pattern PATTERN = Pattern.compile("(<uwt id='\\d'>(?:(?!<\\/uwt>).)*.*?<\\/uwt>)|(@[0-9a-zA-Z]{3,})");
 
     private boolean mIsUpdating;
-    private int mIdentifier;
     private int mStartIndex;
     private List<ImageSpan> mSpansToRemove;
     private TextView mTextView;
@@ -29,7 +28,6 @@ public class TagWatcher implements TextWatcher {
 
     public TagWatcher(TextView textView) {
         this.mIsUpdating = false;
-        this.mIdentifier = 0;
         this.mStartIndex = -1;
         this.mSpansToRemove = new ArrayList<ImageSpan>(10);
         this.mTextView = textView;
@@ -84,15 +82,10 @@ public class TagWatcher implements TextWatcher {
         }
 
         Matcher matcher = PATTERN.matcher(s);
-
         while (matcher.find()) {
-            String tagged = matcher.group(1);
             String untagged = matcher.group(2);
 
-            if (tagged != null) {
-                DebugUtil.debug("TAGGED >>> " + tagged);
-            } else if (untagged != null) {
-                DebugUtil.debug("UNTAGGED >>> " + untagged);
+            if (untagged != null) {
                 this.mIsUpdating = true;
 
                 this.mStartIndex = matcher.start(2);
@@ -105,8 +98,7 @@ public class TagWatcher implements TextWatcher {
         int length = person.getLogin().length();
 
         SpannableTagBuilder spannable = new SpannableTagBuilder(this.mTextView);
-        spannable.addTag(++this.mIdentifier, this.mStartIndex, (this.
-                mStartIndex + length) + 1, person);
+        spannable.addTag(person.getId(), this.mStartIndex, (this.mStartIndex + length) + 1, person);
     }
 
     private void requestUsers(String user) {
