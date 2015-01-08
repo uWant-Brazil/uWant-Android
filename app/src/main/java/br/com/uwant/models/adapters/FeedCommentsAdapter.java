@@ -1,7 +1,6 @@
 package br.com.uwant.models.adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,7 +101,7 @@ public class FeedCommentsAdapter extends BaseAdapter {
 
         String text = comment.getText();
         String name = who.getName();
-        String when = DateUtil.getTimeAgo(this.mContext, since);
+        String when = DateUtil.timeAgo(this.mContext, since);
         int count = comment.getUWantsCount();
 
         holder.hTextViewName.setText(name);

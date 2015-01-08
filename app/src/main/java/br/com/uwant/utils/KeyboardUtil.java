@@ -5,8 +5,15 @@ import android.os.IBinder;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+/**
+ * Classe utilitária responsável por métodos relacionados ao teclado do aparelho.
+ */
 public abstract class KeyboardUtil {
 
+    /**
+     * Método auxilir para 'esconder' o teclado quando aberto.
+     * @param editText
+     */
     public static void hide(EditText editText) {
         if (editText != null && editText.hasFocus()) {
             editText.clearFocus();
