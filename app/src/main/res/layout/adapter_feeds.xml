@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/GRAY_BACKGROUND">
+    android:background="@color/WHITE">
 
     <LinearLayout
         android:gravity="center_vertical"
@@ -87,7 +87,7 @@
             android:drawSelectorOnTop="false"
             android:layout_weight="1" />
 
-        <TextView
+        <br.com.uwant.models.views.tag.TagTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/adapter_feeds_textView_userMessage"

@@ -21,7 +21,6 @@ package br.com.uwant.models.adapters;/*
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
@@ -176,7 +175,7 @@ public class FeedsAdapter extends BaseAdapter {
         String systemMessage = action.getMessage();
         String userMessage = action.getExtra();
         Date when = action.getWhen();
-        String timeAgo = DateUtil.getTimeAgo(this.mContext, when);
+        String timeAgo = DateUtil.timeAgo(this.mContext, when);
         int uWantCount = action.getUWantsCount();
         int commentsCount = action.getCommentsCount();
         int sharesCount = action.getSharesCount();

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/adapter_product_imageView_picture"
+            android:src="@drawable/ic_perfil_semfoto"
+            android:scaleType="center"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/adapter_product_imageView_close"
+            android:src="@drawable/ic_post_fechar"
+            android:layout_gravity="end|top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+
+    <br.com.uwant.models.views.tag.TagEditText
+        android:id="@+id/adapter_product_editText_description"
+        android:layout_weight="0"
+        android:hint="@string/text_hint_description"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

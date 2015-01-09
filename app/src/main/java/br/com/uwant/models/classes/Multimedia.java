@@ -20,7 +20,7 @@ public class Multimedia implements Serializable {
     /**
      * Caminho local da foto.
      */
-    private Uri uri;
+    private String uri;
 
     /**
      * Foto carregada em memória.
@@ -39,11 +39,11 @@ public class Multimedia implements Serializable {
     }
 
     public Uri getUri() {
-        return uri;
+        return uri != null ? Uri.parse(uri) : null;
     }
 
     public void setUri(Uri uri) {
-        this.uri = uri;
+        this.uri = uri != null ? uri.toString() : null;
     }
 
     public void setBitmap(Bitmap bitmap) {

@@ -88,5 +88,20 @@
     <string name="text_fill_three_characteres">Você precisa digitar, no mínimo, 3 caracteres.</string>
     <string name="text_image_capture_warning">Não estamos conseguindo abrir a camera do seu aparelho. Por favor, tente importar a foto da galeria!</string>
     <string name="text_capture_picture_warning">Não estamos conseguindo abrir a galeria do seu aparelho. Por favor, tente tirar a foto pela camera!</string>
+    <string name="text_cancel_product">As fotos não serão carregadas na lista de desejos. Você deseja realmente continuar?</string>
+    <string name="text_hint_description">Digite a descrição aqui</string>
+    <string name="text_choose_images">Escolha as imagens</string>
+    <string name="text_no_contacts">Você não possui nenhum contato disponível nesta modalidade.</string>
+    <string name="text_loading">Carregando...</string>
+    <string name="text_hint_find_user">Digite o nome, e-mail ou login do usuário</string>
+    <string name="text_informations">Informações</string>
+    <string name="text_app_version">Versão do Aplicativo</string>
+    <string name="text_support">Suporte</string>
+    <string name="text_site">Site</string>
+    <string name="text_account">Conta</string>
+    <string name="text_exit">Sair</string>
+    <string name="text_about">Sobre</string>
+    <string name="text_want_remove">Você deseja realmente remover?</string>
+    <string name="text_want_remove_2">" Como esta é sua única imagem, você estará cancelando o compartilhamento."</string>
 
 </resources>

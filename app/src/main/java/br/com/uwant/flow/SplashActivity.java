@@ -7,11 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.ImageView;
 
-import com.crashlytics.android.Crashlytics;
-import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
 import br.com.uwant.R;
 import br.com.uwant.models.classes.User;
 import br.com.uwant.models.databases.UserDatabase;
@@ -27,19 +22,7 @@ public class SplashActivity extends Activity implements Runnable {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        Crashlytics.start(this);
         super.onCreate(savedInstanceState);
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-                .diskCacheExtraOptions(480, 800, null)
-                .denyCacheImageMultipleSizesInMemory()
-                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-                .memoryCacheSize(2 * 1024 * 1024)
-                .diskCacheSize(50 * 1024 * 1024)
-                .diskCacheFileCount(100)
-                .writeDebugLogs()
-                .build();
-        ImageLoader.getInstance().init(config);
-
         UserDatabase db = new UserDatabase(this);
         isLogged = db.existAnything();
         if (isLogged) {

@@ -72,14 +72,7 @@ public class UWActivity extends ActionBarActivity {
                     progressFragmentDialog.dismiss();
                 }
 
-                UserDatabase db = new UserDatabase(UWActivity.this);
-                db.removeAll();
-                User.clearInstance();
-                GoogleCloudMessageUtil.clear(UWActivity.this);
-
-                Intent intent = new Intent(UWActivity.this, AuthenticationActivity.class);
-                startActivity(intent);
-                finish(); // TODO Remover toda a pilha de execução das Activities.
+                safeAndSound();
             }
 
             @Override
@@ -88,9 +81,18 @@ public class UWActivity extends ActionBarActivity {
                     progressFragmentDialog.dismiss();
                 }
 
+                safeAndSound();
+            }
+
+            private void safeAndSound() {
+                UserDatabase db = new UserDatabase(UWActivity.this);
+                db.removeAll();
+                User.clearInstance();
+                GoogleCloudMessageUtil.clear(UWActivity.this);
+
                 Intent intent = new Intent(UWActivity.this, AuthenticationActivity.class);
                 startActivity(intent);
-                finish();
+                finish(); // TODO Remover toda a pilha de execução das Activities.
             }
 
         });

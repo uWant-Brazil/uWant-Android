@@ -6,9 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -17,27 +14,19 @@ import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
 import com.facebook.LoggingBehavior;
 import com.facebook.Request;
-import com.facebook.RequestAsyncTask;
 import com.facebook.RequestBatch;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.Settings;
-import com.facebook.model.GraphObject;
 import com.facebook.model.OpenGraphAction;
 import com.facebook.model.OpenGraphObject;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +42,9 @@ import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.models.WishListUpdateModel;
 
+/**
+ * Classe utilitária responsável por métodos relacionados a classe WishList.
+ */
 public abstract class WishListUtil {
 
     private static final DisplayImageOptions OPTIONS = new DisplayImageOptions.Builder()
@@ -63,28 +55,49 @@ public abstract class WishListUtil {
                                 .considerExifParams(true)
                                 .displayer(new FadeInBitmapDisplayer(500))
                                 .build();
+    public static final String FACEBOOK_ME_PHOTOS = "me/photos";
+    public static final String TAG = "WishListUtil";
 
+    /**
+     * Método sincronizado responsável por realizar o compartilhamento da lista de desejos nas fotos.
+     * @param context
+     * @param wishList - Lista de Desejos
+     * @param multimedia - Foto a ser compartilhada
+     */
     public synchronized static void share(final Context context, WishList wishList, Multimedia multimedia) {
+        DebugUtil.info(TAG, "Compartilhando...");
+        
         Bundle postParams = new Bundle();
         postParams.putString("name", wishList.getDescription());
         postParams.putParcelable("picture", multimedia.getBitmap());
 
-        Request.Callback callback= new Request.Callback() {
+        final Request.Callback callback = new Request.Callback() {
+            
             public void onCompleted(Response response) {
                 FacebookRequestError error = response.getError();
                 if (error != null) {
+                    DebugUtil.error(TAG, "O compartilhamento falhou!");
                     DebugUtil.error(error.getErrorMessage());
                 } else {
+                    DebugUtil.info(TAG, "Compartilhado!");
                     Toast.makeText(context, "O compartilhamento foi efetuado!", Toast.LENGTH_LONG).show();
                 }
             }
+            
         };
 
-        new Request(Session.getActiveSession(), "me/photos", postParams,
-                HttpMethod.POST, callback).executeAsync();
+        Request request = new Request(Session.getActiveSession(), FACEBOOK_ME_PHOTOS, postParams, HttpMethod.POST, callback);
+        request.executeAsync();
     }
 
+    /**
+     * Método sincronizado responsável por realizar o compartilhamento da lista de desejos em ACTION MODE.
+     * @param context
+     * @param wishList - Lista de Desejos
+     * @param multimedia - Foto
+     */
     public synchronized static void shareAction(final Context context, WishList wishList, Multimedia multimedia) {
+        DebugUtil.info(TAG, "Compartilhando action...");
         Settings.addLoggingBehavior(LoggingBehavior.REQUESTS);
 
         OpenGraphObject share = OpenGraphObject.Factory.createForPost("uwant-social:wish");
@@ -99,19 +112,22 @@ public abstract class WishListUtil {
         oga.setImageUrls(Arrays.asList(multimedia.getUrl()));
         oga.setExplicitlyShared(true);
 
-        Request.Callback callback = new Request.Callback() {
+        final Request.Callback callback = new Request.Callback() {
 
             @Override
             public void onCompleted(Response response) {
                 FacebookRequestError error = response.getError();
                 if (error != null) {
+                    DebugUtil.error(TAG, "O compartilhamento falhou!");
                     DebugUtil.error(error.getErrorMessage());
                 } else {
+                    DebugUtil.info(TAG, "Compartilhado!");
                     Toast.makeText(context, "O compartilhamento foi efetuado!", Toast.LENGTH_LONG).show();
                 }
             }
 
         };
+        
         Request objectRequest = Request.newPostOpenGraphActionRequest(Session.getActiveSession(), oga, callback);
 
         RequestBatch request = new RequestBatch();
@@ -119,6 +135,12 @@ public abstract class WishListUtil {
         request.executeAsync();
     }
 
+    /**
+     * Método responsável por renderizar os produtos no GridLayout da lista de dejesos na tela de perfil.
+     * @param context
+     * @param products
+     * @param gridLayout
+     */
     public static void renderProducts(Context context, List<Product> products, GridLayout gridLayout) {
         if (products == null)
             return;
@@ -179,6 +201,12 @@ public abstract class WishListUtil {
         }
     }
 
+    /**
+     * Job para carregar as fotos dos produtos assíncronamente.
+     * @param resources
+     * @param adapter
+     * @param wishList
+     */
     public static void loadPicturesFromProducts(Resources resources, WishListAdapter adapter, WishList wishList) {
         if (wishList.getProducts() != null) {
             for (Product product : wishList.getProducts()) {
@@ -191,6 +219,9 @@ public abstract class WishListUtil {
         }
     }
 
+    /**
+     * Task assíncrona para carregar as fotos dos produtos da lista de desejos.
+     */
     private static class AsyncPicture extends AsyncTask<Product, Void, Bitmap> {
 
         private final int mWidth;
@@ -233,6 +264,12 @@ public abstract class WishListUtil {
         }
     }
 
+    /**
+     * Método responsável por transformar a lista de produtos no formato JSON.
+     * @param type
+     * @param products
+     * @return JSON
+     */
     public static JsonArray listProductsToJson(WishListUpdateModel.Type type, List<Product> products){
         JsonArray arrayProducts = new JsonArray();
 

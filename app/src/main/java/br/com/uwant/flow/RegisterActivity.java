@@ -400,7 +400,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (i == 0) {
-                    PictureUtil.openGallery(RegisterActivity.this, GALLERY_REQUEST_CODE);
+                    PictureUtil.openGallery(RegisterActivity.this, GALLERY_REQUEST_CODE, false);
                 } else {
                     mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
                             Environment.DIRECTORY_PICTURES),

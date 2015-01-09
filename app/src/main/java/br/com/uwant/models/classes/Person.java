@@ -152,6 +152,11 @@ public class Person implements Serializable {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
     public long getId() {
         return id;
     }

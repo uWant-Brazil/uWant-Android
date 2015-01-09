@@ -9,6 +9,8 @@ import java.util.Comparator;
  */
 public class Product implements Serializable{
 
+    public static final String EXTRA = "extra_product";
+
     /**
      * Identificador único.
      */
