@@ -66,6 +66,12 @@ public abstract class DateUtil {
         else return new SimpleDateFormat(pattern).format(dateHour);
     }
 
+    /**
+     * Método auxiliar para criação de um DatePicker default do projeto.
+     * @param context
+     * @param listener
+     * @return
+     */
     public static DatePicker picker(Context context, DatePickerDialog.OnDateSetListener listener) {
         Calendar now = Calendar.getInstance();
         int year = now.get(Calendar.YEAR);
@@ -78,7 +84,13 @@ public abstract class DateUtil {
         return dpd.getDatePicker();
     }
 
-    public static String getTimeAgo(Context context, Date when) {
+    /**
+     * Método auxiliar para retorno de texto para identificação da quantidade de tempo passado.
+     * @param context
+     * @param when
+     * @return
+     */
+    public static String timeAgo(Context context, Date when) {
         Resources resources = context.getResources();
 
         String timeAgo;

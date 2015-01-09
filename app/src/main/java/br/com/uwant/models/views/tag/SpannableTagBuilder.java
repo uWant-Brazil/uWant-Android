@@ -1,4 +1,4 @@
-package br.com.uwant.models.views;
+package br.com.uwant.models.views.tag;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -20,7 +20,7 @@ public class SpannableTagBuilder extends SpannableStringBuilder {
 
     private static final int TEXT_SIZE_SP = 18;
 
-    private int mIdentifier;
+    private long mIdentifier;
     private String mSpannableTag;
     private Person mPerson;
     private TextView mTextView;
@@ -29,7 +29,7 @@ public class SpannableTagBuilder extends SpannableStringBuilder {
         this.mTextView = editText;
     }
 
-    public void addTag(int identifier, int start, int end, Person person) {
+    public void addTag(long identifier, int start, int end, Person person) {
         this.mIdentifier = identifier;
         this.mPerson = person;
 
@@ -60,7 +60,7 @@ public class SpannableTagBuilder extends SpannableStringBuilder {
         return String.format("@%s", person.getLogin());
     }
 
-    public int getIdentifier() {
+    public long getIdentifier() {
         return this.mIdentifier;
     }
 

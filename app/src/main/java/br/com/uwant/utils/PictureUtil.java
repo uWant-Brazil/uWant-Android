@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -19,30 +18,46 @@ import java.io.File;
 import br.com.uwant.R;
 import br.com.uwant.flow.GalleryActivity;
 
+/**
+ * Classe utilitária responsável por métodos relacionados a fotos do sistema.
+ */
 public abstract class PictureUtil {
 
     public static final String MIME_IMAGE = "image/*";
 
-    public static Bitmap decodeBitmap(Bitmap bitmap, ImageView imageViewPicture) {
+    /**
+     * Método responsável por decodificar a foto aplicando os algoritmos de ajuste na foto.
+     * Serão aplicados três métodos: 1. crop, 2. scale e 3. circle
+     * @param bitmap
+     * @param imageView
+     * @return
+     */
+    private static Bitmap decodeBitmap(Bitmap bitmap, ImageView imageView) {
         bitmap = cropToFit(bitmap);
-        bitmap = scale(bitmap, imageViewPicture);
+        bitmap = scale(bitmap, imageView);
         bitmap = circle(bitmap);
 
-        imageViewPicture.setImageBitmap(bitmap);
+        imageView.setImageBitmap(bitmap);
 
         return bitmap;
     }
 
-    public static Bitmap decodePicture(File picture, ImageView imageViewPicture) {
+    /**
+     * Método responsável por decodificar a foto (em formato de arquivo) aplicando os algoritmos de ajuste na foto.
+     * @param file - Arquivo da Foto
+     * @param imageView - Container
+     * @return
+     */
+    public static Bitmap decodePicture(File file, ImageView imageView) {
         // Obtém o tamanho da ImageView
-        int targetW = imageViewPicture.getWidth();
-        int targetH = imageViewPicture.getHeight();
+        int targetW = imageView.getWidth();
+        int targetH = imageView.getHeight();
 
         // Obtém a largura e altura da foto
         BitmapFactory.Options bmOptions =
                 new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(picture.getAbsolutePath(), bmOptions);
+        BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
 
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
@@ -57,48 +72,83 @@ public abstract class PictureUtil {
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(picture.getAbsolutePath(), bmOptions);
-        return decodeBitmap(bitmap, imageViewPicture);
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
+        return decodeBitmap(bitmap, imageView);
     }
 
-    public static Bitmap scale(Bitmap bitmap, ImageView imageViewPicture) {
-        return Bitmap.createScaledBitmap(bitmap, imageViewPicture.getWidth(), imageViewPicture.getHeight(), false);
+    /**
+     * Método responsável por deixar a foto proporcional a partir do tamanho do ImageView (LARGURA x ALTURA).
+     * @param bitmap
+     * @param imageView
+     * @return
+     */
+    public static Bitmap scale(Bitmap bitmap, ImageView imageView) {
+        int width = imageView.getWidth();
+        int height = imageView.getHeight();
+        return scale(bitmap, width, height);
     }
 
+    /**
+     * Método responsável por deixar a foto proporcional a partir do tamanho passado por parâmetro.
+     * @param bitmap
+     * @param width
+     * @param height
+     * @return
+     */
     public static Bitmap scale(Bitmap bitmap, int width, int height) {
         return Bitmap.createScaledBitmap(bitmap, width, height, false);
     }
 
-    public static Bitmap cropToFit(Bitmap srcBmp) {
+    /**
+     * Método responsável por realizar recorte no centro da foto, sem perder o foco da foto.
+     * @param bitmap
+     * @return
+     */
+    public static Bitmap cropToFit(Bitmap bitmap) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
         Bitmap output;
-        if (srcBmp.getWidth() >= srcBmp.getHeight()){
-            output = Bitmap.createBitmap(srcBmp, srcBmp.getWidth()/2 - srcBmp.getHeight()/2, 0, srcBmp.getHeight(), srcBmp.getHeight());
+        if (width >= height){
+            output = Bitmap.createBitmap(bitmap, (width/2) - (height/2), 0, height, height);
         } else {
-            output = Bitmap.createBitmap(srcBmp, 0, srcBmp.getHeight()/2 - srcBmp.getWidth()/2, srcBmp.getWidth(), srcBmp.getWidth());
+            output = Bitmap.createBitmap(bitmap, 0, (height/2) - (width/2), width, width);
         }
         return output;
     }
 
+    /**
+     * Método responsável por realizar recorte para deixar a foto em formato circular.
+     * @param bitmap
+     * @return
+     */
     public static Bitmap circle(Bitmap bitmap) {
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
 
         final int color = 0xff424242;
         final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final Rect rect = new Rect(0, 0, width, height);
 
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
-        canvas.drawCircle(bitmap.getWidth() / 2F, bitmap.getHeight() / 2F,
-                bitmap.getWidth() / 2.2F, paint);
+        canvas.drawCircle((width/2F), (height/2F), (width/2.2F), paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
 
         return output;
     }
 
+    /**
+     * Método auxiliar para abertura da galeria do usuário a partir de uma Intent Implícita.
+     * @param activity
+     * @param requestCode
+     * @param allowMultiple
+     */
     public static void openGallery(Activity activity, int requestCode, boolean allowMultiple) {
         if (allowMultiple) {
             Intent intent = new Intent(activity, GalleryActivity.class);
@@ -116,6 +166,11 @@ public abstract class PictureUtil {
         }
     }
 
+    /**
+     * Método auxiliar para abertura da câmera do aparelho a partir de uma Intent Implícita.
+     * @param activity
+     * @param requestCode
+     */
     public static void takePicture(Activity activity, int requestCode) {
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (i.resolveActivity(activity.getPackageManager()) != null) {

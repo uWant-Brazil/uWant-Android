@@ -72,7 +72,7 @@
 
             <View
                 android:id="@+id/view_line_2"
-                android:layout_below="@+id/feed_comment_view_top"
+                android:layout_below="@+id/feed_comment_linearLayout_top"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:alpha="0.5"
@@ -112,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <br.com.uwant.models.views.tag.TagEditText
                     android:id="@+id/feed_comment_editText"
                     android:layout_weight="1"
                     android:lines="1"

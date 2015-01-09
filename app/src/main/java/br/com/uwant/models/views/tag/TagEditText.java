@@ -1,4 +1,4 @@
-package br.com.uwant.models.views;
+package br.com.uwant.models.views.tag;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -18,6 +18,7 @@ package br.com.uwant.flow;/*
  *
  */
 
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -26,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -193,6 +195,12 @@ public class ConfigurationsActivity extends PreferenceActivity {
         if (getIntent().getBooleanExtra("executeFacebook", false)) {
             executeFacebook();
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    @Override
+    protected boolean isValidFragment(String fragmentName) {
+        return true;
     }
 
     private void mapEarlierThenV11() {

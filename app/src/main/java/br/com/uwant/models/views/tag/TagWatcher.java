@@ -1,8 +1,9 @@
-package br.com.uwant.models.views;
+package br.com.uwant.models.views.tag;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -14,28 +15,40 @@ import br.com.uwant.models.classes.Person;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
 import br.com.uwant.models.cloud.models.UserSearchModel;
-import br.com.uwant.utils.DebugUtil;
 
 public class TagWatcher implements TextWatcher {
 
     private static final Pattern PATTERN = Pattern.compile("(<uwt id='\\d'>(?:(?!<\\/uwt>).)*.*?<\\/uwt>)|(@[0-9a-zA-Z]{3,})");
 
     private boolean mIsUpdating;
-    private int mIdentifier;
     private int mStartIndex;
     private List<ImageSpan> mSpansToRemove;
     private TextView mTextView;
+    private EditText mEditText;
     private IRequest.OnRequestListener<List<Person>> mListener;
 
     public TagWatcher(TextView textView) {
         this.mIsUpdating = false;
-        this.mIdentifier = 0;
         this.mStartIndex = -1;
         this.mSpansToRemove = new ArrayList<ImageSpan>(10);
         this.mTextView = textView;
 
         if (textView instanceof IRequest.OnRequestListener) {
             this.mListener = (IRequest.OnRequestListener<List<Person>>) textView;
+        } else {
+            throw new IllegalArgumentException("Your editable must implements OnRequestListener.");
+        }
+    }
+
+    public TagWatcher(EditText editText) {
+        this.mIsUpdating = false;
+        this.mStartIndex = -1;
+        this.mSpansToRemove = new ArrayList<ImageSpan>(10);
+        this.mEditText = editText;
+        this.mTextView = editText;
+
+        if (editText instanceof IRequest.OnRequestListener) {
+            this.mListener = (IRequest.OnRequestListener<List<Person>>) editText;
         } else {
             throw new IllegalArgumentException("Your editable must implements OnRequestListener.");
         }
@@ -84,15 +97,27 @@ public class TagWatcher implements TextWatcher {
         }
 
         Matcher matcher = PATTERN.matcher(s);
-
         while (matcher.find()) {
             String tagged = matcher.group(1);
             String untagged = matcher.group(2);
 
-            if (tagged != null) {
-                DebugUtil.debug("TAGGED >>> " + tagged);
-            } else if (untagged != null) {
-                DebugUtil.debug("UNTAGGED >>> " + untagged);
+            if (tagged != null && this.mEditText == null) {
+                this.mIsUpdating = true;
+
+                this.mStartIndex = matcher.start(1);
+
+                long id = Long.parseLong(tagged.substring(tagged.indexOf("'") + 1, tagged.lastIndexOf("'")));
+                String login = tagged.substring(tagged.indexOf("@") + 1, tagged.indexOf("</uwt>")).trim();
+
+                Person person = new Person();
+                person.setId(id);
+                person.setLogin(login);
+
+                List<Person> persons = new ArrayList<Person>();
+                persons.add(person);
+
+                this.mListener.onExecute(persons);
+            } if (untagged != null && this.mEditText != null) {
                 this.mIsUpdating = true;
 
                 this.mStartIndex = matcher.start(2);
@@ -105,8 +130,7 @@ public class TagWatcher implements TextWatcher {
         int length = person.getLogin().length();
 
         SpannableTagBuilder spannable = new SpannableTagBuilder(this.mTextView);
-        spannable.addTag(++this.mIdentifier, this.mStartIndex, (this.
-                mStartIndex + length) + 1, person);
+        spannable.addTag(person.getId(), this.mStartIndex, (this.mStartIndex + length) + 1, person);
     }
 
     private void requestUsers(String user) {
