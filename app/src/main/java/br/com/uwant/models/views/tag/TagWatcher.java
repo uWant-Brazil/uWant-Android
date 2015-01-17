@@ -32,12 +32,6 @@ public class TagWatcher implements TextWatcher {
         this.mStartIndex = -1;
         this.mSpansToRemove = new ArrayList<ImageSpan>(10);
         this.mTextView = textView;
-
-        if (textView instanceof IRequest.OnRequestListener) {
-            this.mListener = (IRequest.OnRequestListener<List<Person>>) textView;
-        } else {
-            throw new IllegalArgumentException("Your editable must implements OnRequestListener.");
-        }
     }
 
     public TagWatcher(EditText editText) {
@@ -106,17 +100,7 @@ public class TagWatcher implements TextWatcher {
 
                 this.mStartIndex = matcher.start(1);
 
-                long id = Long.parseLong(tagged.substring(tagged.indexOf("'") + 1, tagged.lastIndexOf("'")));
-                String login = tagged.substring(tagged.indexOf("@") + 1, tagged.indexOf("</uwt>")).trim();
-
-                Person person = new Person();
-                person.setId(id);
-                person.setLogin(login);
-
-                List<Person> persons = new ArrayList<Person>();
-                persons.add(person);
-
-                this.mListener.onExecute(persons);
+                this.tag(tagged);
             } if (untagged != null && this.mEditText != null) {
                 this.mIsUpdating = true;
 
@@ -131,6 +115,18 @@ public class TagWatcher implements TextWatcher {
 
         SpannableTagBuilder spannable = new SpannableTagBuilder(this.mTextView);
         spannable.addTag(person.getId(), this.mStartIndex, (this.mStartIndex + length) + 1, person);
+    }
+
+    public void tag(String tagged) {
+        long id = Long.parseLong(tagged.substring(tagged.indexOf("'") + 1, tagged.lastIndexOf("'")));
+        String login = tagged.substring(tagged.indexOf("@") + 1, tagged.indexOf("</uwt>")).trim();
+
+        Person person = new Person();
+        person.setId(id);
+        person.setLogin(login);
+
+        SpannableTagBuilder spannable = new SpannableTagBuilder(this.mTextView);
+        spannable.addTag(tagged, this.mStartIndex, (this.mStartIndex + tagged.length()) + 1, person);
     }
 
     private void requestUsers(String user) {
