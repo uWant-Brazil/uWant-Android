@@ -16,6 +16,7 @@ import android.widget.Toast;
 import java.io.File;
 
 import br.com.uwant.R;
+import br.com.uwant.flow.CameraAcitivity;
 import br.com.uwant.flow.GalleryActivity;
 
 /**
@@ -172,12 +173,14 @@ public abstract class PictureUtil {
      * @param requestCode
      */
     public static void takePicture(Activity activity, int requestCode) {
-        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (i.resolveActivity(activity.getPackageManager()) != null) {
-            activity.startActivityForResult(i, requestCode);
-        } else {
-            Toast.makeText(activity, R.string.text_image_capture_warning, Toast.LENGTH_LONG).show();
-        }
+//        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        if (i.resolveActivity(activity.getPackageManager()) != null) {
+//            activity.startActivityForResult(i, requestCode);
+//        } else {
+//            Toast.makeText(activity, R.string.text_image_capture_warning, Toast.LENGTH_LONG).show();
+//        }
+        Intent i = new Intent(activity, CameraAcitivity.class);
+        activity.startActivityForResult(i, requestCode);
     }
 
 }

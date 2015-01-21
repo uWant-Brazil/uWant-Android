@@ -5,14 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:background="@color/WHITE"
+    <SurfaceView
         android:layout_weight="1"
-        android:id="@+id/camera_frameLayout"
+        android:id="@+id/camera_surfaceView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </FrameLayout>
+    </SurfaceView>
 
     <LinearLayout
         android:gravity="center_vertical"
@@ -22,6 +21,7 @@
         android:layout_height="wrap_content">
 
         <ImageButton
+            android:id="@+id/camera_imageButton_gallery"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:src="@drawable/img_camera_galeria"
@@ -29,13 +29,15 @@
             android:layout_height="wrap_content" />
 
         <ImageButton
+            android:id="@+id/camera_imageButton_take"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:src="@drawable/img_camera_click"
+            android:src="@drawable/button_camera_selector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <ImageButton
+            android:id="@+id/camera_imageButton_change"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:src="@drawable/img_camera_mudar"
