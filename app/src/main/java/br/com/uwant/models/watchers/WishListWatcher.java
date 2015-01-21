@@ -1,7 +1,9 @@
 package br.com.uwant.models.watchers;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,6 +13,7 @@ import android.widget.AutoCompleteTextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.uwant.R;
 import br.com.uwant.models.classes.WishList;
 import br.com.uwant.models.cloud.IRequest;
 import br.com.uwant.models.cloud.Requester;
@@ -23,6 +26,7 @@ import br.com.uwant.models.cloud.models.WishListsSearchModel;
 public class WishListWatcher implements TextWatcher, IRequest.OnRequestListener<List<WishList>>, AdapterView.OnItemClickListener {
 
     private boolean mIsUpdating;
+    private boolean mIsFilled;
     private Context mContext;
     private AutoCompleteTextView mAutoTextView;
     private List<WishList> mWishLists;
@@ -68,6 +72,13 @@ public class WishListWatcher implements TextWatcher, IRequest.OnRequestListener<
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
+        mIsFilled = !TextUtils.isEmpty(s);
+        if (mIsFilled) {
+            this.mAutoTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_post_campo_lista_on, 0);
+        } else {
+            this.mAutoTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_post_campo_lista, 0);
+        }
+
         int index = this.mAutoTextView.getListSelection();
         if (this.mIsUpdating || s.length() < 3 || (index >= 0 && this.mWishLists.get(index).getTitle().equals(s.toString()))) {
             this.mIsUpdating = false;

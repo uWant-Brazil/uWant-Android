@@ -59,7 +59,7 @@
 
             <br.com.uwant.models.views.tag.TagEditText
                 android:background="@android:color/transparent"
-                android:lines="5"
+                android:lines="4"
                 android:padding="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
