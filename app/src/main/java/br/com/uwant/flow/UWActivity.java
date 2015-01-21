@@ -16,6 +16,7 @@ import br.com.uwant.utils.GoogleCloudMessageUtil;
 public class UWActivity extends ActionBarActivity {
 
     protected User mUser = User.getInstance();
+    protected boolean mIsLogOff;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class UWActivity extends ActionBarActivity {
     }
 
     protected void performLogoff() {
+        mIsLogOff = true;
         LogoffModel model = new LogoffModel();
         Requester.executeAsync(model, new IRequest.OnRequestListener() {
 
@@ -91,6 +93,7 @@ public class UWActivity extends ActionBarActivity {
                 GoogleCloudMessageUtil.clear(UWActivity.this);
 
                 Intent intent = new Intent(UWActivity.this, AuthenticationActivity.class);
+                intent.putExtra("LOGOUT", true);
                 startActivity(intent);
                 finish(); // TODO Remover toda a pilha de execução das Activities.
             }
