@@ -34,4 +34,8 @@ public class Manufacturer implements Serializable {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

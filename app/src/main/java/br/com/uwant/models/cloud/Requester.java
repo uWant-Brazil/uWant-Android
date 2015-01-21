@@ -60,6 +60,7 @@ public abstract class Requester {
         public static final String PRODUCTS = "products";
         public static final String NICK_NAME = "nickName";
         public static final String MANUFACTURER = "manufacturer";
+        public static final String MANUFACTURERS = "manufacturers";
         public static final String MULTIMEDIA_PRODUCT = "multimediaProduct";
         public static final String MULTIMEDIA_USER_PICTURE = "multimediaUserPicture";
         public static final String MULTIMEDIA = "multimedia";
@@ -76,6 +77,8 @@ public abstract class Requester {
         public static final String LAST_NAME = "last_name";
         public static final String DATA = "data";
         public static final String COMMENT_ID = "commentId";
+        public static final String UUID = "uuid";
+        public static final String WISHLISTS = "wishlists";
     }
 
     /**

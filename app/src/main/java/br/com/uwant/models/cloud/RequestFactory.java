@@ -138,6 +138,14 @@ class RequestFactory extends AbstractFactory<IRequest.Type, Context, IRequest> {
                 request = new WishListUpdateRequest();
                 break;
 
+            case MANUFACTURER_LIST:
+                request = new ManufacturersRequest();
+                break;
+
+            case WISH_LIST_SEARCH:
+                request = new WishListsSearchRequest();
+                break;
+
             default:
                 request = null;
                 break;
