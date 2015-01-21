@@ -317,6 +317,12 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                     List<Product> products = (List<Product>) data.getSerializableExtra(Product.EXTRA);
                     mProducts.addAll(products);
                     mAdapter.notifyDataSetChanged();
+
+                    if (!mTwoWayView.isShown()) {
+                        mTwoWayView.setVisibility(View.VISIBLE);
+                        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.wishList_linearLayout_present);
+                        linearLayout.setVisibility(View.GONE);
+                    }
                     break;
 
                 default:
