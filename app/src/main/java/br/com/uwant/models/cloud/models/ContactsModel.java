@@ -1,5 +1,6 @@
 package br.com.uwant.models.cloud.models;
 
+import com.facebook.Request;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -33,6 +34,7 @@ public class ContactsModel extends AbstractJSONRequestModel {
         List<JsonObject> jsonContacts = new ArrayList<JsonObject>();
         for (Person p : persons) {
             JsonObject json = new JsonObject();
+            json.addProperty(Requester.ParameterKey.LOGIN, p.getLogin());
             json.addProperty(Requester.ParameterKey.MAIL, p.getMail());
             json.addProperty(Requester.ParameterKey.FACEBOOK_ID, p.getFacebookId());
             jsonContacts.add(json);
