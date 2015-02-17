@@ -62,11 +62,11 @@ public class DrawerAdapter extends BaseAdapter {
         switch (position) {
             case 0:
                 // Minhas listas
-                icon = R.drawable.ic_panel_lojas;
+                icon = R.drawable.ic_panel_listas;
                 break;
             case 1:
                 // Amigos
-                icon = R.drawable.ic_panel_ofertas;
+                icon = R.drawable.ic_panel_amigos;
                 break;
             case 2:
                 // Configuracoes

@@ -104,4 +104,25 @@ public class SpannableTagBuilder extends SpannableStringBuilder {
         return bitmapDrawable;
     }
 
+    public void addTag(String tagged, int start, int end, Person person) {
+        this.mIdentifier = person.getId();
+        this.mPerson = person;
+        this.mSpannableTag = tagged;
+
+        String tag = getTag(this.mPerson);
+        TextView textView = createTag(tag);
+        BitmapDrawable bitmapDrawable = convertToDrawable(textView);
+        ImageSpan imageSpan = createImageSpan(bitmapDrawable);
+
+        append(this.mSpannableTag);
+        setSpan(imageSpan, 0, length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        Editable editable = this.mTextView.getEditableText();
+        if (editable.length() < end) {
+            String appendable = tag.substring(editable.length() - start);
+            editable.append(appendable);
+        }
+        editable.replace(start, end, this);
+    }
+
 }

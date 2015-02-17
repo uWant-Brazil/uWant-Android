@@ -88,10 +88,12 @@ public class WishListProductActivity extends UWActivity implements View.OnClickL
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case RQ_CAMERA:
-                    Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+//                    Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                    String path = data.getStringExtra("data");
+                    File f = new File(path);
 
                     Multimedia multimedia = new Multimedia();
-                    multimedia.setBitmap(bitmap);
+                    multimedia.setUri(Uri.fromFile(f));
                     fillProduct(multimedia);
                     break;
 

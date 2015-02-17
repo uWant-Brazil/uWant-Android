@@ -182,6 +182,7 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
         }
 
     };
+    private boolean mIsLogout = true;
 
     private void successLogin(List<Person> persons) {
         User user = User.getInstance();
@@ -205,11 +206,23 @@ public class AuthenticationActivity extends FragmentActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Session session = Session.getActiveSession();
 
-        if (session == null && savedInstanceState != null) {
-            session = Session.restoreSession(this, null, callback, savedInstanceState);
-            Session.setActiveSession(session);
+
+        Intent iin = getIntent();
+        Bundle b = iin.getExtras();
+
+        if(b!=null)
+        {
+            mIsLogout = b.getBoolean("LOGOUT");
+        }
+
+        if (mIsLogout) {
+            Session session = Session.getActiveSession();
+
+            if (session == null && savedInstanceState != null) {
+                session = Session.restoreSession(this, null, callback, savedInstanceState);
+                Session.setActiveSession(session);
+            }
         }
 
         setContentView(R.layout.activity_authentication);
