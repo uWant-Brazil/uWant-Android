@@ -255,6 +255,10 @@ public class MainActivity extends UWActivity implements AdapterView.OnItemClickL
     }
 
     private void updateUser() {
+        if (super.mIsLogOff) {
+            return;
+        }
+
         User user = User.getInstance();
         String name = user.getName();
         if (name != null) {
