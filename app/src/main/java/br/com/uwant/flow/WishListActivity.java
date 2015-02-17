@@ -21,11 +21,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +36,10 @@ import android.widget.Toast;
 import com.facebook.AccessToken;
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.squareup.picasso.Picasso;
 
 import org.lucasr.twowayview.TwoWayView;
@@ -66,6 +73,8 @@ import br.com.uwant.models.cloud.helpers.UWFileBodyListener;
 import br.com.uwant.models.cloud.models.WishListCreateModel;
 import br.com.uwant.models.cloud.models.WishListProductPictureModel;
 import br.com.uwant.models.cloud.models.WishListUpdateModel;
+import br.com.uwant.models.watchers.ManufacturerWatcher;
+import br.com.uwant.models.watchers.WishListWatcher;
 import br.com.uwant.utils.PictureUtil;
 import br.com.uwant.utils.UserUtil;
 import br.com.uwant.utils.WishListUtil;
@@ -80,6 +89,9 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
     private static final String CONST_LINK_TAG = "link_tag";
 
     private Multimedia mMultimedia;
+    private ImageView mImageViewPicture;
+    private ImageView mImageViewPictureCircle;
+    private DisplayImageOptions mOptions;
 
     public static enum EXTRA_MODE{CREATE, EDIT, DELETE}
 
@@ -90,8 +102,8 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
 
     private Switch mSwitchView;
     private EditText mEditTextComment;
-    private EditText mEditTextStore;
-    private EditText mEditTextWishList;
+    private AutoCompleteTextView mEditTextStore;
+    private AutoCompleteTextView mEditTextWishList;
     private EditText mEditTextLink;
     private ProgressFragmentDialog mProgressDialog;
     private TwoWayView mTwoWayView;
@@ -123,6 +135,15 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.mOptions = new DisplayImageOptions.Builder()
+                .resetViewBeforeLoading(true)
+                .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .considerExifParams(true)
+                .displayer(new FadeInBitmapDisplayer(300))
+                .build();
+
         Session session = Session.getActiveSession();
         if (session == null && savedInstanceState != null) {
             session = Session.restoreSession(this, null, callback, savedInstanceState);
@@ -134,9 +155,31 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
 
         setContentView(R.layout.activity_wishlist);
 
-        mEditTextStore = (EditText) findViewById(R.id.wishList_editText_store);
+        User user = User.getInstance();
+        Multimedia multimedia = user.getPicture();
+
+        if (multimedia != null) {
+            mImageViewPicture = (ImageView) findViewById(R.id.wishlist_imageView_picture);
+            mImageViewPictureCircle = (ImageView) findViewById(R.id.wishlist_imageView_pictureCircle);
+
+            Uri uri = multimedia.getUri();
+            String url = multimedia.getUrl();
+            if (uri != null) {
+                load(uri);
+            } else if (url != null) {
+                load(url);
+            }
+        }
+
+        TextView textViewLogin = (TextView) findViewById(R.id.wishlist_textView_login);
+        textViewLogin.setText(String.format("@%s", user.getLogin()));
+
+        mEditTextStore = (AutoCompleteTextView) findViewById(R.id.wishList_editText_store);
         mEditTextComment = (EditText) findViewById(R.id.wishList_editText_comment);
-        mEditTextWishList = (EditText) findViewById(R.id.wishList_editText_list);
+        mEditTextWishList = (AutoCompleteTextView) findViewById(R.id.wishList_editText_list);
+
+        mEditTextStore.addTextChangedListener(new ManufacturerWatcher(this, mEditTextStore));
+        mEditTextWishList.addTextChangedListener(new WishListWatcher(this, mEditTextWishList));
 
         mSwitchView = (Switch) findViewById(R.id.wishList_switch_share);
         mSwitchView.setOnCheckedChangeListener(this);
@@ -274,6 +317,12 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                     List<Product> products = (List<Product>) data.getSerializableExtra(Product.EXTRA);
                     mProducts.addAll(products);
                     mAdapter.notifyDataSetChanged();
+
+                    if (!mTwoWayView.isShown()) {
+                        mTwoWayView.setVisibility(View.VISIBLE);
+                        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.wishList_linearLayout_present);
+                        linearLayout.setVisibility(View.GONE);
+                    }
                     break;
 
                 default:
@@ -543,6 +592,70 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
             mNotifyMgr.cancel(NOTIFICATION_ID);
             mBuilder = null;
         }
+    }
+
+    private void load(Uri uri) {
+        new AsyncTask<Object, Void, Bitmap>() {
+
+            @Override
+            protected Bitmap doInBackground(Object... objects) {
+                Uri uri = (Uri) objects[1];
+
+                try {
+                    Bitmap bitmap = Picasso.with(WishListActivity.this)
+                            .load(uri)
+                            .placeholder(R.drawable.ic_contatos_semfoto).get();
+
+                    bitmap = PictureUtil.cropToFit(bitmap);
+                    bitmap = PictureUtil.scale(bitmap, mImageViewPicture);
+                    bitmap = PictureUtil.circle(bitmap);
+
+                    return bitmap;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                if (bitmap != null) {
+                    mImageViewPicture.setImageBitmap(bitmap);
+                    mImageViewPictureCircle.setVisibility(View.VISIBLE);
+                }
+            }
+
+        }.execute(uri);
+    }
+
+    private void load(String url) {
+        new AsyncTask<Object, Void, Bitmap>() {
+
+            @Override
+            protected Bitmap doInBackground(Object... objects) {
+                String url = (String) objects[0];
+
+                Bitmap bitmap = ImageLoader.getInstance().loadImageSync(url, mOptions);
+
+                bitmap = PictureUtil.cropToFit(bitmap);
+                bitmap = PictureUtil.scale(bitmap, mImageViewPicture);
+                bitmap = PictureUtil.circle(bitmap);
+
+                return bitmap;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                if (bitmap != null) {
+                    mImageViewPicture.setImageBitmap(bitmap);
+                    mImageViewPictureCircle.setVisibility(View.VISIBLE);
+                }
+            }
+
+        }.execute(url);
     }
 
 }
