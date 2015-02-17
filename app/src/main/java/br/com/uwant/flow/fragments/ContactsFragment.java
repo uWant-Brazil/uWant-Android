@@ -92,11 +92,11 @@ public abstract class ContactsFragment extends Fragment implements AdapterView.O
                         super.onPostExecute(aVoid);
                         if (mPersons.size() > 0) {
                             baseAdapter.notifyDataSetChanged();
-                            mIsLoading = false;
                         } else {
                             mGridView.setEmptyView(mEmptyView);
                             mLoadingView.setVisibility(View.GONE);
                         }
+                        mIsLoading = false;
                     }
 
                 }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
