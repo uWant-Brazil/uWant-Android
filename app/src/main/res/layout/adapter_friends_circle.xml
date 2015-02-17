@@ -1,22 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <View
-        android:background="@color/GRAY_TEXT"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp" />
-
     <LinearLayout
-        android:padding="10dp"
+        android:padding="5dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/contacts_adapter_imageView_picture"
+                android:src="@drawable/ic_contatos_semfoto"
+                android:layout_gravity="center_horizontal" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_contatos_comfoto"
+                android:visibility="invisible"
+                android:id="@+id/contacts_adapter_imageView_pictureCircle"
+                android:layout_gravity="center_horizontal" />
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/friendsCircle_adapter_textView_name"
@@ -29,14 +45,15 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"/>
 
-        <View
+<!--        <View
             android:background="@color/GRAY_TEXT"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
             android:layout_width="0.5dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent" />-->
 
         <ImageView
             android:id="@+id/friendsCircle_adapter_imageView_popUp"
@@ -45,5 +62,10 @@
             android:layout_height="wrap_content" />
 
     </LinearLayout>
+
+        <View
+            android:background="@color/GRAY_TEXT"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp" />
 
 </LinearLayout>
