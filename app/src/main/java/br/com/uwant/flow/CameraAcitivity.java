@@ -7,11 +7,16 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -28,7 +33,7 @@ import java.util.List;
 
 import br.com.uwant.R;
 
-public class CameraAcitivity extends UWActivity implements View.OnClickListener, SurfaceHolder.Callback {
+public class CameraAcitivity extends ActionBarActivity implements View.OnClickListener, SurfaceHolder.Callback {
 
     Camera camera;
     SurfaceView surfaceView;
@@ -42,7 +47,7 @@ public class CameraAcitivity extends UWActivity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
             finish();
-            return;
+           return;
         }
 
         ActionBar actionBar = getSupportActionBar();
@@ -62,7 +67,8 @@ public class CameraAcitivity extends UWActivity implements View.OnClickListener,
         surfaceView = (SurfaceView) findViewById(R.id.camera_surfaceView);
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
-        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
+            surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         rawCallback = new Camera.PictureCallback() {
 
@@ -131,31 +137,31 @@ public class CameraAcitivity extends UWActivity implements View.OnClickListener,
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        try {
             camera = Camera.open();
-        } catch (Exception e) {
-            return;
-        }
-
-        Camera.Parameters p = camera.getParameters();
-        List<Camera.Size> supportedSizes = p.getSupportedPreviewSizes();
-
-        Camera.Size size = supportedSizes != null && supportedSizes.size() > 0 ? supportedSizes.get(2) : null;
-        p.setPreviewSize(size.height, size.width);
-        setCameraDisplayOrientation(Camera.CameraInfo.CAMERA_FACING_BACK, camera);
-        camera.setParameters(p);
-
         try {
-            camera.setPreviewDisplay(surfaceHolder);
-            camera.startPreview();
-        } catch (IOException e) {
-            e.printStackTrace();
+            camera.setPreviewDisplay(holder);
+        } catch (Exception e) {
+            camera.release();
+            camera = null;
         }
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        refreshCamera();
+        Camera.Parameters p = camera.getParameters();
+        List<Camera.Size> supportedSizes = p.getSupportedPreviewSizes();
+
+        Camera.Size size = supportedSizes != null && supportedSizes.size() > 0 ? supportedSizes.get(2) : null;
+        p.setPreviewSize(size.width, size.height);
+        setCameraDisplayOrientation(Camera.CameraInfo.CAMERA_FACING_BACK, camera);
+        camera.setParameters(p);
+
+        try {
+            camera.setPreviewDisplay(holder);
+            camera.startPreview();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

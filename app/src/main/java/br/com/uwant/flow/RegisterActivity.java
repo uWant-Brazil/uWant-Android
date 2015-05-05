@@ -579,9 +579,8 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                 cursor.close();
 
                 if ((filePath == null || filePath.isEmpty())
-                        && data.getType().startsWith("image/")
                         && data.getData() != null
-                        && data.getDataString() != null && data.getDataString().contains("docs.file")) {
+                        && data.getDataString() != null) {
                     try {
                         mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
                                 Environment.DIRECTORY_PICTURES),
@@ -599,7 +598,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                } else if (filePath.startsWith("http")) {
+                } else if (filePath != null && filePath.startsWith("http")) {
                     loadPictureAsync(filePath);
                 } else {
                     mPicturePath = new File(filePath);
