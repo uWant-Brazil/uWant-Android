@@ -561,6 +561,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
         if (resultCode == RESULT_OK && data != null) {
             if (requestCode == PICTURE_REQUEST_CODE) {
                 mPictureUpdated = true;
+                mPicturePath = new File(data.getStringExtra("data"));
                 mImageViewPictureDetail.setVisibility(View.VISIBLE);
                 mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPicture);
             } else if (requestCode == GALLERY_REQUEST_CODE) {
