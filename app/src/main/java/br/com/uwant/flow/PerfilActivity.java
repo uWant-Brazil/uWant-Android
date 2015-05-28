@@ -1,25 +1,14 @@
 package br.com.uwant.flow;
 
-import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.SearchView;
-import android.util.SparseArray;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,15 +16,19 @@ import android.widget.Toast;
 
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.uwant.R;
 import br.com.uwant.flow.fragments.FeedCommentFragment;
-import br.com.uwant.flow.fragments.FriendsCircleFragment;
 import br.com.uwant.flow.fragments.ProgressFragmentDialog;
-import br.com.uwant.flow.fragments.WishListFragment;
 import br.com.uwant.models.adapters.FeedsAdapter;
 import br.com.uwant.models.classes.Action;
 import br.com.uwant.models.classes.Multimedia;
@@ -50,6 +43,7 @@ import br.com.uwant.models.cloud.models.ExcludeFriendModel;
 import br.com.uwant.models.cloud.models.FeedsModel;
 import br.com.uwant.models.cloud.models.ShareModel;
 import br.com.uwant.models.cloud.models.WantModel;
+import br.com.uwant.utils.PictureUtil;
 import br.com.uwant.utils.UserUtil;
 
 public class PerfilActivity extends UWActivity implements View.OnClickListener,
@@ -65,7 +59,8 @@ public class PerfilActivity extends UWActivity implements View.OnClickListener,
 
     private View mFadeView;
     private FeedsAdapter mAdapter;
-    private ListView mListViewFeeds;
+    private ImageView mImageViewPicture;
+    private ImageView mImageViewPictureDetail;
     private ProgressFragmentDialog mProgressDialog;
 
     private final Session.StatusCallback callback = new Session.StatusCallback() {
@@ -195,10 +190,53 @@ public class PerfilActivity extends UWActivity implements View.OnClickListener,
         mActions = new ArrayList<Action>(10);
         mAdapter = new FeedsAdapter(this, mActions, this);
 
-        mListViewFeeds = (ListView) findViewById(R.id.perfil_listView_feeds);
+        ListView mListViewFeeds = (ListView) findViewById(R.id.perfil_listView_feeds);
         mListViewFeeds.setAdapter(mAdapter);
 
         mFadeView = findViewById(R.id.main_frameLayout_fade);
+
+        mImageViewPicture = (ImageView) findViewById(R.id.perfil_imageView_picture);
+        mImageViewPictureDetail = (ImageView) findViewById(R.id.perfil_imageView_pictureDetail);
+
+        User user = User.getInstance();
+        final Multimedia picture = user.getPicture();
+        if (picture != null) {
+            Bitmap bitmap = picture.getBitmap();
+            String url = picture.getUrl();
+            if (bitmap != null) {
+                mImageViewPicture.setImageBitmap(bitmap);
+                mImageViewPictureDetail.setVisibility(View.VISIBLE);
+            } else if (url != null && !url.isEmpty()) {
+                float dpi = getResources().getDisplayMetrics().density;
+                int size = (int) (dpi * 76);
+                DisplayImageOptions options = new DisplayImageOptions.Builder()
+                        .resetViewBeforeLoading(true)
+                        .cacheOnDisk(true)
+                        .imageScaleType(ImageScaleType.EXACTLY)
+                        .bitmapConfig(Bitmap.Config.RGB_565)
+                        .considerExifParams(true)
+                        .displayer(new FadeInBitmapDisplayer(300))
+                        .build();
+                ImageSize imageSize = new ImageSize(size, size);
+
+                ImageLoader imageLoader = ImageLoader.getInstance();
+                imageLoader.loadImage(url, imageSize, options, new SimpleImageLoadingListener() {
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        loadedImage = PictureUtil.cropToFit(loadedImage);
+                        loadedImage = PictureUtil.scale(loadedImage, mImageViewPicture);
+                        loadedImage = PictureUtil.circle(loadedImage);
+
+                        mImageViewPicture.setImageBitmap(loadedImage);
+                        mImageViewPictureDetail.setVisibility(View.VISIBLE);
+
+                        picture.setBitmap(loadedImage);
+                    }
+
+                });
+            }
+        }
 
         if (mFadeView == null) {
             mFadeView = getLayoutInflater().inflate(R.layout.fade_in_out, null);
@@ -223,12 +261,6 @@ public class PerfilActivity extends UWActivity implements View.OnClickListener,
         model.setEndIndex(DEFAULT_END_INDEX);
 
         Requester.executeAsync(model, this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.perfil_menu, menu);
-        return true;
     }
 
     @Override
