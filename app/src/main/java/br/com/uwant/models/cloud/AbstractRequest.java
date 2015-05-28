@@ -166,7 +166,7 @@ public abstract class AbstractRequest<K> {
             String url = URL_COMMON + getRoute();
 
             if (body == null) {
-                body = "";
+                body = new JsonObject().toString();
             }
 
             RequestBody requestBody = RequestBody.create(MEDIA_TYPE, body);
