@@ -327,9 +327,11 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && data != null)
             if (requestCode == PICTURE_REQUEST_CODE) {
-                mPictureUpdated = true;
-                mPicturePath = new File(data.getStringExtra("data"));
+                //mPictureUpdated = true;
+                //mPicturePath = new File(data.getStringExtra("data"));
 
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                mImageViewPresentetoClick.setImageBitmap(photo);
                 Multimedia multimedia = new Multimedia();
                 multimedia.setUri(Uri.fromFile(mPicturePath));
                 fillProduct(multimedia);
@@ -579,13 +581,15 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                     //startActivityForResult(intentG, RQ_GALLERY);
                     PictureUtil.openGallery(WishListActivity.this, GALLERY_REQUEST_CODE, false);
                 } else {
-                    mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_PICTURES),
-                            "uwant_picture");
-                    PictureUtil.takePicture(WishListActivity.this, PICTURE_REQUEST_CODE);
+//                    mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
+//                            Environment.DIRECTORY_PICTURES),
+//                            "uwant_picture");
+//                    PictureUtil.takePicture(WishListActivity.this, PICTURE_REQUEST_CODE);
                     //Intent intenta = new Intent(WishListActivity.this, WishListProductActivity.class);
                     //intenta.putExtra(WishListProductActivity.EXTRA_MODE, WishListProductActivity.CAMERA);
                     //startActivityForResult(intenta, RQ_CAMERA);
+                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent, PICTURE_REQUEST_CODE);
                 }
             }
 
