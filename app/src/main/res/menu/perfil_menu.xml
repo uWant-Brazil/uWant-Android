@@ -4,9 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/menu_perfil_configurations"
+    <item android:id="@+id/menu_perfil_search"
         app:showAsAction="always"
-        android:title="Editar perfil"
-        android:icon="@drawable/ic_conf_perfil" />
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:title="@string/text_search"
+        android:icon="@drawable/ic_search" />
 
 </menu>
