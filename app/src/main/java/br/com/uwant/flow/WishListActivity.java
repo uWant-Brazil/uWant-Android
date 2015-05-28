@@ -327,15 +327,24 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && data != null)
             if (requestCode == PICTURE_REQUEST_CODE) {
-                //mPictureUpdated = true;
-                //mPicturePath = new File(data.getStringExtra("data"));
-
+                mPictureUpdated = true;
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
-                mImageViewPresentetoClick.setImageBitmap(photo);
-                Multimedia multimedia = new Multimedia();
-                multimedia.setUri(Uri.fromFile(mPicturePath));
-                fillProduct(multimedia);
-                mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPresentetoClick, false);
+                mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES),
+                        "uwant_picture");
+
+                OutputStream os;
+                try {
+                    os = new FileOutputStream(mPicturePath);
+                    photo.compress(Bitmap.CompressFormat.PNG, 100, os);
+                    os.flush();
+                    os.close();
+                    Multimedia multimedia = new Multimedia();
+                    multimedia.setUri(Uri.fromFile(mPicturePath));
+                    fillProduct(multimedia);
+                    mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPresentetoClick, false);
+                } catch (Exception e) {}
+
             } else if (requestCode == GALLERY_REQUEST_CODE) {
                 mPictureUpdated = true;
                 mUri = data.getData();

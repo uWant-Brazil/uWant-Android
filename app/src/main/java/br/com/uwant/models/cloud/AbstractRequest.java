@@ -48,7 +48,7 @@ public abstract class AbstractRequest<K> {
     /**
      * Padrão das URLs de requisição.
      */
-    public static final String URL_COMMON = "http://192.168.0.16:9000/v1";
+    public static final String URL_COMMON = "http://192.168.0.100:9000/v1";
 
     /**
      * Header responsável por conter o token de autenticação para requisições.
