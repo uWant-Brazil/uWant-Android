@@ -62,8 +62,10 @@ public class FriendsCircleRequest extends AbstractRequest<List<Person>> implemen
                                 long id = jsonFriendObj.get(Requester.ParameterKey.ID).getAsLong();
                                 String login = jsonFriendObj.get(Requester.ParameterKey.LOGIN).getAsString();
                                 String name = jsonFriendObj.get(Requester.ParameterKey.NAME).getAsString();
+                                String mail = jsonFriendObj.get(Requester.ParameterKey.MAIL).getAsString();
 
                                 Person person = new Person(id, login, name);
+                                person.setMail(mail);
                                 person.setFriendshipLevel(Person.FriendshipLevel.MUTUAL);
 
                                 if (jsonFriendObj.has(Requester.ParameterKey.PICTURE)) {

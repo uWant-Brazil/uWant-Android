@@ -198,8 +198,7 @@ public class PerfilActivity extends UWActivity implements View.OnClickListener,
         mImageViewPicture = (ImageView) findViewById(R.id.perfil_imageView_picture);
         mImageViewPictureDetail = (ImageView) findViewById(R.id.perfil_imageView_pictureDetail);
 
-        User user = User.getInstance();
-        final Multimedia picture = user.getPicture();
+        final Multimedia picture = mPerson.getPicture();
         if (picture != null) {
             Bitmap bitmap = picture.getBitmap();
             String url = picture.getUrl();
