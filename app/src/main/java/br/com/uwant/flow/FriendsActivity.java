@@ -35,6 +35,7 @@ public class FriendsActivity extends UWActivity implements IRequest.OnRequestLis
         super.onCreate(savedInstanceState);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         setContentView(R.layout.activity_friends);
 
