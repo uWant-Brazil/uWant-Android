@@ -563,7 +563,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                 mPictureUpdated = true;
                 mPicturePath = new File(data.getStringExtra("data"));
                 mImageViewPictureDetail.setVisibility(View.VISIBLE);
-                mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPicture);
+                mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPicture, true);
             } else if (requestCode == GALLERY_REQUEST_CODE) {
                 mPictureUpdated = true;
                 mUri = data.getData();
@@ -605,7 +605,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                     mPicturePath = new File(filePath);
                     mUri = Uri.fromFile(mPicturePath);
                     mImageViewPictureDetail.setVisibility(View.VISIBLE);
-                    mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPicture);
+                    mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPicture, true);
                 }
             }
         }

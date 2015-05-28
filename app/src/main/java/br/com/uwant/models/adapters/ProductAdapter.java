@@ -86,7 +86,7 @@ public class ProductAdapter extends BaseAdapter {
             LinearLayout linearLayout = new LinearLayout(this.mContext);
             linearLayout.setGravity(Gravity.CENTER);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             params.setMargins(DEFAULT_MARGIN_BOTTOM, DEFAULT_MARGIN_BOTTOM, DEFAULT_MARGIN_BOTTOM, DEFAULT_MARGIN_BOTTOM);
 
             CardView cardView = new CardView(this.mContext);

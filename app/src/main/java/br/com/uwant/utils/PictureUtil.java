@@ -33,10 +33,11 @@ public abstract class PictureUtil {
      * @param imageView
      * @return
      */
-    private static Bitmap decodeBitmap(Bitmap bitmap, ImageView imageView) {
+    private static Bitmap decodeBitmap(Bitmap bitmap, ImageView imageView, boolean isCircle) {
         bitmap = cropToFit(bitmap);
         bitmap = scale(bitmap, imageView);
-        bitmap = circle(bitmap);
+
+        if (isCircle) {bitmap = circle(bitmap);}
 
         imageView.setImageBitmap(bitmap);
 
@@ -49,7 +50,7 @@ public abstract class PictureUtil {
      * @param imageView - Container
      * @return
      */
-    public static Bitmap decodePicture(File file, ImageView imageView) {
+    public static Bitmap decodePicture(File file, ImageView imageView, boolean isCircle) {
         // Obtém o tamanho da ImageView
         int targetW = imageView.getWidth();
         int targetH = imageView.getHeight();
@@ -74,7 +75,7 @@ public abstract class PictureUtil {
         bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
-        return decodeBitmap(bitmap, imageView);
+        return decodeBitmap(bitmap, imageView, isCircle);
     }
 
     /**

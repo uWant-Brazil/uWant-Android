@@ -10,7 +10,7 @@
     <ImageButton
         android:id="@+id/wishListButton_main_create"
         android:layout_margin="5dp"
-        android:src="@drawable/ic_plusone_standard_off_client"
+        android:src="@drawable/ic_perfil_maisfoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent" />

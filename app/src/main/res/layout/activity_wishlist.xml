@@ -124,32 +124,49 @@
 
         <FrameLayout
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1">
 
-            <org.lucasr.twowayview.TwoWayView
-                android:id="@+id/wishList_twoWayView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="invisible"
-                android:drawSelectorOnTop="false" />
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:id="@+id/wishList_linearLayout_present"
-                style="@style/UWEditText">
-
-                <ImageView
+                <org.lucasr.twowayview.TwoWayView
+                    android:id="@+id/wishList_twoWayView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_post_presente"
-                    android:layout_gravity="center" />
-            </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:visibility="invisible"
+                    android:drawSelectorOnTop="false"
+                    android:layout_gravity="center"/>
+
+                <LinearLayout
+                    android:id="@+id/wishList_linearLayout_present"
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    style="@style/UWEditText">
+
+                    <ImageView
+                        android:id="@+id/wishlist_imageView_presente"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_post_presente"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+            </FrameLayout>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="x"
+                android:visibility="invisible"
+                android:id="@+id/wishlist_button_remove"
+                android:background="@drawable/ic_post_fechar" />
+
         </FrameLayout>
 
         <LinearLayout
@@ -157,7 +174,8 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:visibility="gone">
 
             <ImageButton
                 android:layout_width="wrap_content"

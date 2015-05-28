@@ -26,7 +26,9 @@
             android:background="@android:color/transparent"
             android:src="@drawable/img_camera_galeria"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            />
 
         <ImageButton
             android:id="@+id/camera_imageButton_take"
@@ -34,7 +36,8 @@
             android:background="@android:color/transparent"
             android:src="@drawable/button_camera_selector"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            />
 
         <ImageButton
             android:id="@+id/camera_imageButton_change"
@@ -42,7 +45,9 @@
             android:background="@android:color/transparent"
             android:src="@drawable/img_camera_mudar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            />
 
     </LinearLayout>
 

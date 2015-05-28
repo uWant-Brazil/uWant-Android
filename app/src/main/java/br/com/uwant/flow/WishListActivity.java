@@ -1,5 +1,6 @@
 package br.com.uwant.flow;
 
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,8 +39,12 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.utils.DiskCacheUtils;
 import com.squareup.picasso.Picasso;
 
 import org.lucasr.twowayview.TwoWayView;
@@ -112,6 +117,10 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
 
     private List<Product> mProductDeleted = null;
     private OnProductListener onProductListener = null;
+    private ImageView mImageViewPresentetoClick;
+    private Bitmap mBitmap;
+    private Uri mUri;
+    private ImageButton mImageButtonRemove;
 
     public interface OnProductListener {
         void onRemove(Product product);
@@ -190,6 +199,10 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
         buttonGallery.setOnClickListener(this);
         final ImageButton buttonLink = (ImageButton) findViewById(R.id.wishList_imageButton_link);
         buttonLink.setOnClickListener(this);
+        mImageViewPresentetoClick = (ImageView) findViewById(R.id.wishlist_imageView_presente);
+        mImageViewPresentetoClick.setOnClickListener(this);
+        mImageButtonRemove = (ImageButton) findViewById(R.id.wishlist_button_remove);
+        mImageButtonRemove.setOnClickListener(this);
         boolean isExtra = getIntent().hasExtra(WishList.EXTRA);
 
         try {
@@ -307,27 +320,64 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
         }
     }
 
+    private boolean mPictureUpdated;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case RQ_CAMERA:
-                case RQ_GALLERY:
-                    List<Product> products = (List<Product>) data.getSerializableExtra(Product.EXTRA);
-                    mProducts.addAll(products);
-                    mAdapter.notifyDataSetChanged();
+        if (resultCode == RESULT_OK && data != null)
+            if (requestCode == PICTURE_REQUEST_CODE) {
+                mPictureUpdated = true;
+                mPicturePath = new File(data.getStringExtra("data"));
 
-                    if (!mTwoWayView.isShown()) {
-                        mTwoWayView.setVisibility(View.VISIBLE);
-                        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.wishList_linearLayout_present);
-                        linearLayout.setVisibility(View.GONE);
+                Multimedia multimedia = new Multimedia();
+                multimedia.setUri(Uri.fromFile(mPicturePath));
+                fillProduct(multimedia);
+                mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPresentetoClick, false);
+            } else if (requestCode == GALLERY_REQUEST_CODE) {
+                mPictureUpdated = true;
+                mUri = data.getData();
+                String[] filePathColumn = {
+                        MediaStore.Images.Media.DATA };
+
+                Cursor cursor = getContentResolver().query(
+                        mUri, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(
+                        filePathColumn[0]);
+                String filePath = cursor.getString(columnIndex);
+                cursor.close();
+
+                if ((filePath == null || filePath.isEmpty())
+                        && data.getData() != null
+                        && data.getDataString() != null) {
+                    try {
+                        mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES),
+                                "uwant_picture");
+
+                        InputStream inputStream = getContentResolver().openInputStream(mUri);
+                        byte[] buffer = new byte[inputStream.available()];
+                        inputStream.read(buffer);
+
+                        OutputStream outStream = new FileOutputStream(mPicturePath);
+                        outStream.write(buffer);
+                        mUri = Uri.fromFile(mPicturePath);
+
+                        loadPictureAsync(mUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    break;
+                } else if (filePath != null && filePath.startsWith("http")) {
+                    loadPictureAsync(filePath);
+                } else {
+                    mPicturePath = new File(filePath);
+                    mUri = Uri.fromFile(mPicturePath);
+                    mImageButtonRemove.setVisibility(View.VISIBLE);
+                    mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPresentetoClick, false);
+                }
 
-                default:
-                    break;
-            }
         } else if ((resultCode != RESULT_OK || !UserUtil.hasFacebook())
                 && requestCode == UserUtil.RQ_FACEBOOK_LINK) {
             mSwitchView.setChecked(false);
@@ -337,6 +387,101 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                 session.onActivityResult(this, requestCode, resultCode, data);
             }
         }
+    }
+
+    private void loadPictureAsync(Uri uri) {
+        new AsyncTask<Object, Void, Bitmap>() {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
+            }
+
+            @Override
+            protected Bitmap doInBackground(Object... objects) {
+                Uri uri = (Uri) objects[0];
+
+                try {
+                    Bitmap bitmap = Picasso.with(WishListActivity.this)
+                            .load(uri)
+                            .placeholder(R.drawable.ic_semfoto).get();
+
+                    return bitmap;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                super.onPostExecute(bitmap);
+                if (bitmap != null) {
+                    //bitmap = PictureUtil.cropToFit(bitmap);
+                    //bitmap = PictureUtil.scale(bitmap, mImageViewPresentetoClick);
+                    //bitmap = PictureUtil.circle(bitmap);
+
+                    mImageButtonRemove.setVisibility(View.VISIBLE);
+                    mImageViewPresentetoClick.setImageBitmap(bitmap);
+
+                    mBitmap = bitmap;
+                }
+                mProgressDialog.dismiss();
+            }
+
+        }.execute(uri);
+    }
+
+    private void loadPictureAsync(final String url) {
+        float dpi = getResources().getDisplayMetrics().density;
+        int size = (int) (dpi * 76);
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .resetViewBeforeLoading(true)
+                .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .considerExifParams(true)
+                .displayer(new FadeInBitmapDisplayer(300))
+                .build();
+        ImageSize imageSize = new ImageSize(size, size);
+
+        final ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.loadImage(url, imageSize, options, new ImageLoadingListener() {
+
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                mProgressDialog = ProgressFragmentDialog.show(getSupportFragmentManager());
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                mProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+                File file = DiskCacheUtils.findInCache(url, imageLoader.getDiskCache());
+                mUri = Uri.fromFile(file);
+
+                bitmap = PictureUtil.cropToFit(bitmap);
+                bitmap = PictureUtil.scale(bitmap, mImageViewPicture);
+                bitmap = PictureUtil.circle(bitmap);
+
+                mImageButtonRemove.setVisibility(View.VISIBLE);
+                mImageViewPicture.setImageBitmap(bitmap);
+
+                mBitmap = bitmap;
+                mProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+                mProgressDialog.dismiss();
+            }
+
+        });
     }
 
     private void saveProduct(String url) {
@@ -350,7 +495,7 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
         Product product = new Product();
         product.setPicture(multimedia);
         this.mProducts.add(product);
-        this.mAdapter.notifyDataSetChanged();
+/*        this.mAdapter.notifyDataSetChanged();
 
         if (!mTwoWayView.isShown()) {
             mTwoWayView.setVisibility(View.VISIBLE);
@@ -363,7 +508,7 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
             public void run() {
                 mTwoWayView.setSelection(mAdapter.getCount());
             }
-        });
+        });*/
     }
 
     private void fillProduct() {
@@ -403,9 +548,49 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                 configureLinkDialog();
                 break;
 
+            case R.id.wishlist_imageView_presente:
+                showPictureOptions();
+                break;
+
+            case R.id.wishlist_button_remove:
+                mImageButtonRemove.setVisibility(View.INVISIBLE);
+                mImageViewPresentetoClick.setImageResource(R.drawable.ic_post_presente);
+                break;
+
             default:
                 break;
         }
+    }
+
+    private static final int PICTURE_REQUEST_CODE = 9898;
+    private static final int GALLERY_REQUEST_CODE = 9797;
+    private File mPicturePath;
+
+    private void showPictureOptions() {
+        final String[] options = getResources().getStringArray(R.array.options_register_picture);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (i == 0) {
+                    //Intent intentG = new Intent(WishListActivity.this, WishListProductActivity.class);
+                    //intentG.putExtra(WishListProductActivity.EXTRA_MODE, WishListProductActivity.GALLERY);
+                    //startActivityForResult(intentG, RQ_GALLERY);
+                    PictureUtil.openGallery(WishListActivity.this, GALLERY_REQUEST_CODE, false);
+                } else {
+                    mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_PICTURES),
+                            "uwant_picture");
+                    PictureUtil.takePicture(WishListActivity.this, PICTURE_REQUEST_CODE);
+                    //Intent intenta = new Intent(WishListActivity.this, WishListProductActivity.class);
+                    //intenta.putExtra(WishListProductActivity.EXTRA_MODE, WishListProductActivity.CAMERA);
+                    //startActivityForResult(intenta, RQ_CAMERA);
+                }
+            }
+
+        });
+        builder.create().show();
     }
 
     private void configureLinkDialog() {
