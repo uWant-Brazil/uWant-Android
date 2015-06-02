@@ -343,6 +343,7 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                     multimedia.setUri(Uri.fromFile(mPicturePath));
                     fillProduct(multimedia);
                     mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPresentetoClick, false);
+                    mImageButtonRemove.setVisibility(View.VISIBLE);
                 } catch (Exception e) {}
 
             } else if (requestCode == GALLERY_REQUEST_CODE) {
@@ -377,16 +378,27 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                         mUri = Uri.fromFile(mPicturePath);
 
                         loadPictureAsync(mUri);
+                        mImageButtonRemove.setVisibility(View.VISIBLE);
+                        Multimedia multimedia = new Multimedia();
+                        multimedia.setUri(mUri);
+                        fillProduct(multimedia);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else if (filePath != null && filePath.startsWith("http")) {
                     loadPictureAsync(filePath);
+                    mImageButtonRemove.setVisibility(View.VISIBLE);
+                    Multimedia multimedia = new Multimedia();
+                    multimedia.setUrl(filePath);
+                    fillProduct(multimedia);
                 } else {
                     mPicturePath = new File(filePath);
                     mUri = Uri.fromFile(mPicturePath);
                     mImageButtonRemove.setVisibility(View.VISIBLE);
                     mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPresentetoClick, false);
+                    Multimedia multimedia = new Multimedia();
+                    multimedia.setUri(mUri);
+                    fillProduct(multimedia);
                 }
 
         } else if ((resultCode != RESULT_OK || !UserUtil.hasFacebook())
@@ -566,6 +578,7 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
             case R.id.wishlist_button_remove:
                 mImageButtonRemove.setVisibility(View.INVISIBLE);
                 mImageViewPresentetoClick.setImageResource(R.drawable.ic_post_presente);
+                this.mProducts = new ArrayList<Product>();
                 break;
 
             default:
