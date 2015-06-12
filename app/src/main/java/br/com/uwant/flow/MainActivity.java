@@ -335,13 +335,13 @@ public class MainActivity extends UWActivity implements AdapterView.OnItemClickL
                 switch (position) {
                     case 1:
                         // Minhas Listas
-                    case 2:
+//                    case 2:
                         // Amigos
                         //Toast.makeText(this, "Desativado...", Toast.LENGTH_SHORT).show();
                         it = new Intent(this, FriendsActivity.class);
                         break;
 
-                    case 3:
+                    case 2:
                         it = new Intent(this, ConfigurationsActivity.class);
                         break;
 

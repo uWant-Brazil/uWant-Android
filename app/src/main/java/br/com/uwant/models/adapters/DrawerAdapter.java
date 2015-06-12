@@ -60,15 +60,15 @@ public class DrawerAdapter extends BaseAdapter {
     private int getIcon(int position) {
         int icon;
         switch (position) {
+//            case 0:
+//                // Minhas listas
+//                icon = R.drawable.ic_panel_listas;
+//                break;
             case 0:
-                // Minhas listas
-                icon = R.drawable.ic_panel_listas;
-                break;
-            case 1:
                 // Amigos
                 icon = R.drawable.ic_panel_amigos;
                 break;
-            case 2:
+            case 1:
                 // Configuracoes
                 icon = R.drawable.ic_panel_conf;
                 break;
