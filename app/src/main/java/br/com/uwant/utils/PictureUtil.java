@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -173,15 +174,16 @@ public abstract class PictureUtil {
      * @param activity
      * @param requestCode
      */
-    public static void takePicture(Activity activity, int requestCode) {
-//        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        if (i.resolveActivity(activity.getPackageManager()) != null) {
-//            activity.startActivityForResult(i, requestCode);
-//        } else {
-//            Toast.makeText(activity, R.string.text_image_capture_warning, Toast.LENGTH_LONG).show();
-//        }
-        Intent i = new Intent(activity, CameraAcitivity.class);
-        activity.startActivityForResult(i, requestCode);
+    public static void takePicture(Activity activity, int requestCode, File mPicturePath) {
+        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (i.resolveActivity(activity.getPackageManager()) != null) {
+            i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPicturePath));
+            activity.startActivityForResult(i, requestCode);
+        } else {
+            Toast.makeText(activity, R.string.text_image_capture_warning, Toast.LENGTH_LONG).show();
+        }
+        //Intent i = new Intent(activity, CameraAcitivity.class);
+//        activity.startActivityForResult(i, requestCode);
     }
 
 }

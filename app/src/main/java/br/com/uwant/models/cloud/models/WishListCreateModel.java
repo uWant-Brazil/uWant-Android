@@ -21,6 +21,10 @@ public class WishListCreateModel extends AbstractJSONRequestModel {
         this.wishList = wishList;
     }
 
+    public WishList getWishList() {
+        return wishList;
+    }
+
     public void setProducts(List<Product> products) {
         this.products = products;
     }

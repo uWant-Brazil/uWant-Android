@@ -45,15 +45,19 @@ public class WishListCreateRequest extends AbstractRequest<List<Product>> implem
         JsonElement jsonElement = jsonParser.parse(response);
         if (jsonElement.isJsonObject()) {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
-            if (jsonObject.has(Requester.ParameterKey.PRODUCTS)) {
-                JsonElement jsonWishLists = jsonObject.get(Requester.ParameterKey.PRODUCTS);
-                if (jsonWishLists.isJsonObject()) {
-                    JsonObject arrayWishLists = jsonWishLists.getAsJsonObject();
-                    for (int i = 0;i < mModel.getProducts().size();i++) {
-                        if (arrayWishLists.has(String.valueOf(i))) {
-                            long productId = arrayWishLists.get(String.valueOf(i)).getAsLong();
-                            Product product = mModel.getProducts().get(i);
-                            product.setId(productId);
+            if (jsonObject.has(Requester.ParameterKey.WISHLIST_ID)) {
+                long id = jsonObject.get(Requester.ParameterKey.WISHLIST_ID).getAsLong();
+                mModel.getWishList().setId(id);
+                if (jsonObject.has(Requester.ParameterKey.PRODUCTS)) {
+                    JsonElement jsonWishLists = jsonObject.get(Requester.ParameterKey.PRODUCTS);
+                    if (jsonWishLists.isJsonObject()) {
+                        JsonObject arrayWishLists = jsonWishLists.getAsJsonObject();
+                        for (int i = 0; i < mModel.getProducts().size(); i++) {
+                            if (arrayWishLists.has(String.valueOf(i))) {
+                                long productId = arrayWishLists.get(String.valueOf(i)).getAsLong();
+                                Product product = mModel.getProducts().get(i);
+                                product.setId(productId);
+                            }
                         }
                     }
                 }

@@ -405,7 +405,7 @@ public class RegisterActivity extends ActionBarActivity implements View.OnClickL
                     mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
                             Environment.DIRECTORY_PICTURES),
                             "uwant_picture");
-                    PictureUtil.takePicture(RegisterActivity.this, PICTURE_REQUEST_CODE);
+                    PictureUtil.takePicture(RegisterActivity.this, PICTURE_REQUEST_CODE, mPicturePath);
                 }
             }
 

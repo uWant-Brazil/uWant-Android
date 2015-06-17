@@ -71,7 +71,7 @@ public class WishListProductActivity extends UWActivity implements View.OnClickL
                     break;
 
                 default:
-                    PictureUtil.takePicture(this, RQ_CAMERA);
+                    PictureUtil.takePicture(this, RQ_CAMERA, null);
                     break;
             }
         }
