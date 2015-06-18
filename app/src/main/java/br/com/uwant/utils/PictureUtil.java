@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.ImageView;
@@ -184,6 +185,79 @@ public abstract class PictureUtil {
         }
         //Intent i = new Intent(activity, CameraAcitivity.class);
 //        activity.startActivityForResult(i, requestCode);
+    }
+
+    public static Bitmap resizeBitMapImage1(String filePath, int targetWidth, int targetHeight) {
+        Bitmap bitMapImage = null;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(filePath, options);
+            double sampleSize = 0;
+            Boolean scaleByHeight = Math.abs(options.outHeight - targetHeight) >= Math.abs(options.outWidth
+                    - targetWidth);
+            if (options.outHeight * options.outWidth * 2 >= 1638) {
+                sampleSize = scaleByHeight ? options.outHeight / targetHeight : options.outWidth / targetWidth;
+                sampleSize = (int) Math.pow(2d, Math.floor(Math.log(sampleSize) / Math.log(2d)));
+            }
+            options.inJustDecodeBounds = false;
+            options.inTempStorage = new byte[128];
+            while (true) {
+                try {
+                    options.inSampleSize = (int) sampleSize;
+                    bitMapImage = BitmapFactory.decodeFile(filePath, options);
+                    break;
+                } catch (Exception ex) {
+                    try {
+                        sampleSize = sampleSize * 2;
+                    } catch (Exception ex1) {
+
+                    }
+                }
+            }
+        } catch (Exception ex) {
+
+        }
+        return bitMapImage;
+    }
+
+    public static Bitmap decodeFile(String path) {
+        // Decode image size
+        int orientation;
+        try {
+            if (path == null) {
+                return null ;
+            }
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            // Find the correct scale value. It should be the power of 2.
+            final int REQUIRED_SIZE = 70;
+            int width_tmp = o.outWidth, height_tmp = o.outHeight;
+            int scale = 0;
+            while (true) {
+                if (width_tmp / 2 < REQUIRED_SIZE
+                        || height_tmp / 2 < REQUIRED_SIZE)
+                    break;
+                width_tmp /= 2;
+                height_tmp /= 2;
+                scale++;
+            }
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            Bitmap bm = BitmapFactory.decodeFile(path, o2);
+            Bitmap bitmap = bm;
+            ExifInterface exif = new ExifInterface(path);
+            orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+
+            bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),bm.getHeight(), null, true);
+            //ImageViewChooseImage.setImageBitmap(bitmap);
+            //bitmapfinal = bitmap;
+            return bitmap ;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
 }

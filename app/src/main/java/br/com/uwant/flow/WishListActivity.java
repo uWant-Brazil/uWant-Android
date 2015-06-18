@@ -327,7 +327,7 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && data != null)
             if (requestCode == PICTURE_REQUEST_CODE) {
-                mPictureUpdated = true;
+                /*mPictureUpdated = true;
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
                 mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES),
@@ -344,8 +344,15 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                     fillProduct(multimedia);
                     mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPresentetoClick, false);
                     mImageButtonRemove.setVisibility(View.VISIBLE);
-                } catch (Exception e) {}
+                } catch (Exception e) {}*/
 
+
+                mPictureUpdated = true;
+                Multimedia multimedia = new Multimedia();
+                multimedia.setUri(Uri.fromFile(mPicturePath));
+                fillProduct(multimedia);
+                mBitmap = PictureUtil.decodePicture(mPicturePath, mImageViewPresentetoClick, false);
+                mImageButtonRemove.setVisibility(View.VISIBLE);
             } else if (requestCode == GALLERY_REQUEST_CODE) {
                 mPictureUpdated = true;
                 mUri = data.getData();
@@ -603,15 +610,16 @@ public class WishListActivity extends UWActivity implements View.OnClickListener
                     //startActivityForResult(intentG, RQ_GALLERY);
                     PictureUtil.openGallery(WishListActivity.this, GALLERY_REQUEST_CODE, false);
                 } else {
-//                    mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
-//                            Environment.DIRECTORY_PICTURES),
-//                            "uwant_picture");
+                    mPicturePath = new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_PICTURES),
+                            "uwant_picture");
 //                    PictureUtil.takePicture(WishListActivity.this, PICTURE_REQUEST_CODE);
                     //Intent intenta = new Intent(WishListActivity.this, WishListProductActivity.class);
                     //intenta.putExtra(WishListProductActivity.EXTRA_MODE, WishListProductActivity.CAMERA);
                     //startActivityForResult(intenta, RQ_CAMERA);
-                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, PICTURE_REQUEST_CODE);
+                    //Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    //startActivityForResult(cameraIntent, PICTURE_REQUEST_CODE);
+                    PictureUtil.takePicture(WishListActivity.this,PICTURE_REQUEST_CODE, mPicturePath);
                 }
             }
 
